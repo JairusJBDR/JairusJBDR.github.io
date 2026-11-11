@@ -154,7 +154,7 @@ body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),r
 @keyframes lzf{0%{scale:.1 1;opacity:1}25%{scale:1 1}to{scale:.4 1;opacity:0}}
 .fxl .lz0{width:5px;background:var(--c);box-shadow:0 0 10px var(--c);animation:lz0 .4s forwards}@keyframes lz0{from{opacity:.2}50%{opacity:1}to{opacity:.4}}
 .ch.bz .art{scale:1.3;transform-origin:50% 100%}.flame{transform-origin:60px 134px;animation:flk .45s infinite alternate}@keyframes flk{to{transform:scale(1.07,.93)}}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+@media(prefers-reduced-motion:reduce){*:not(.ch):not(.ch *):not(.lineup *){animation-duration:.01s!important;animation-iteration-count:1!important}}
 .rush #ua .stage,.rush #ub .stage{transform:scale(.62);margin:-26px auto -44px}.rush .br{grid-template-columns:30px 1fr 40px;font-size:10px}.rush .nm b{font-size:11px}.rush .tg em{font-size:9px}.btn.k-support{outline:2px solid var(--ac)}.rush #ub .art{transform:none}.rush #uc .art{transform:scaleX(-1)}.rush #uc .stage{transform:scale(1.25);margin:0 auto 12px}.rush #ub.atk{animation:lungeA .5s}.rush #uc.atk{animation:lungeB .5s}
 @media(min-width:760px){
 #app{padding:46px 14px 6px}
@@ -348,11 +348,11 @@ body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),r
 /* ---- Champion ---- */
 .snw{animation:snwf 4s linear infinite}
 @keyframes snwf{0%{transform:translate(0,-8px);opacity:0}12%{opacity:1}100%{transform:translate(9px,156px);opacity:.15}}
-.ch.mh{filter:drop-shadow(0 0 12px #ff3b5c) drop-shadow(0 0 26px #ff3b5c66)}
+.ch.mh::before{content:"";position:absolute;inset:-4px -22px -2px;border-radius:50%;background:radial-gradient(ellipse at 50% 52%,#ff3b5c70 0,#ff3b5c33 42%,#ff3b5c00 70%);pointer-events:none;z-index:-1}
 .lun{position:absolute;inset:0;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 50% 18%,#00000000 0,#1a020a55 38%,#1a020aaa 100%);animation:lunin 1s ease-out both}
-.lun .ec{position:absolute;left:50%;top:5%;width:min(26%,140px);aspect-ratio:1;translate:-50% 0;border-radius:50%;background:radial-gradient(circle,#000 0 58%,#3b0a17 62%,#ff3b5c 66%,#ff3b5c00 75%);box-shadow:0 0 50px 16px #ff3b5c99;animation:ecp 3s ease-in-out infinite alternate}
+.lun .ec{position:absolute;left:50%;top:5%;width:min(26%,140px);aspect-ratio:1;translate:-50% 0;border-radius:50%;background:radial-gradient(circle,#000 0 58%,#3b0a17 62%,#ff3b5c 66%,#ff3b5c00 75%);box-shadow:0 0 60px 22px #ff3b5cb0;will-change:transform,opacity;animation:ecp 3s ease-in-out infinite alternate}
 .lun .co{position:absolute;left:50%;top:5%;width:min(26%,140px);aspect-ratio:1;translate:-50% 0;border-radius:50%;border:2px solid #ff9db0;animation:ecr 2.4s linear infinite}
-@keyframes ecp{to{box-shadow:0 0 84px 30px #ff3b5ccc}}@keyframes ecr{from{scale:1;opacity:.6}to{scale:2;opacity:0}}@keyframes lunin{from{opacity:0}}
+@keyframes ecp{from{opacity:.75}to{opacity:1;scale:1.14}}@keyframes ecr{from{scale:1;opacity:.6}to{scale:2;opacity:0}}@keyframes lunin{from{opacity:0}}
 
 /* ===== death animations ===== */
 .ch[class*=" dx-"],.ch[class^="dx-"]{animation-fill-mode:forwards!important;animation-iteration-count:1!important}
@@ -552,7 +552,7 @@ h1,h2,h3{transition:color .8s,text-shadow .8s}
 @media(max-width:560px){.clear-rew{grid-template-columns:1fr}.clear-title{font-size:30px}}
 .rw-body .btn{animation:none!important}.rwb{transition:none!important}
 /* scroll-glitch fixes: no blur layers or animated art inside scroll frames */
-.pick .art,.pick .art *,.rm-list .art,.rm-list .art *,.lineup .art,.lineup .art *{animation:none!important}
+.pick .art,.pick .art *,.rm-list .art,.rm-list .art *{animation:none!important}
 .pick.cs,.rm-list{transform:translateZ(0);contain:layout paint}
 @media(max-width:759px){.panel,.bars,.modal{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.panel{background:var(--pn)}}
 .gtab{width:100%;border-collapse:collapse}.gtab th,.gtab td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--ln)}.gtab th{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--mu)}
@@ -566,6 +566,33 @@ h1,h2,h3{transition:color .8s,text-shadow .8s}
 .corr-d{display:block;margin-top:6px;color:var(--mu);font-weight:600;line-height:1.35}
 .corr.lock{display:flex;flex-direction:column;gap:2px;opacity:.75;border-style:dashed}.corr.lock small{color:var(--mu)}
 @media(max-width:640px){.corr{padding:8px 10px}.corr-ctl .btn{width:34px;height:34px;font-size:20px}.corr-n{font-size:20px}}
+
+/* ===== performance: Champion + battle idle ===== */
+.arena .ch{will-change:transform}
+.lun .co{will-change:transform,opacity}
+.lun{contain:paint}
+.arena .snw:nth-child(n+9){display:none}
+
+/* ===== performance: ultimates / big effects ===== */
+/* slashes: no filter on an element whose clip-path is animating; halo drawn with a static arc instead */
+.fxl .sl{filter:none}
+.fxl .sl::before{content:"";position:absolute;inset:calc(var(--s)*-.03);border-radius:50%;border-top:calc(var(--s)*.17) solid var(--c);opacity:.4}
+/* empowered fighter: static glow behind the character instead of a filter on a moving element */
+.stage.pow{filter:none}
+.stage.pow::after{content:"";position:absolute;inset:-12% -26%;border-radius:50%;background:radial-gradient(ellipse at 50% 55%,var(--c) 0,transparent 66%);opacity:.5;pointer-events:none;z-index:-1}
+/* lighter glows on large animated shapes */
+.fxl .ecs{box-shadow:0 0 50px 16px #c4143caa}
+.fxl .mtbig{box-shadow:0 0 56px 24px #ff6a2b,-110px -80px 60px 26px #ff6a2b66,inset -20px -20px 40px #0008}
+.fxl .wb{box-shadow:0 0 36px 18px #fff}
+.fxl .lz{box-shadow:0 0 22px 6px var(--c)}
+.fxl .pil{box-shadow:0 0 26px 8px var(--c)}
+.fxl .bm{box-shadow:0 0 10px var(--c)}
+.fxl .p{box-shadow:0 0 5px var(--c)}
+.fxl i{will-change:auto}
+
+/* credit: pinned to the bottom-left corner of the browser window */
+.credit{position:fixed;left:calc(10px + env(safe-area-inset-left,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));padding:0;margin:0;font-size:11px;opacity:.75;z-index:3;pointer-events:none;text-align:left;text-shadow:0 1px 3px var(--bg)}
+#app:has(.credit){padding-bottom:34px}
 </style></head><body><div id="app"></div>
 <script>
 (function(){
@@ -1056,7 +1083,10 @@ const BGS=[
 const ICON={enhatk:"👾",attack:"⚔️",skill:"✨",heal:"💚",ultimate:"💥",conquer:"👑",spend:"🪙",stop:"✋"};
 
 /* ===== special effects layer ===== */
-function el(cls,x,y,html="",css=""){const l=$("#fxl")||document.createElement("div"),d=document.createElement("i");d.className=cls;d.style.cssText=`left:${x}px;top:${y}px;${css}`;d.innerHTML=html;l.appendChild(d);setTimeout(()=>d.remove(),1700);return d}
+var FXN={a:0,s:0};
+function el(cls,x,y,html="",css=""){const grp=/^(p|dr|rn|pin|dxs)$/.test(cls)?"a":cls==="sl"?"s":null,cap=grp==="a"?60:8;
+ if(grp&&FXN[grp]>=cap)return document.createElement("i");
+ const l=$("#fxl")||document.createElement("div"),d=document.createElement("i");d.className=cls;d.style.cssText=`left:${x}px;top:${y}px;${css}`;d.innerHTML=html;l.appendChild(d);if(grp)FXN[grp]++;setTimeout(()=>{d.remove();if(grp)FXN[grp]=Math.max(0,FXN[grp]-1)},1700);return d}
 function pos(f){const a=$(".arena").getBoundingClientRect(),r=$("#u"+f.side+" .stage").getBoundingClientRect();return[r.left-a.left+r.width/2,r.top-a.top+r.height/2]}
 function burst(x,y,col,n=10,d=70,g=""){for(let i=0;i<n;i++){const an=Math.PI*2*i/n+Math.random()*.5,r=d*(.6+Math.random()*.6);el("p",x,y,g,`--c:${col};--dx:${Math.cos(an)*r}px;--dy:${Math.sin(an)*r}px`)}}
 const ring=(x,y,col,s=120)=>el("rg",x,y,"",`--c:${col};--s:${s}px`);
