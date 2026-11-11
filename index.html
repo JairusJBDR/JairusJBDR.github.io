@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#14101f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Arena">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>Arena of Ascension</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Nunito:wght@500;700;800&display=swap">
 <style>
@@ -1924,7 +1931,9 @@ async function saveApply(t){let d;try{d=JSON.parse(t)}catch(e){fragToast("That f
  if(i!==0)return;
  FR=fr;fragSave();FB=fb;fbSave();relicSet(rel);CORR.u=!!cr.unlocked;CORR.l=CORR.u?Math.max(0,Math.min(12,cr.level|0)):0;corrSave();solariSet(sol);
  try{sfx("buff")}catch(e){}fragToast("✅ Save imported");settingsMenu()}
-function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
+var DIP=null;addEventListener("beforeinstallprompt",e=>{e.preventDefault();DIP=e});addEventListener("appinstalled",()=>{DIP=null});
+function installApp(){if(!DIP)return;const p=DIP;DIP=null;try{p.prompt()}catch(e){}settingsMenu()}
+function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+(DIP&&!(matchMedia("(display-mode: standalone)").matches)?MB("","📲","Install app","Play offline from your home screen","installApp()"):"")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
 function audioSet(){const row=(k,l,v)=>`<label class="vr">${l}<input type="range" min="0" max="100" value="${Math.round(v*100)}" data-k="${k}"><b>${Math.round(v*100)}%</b></label>`;
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="settingsMenu()">← Back</button><h2>Settings · Audio</h2><span></span></div>
  <div class="panel" id="au">${row("m","🎵 Music",VM)}${row("s","🔊 Effects",VS)}
@@ -2147,4 +2156,5 @@ async function campaign(r0){B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};cycle=[]
   B.hp+=.1;rnd++;E.dmg*=CAMP.dmg;E.heal*=CAMP.heal;E.hp*=CAMP.hp}
  await ask(`<h2>💀 Campaign over</h2><p>${p.name} the ${p.cls}<br>Floors cleared: ${rnd-1}<br>DMG ×${B.dmg.toFixed(2)} · Heal ×${B.heal.toFixed(2)} · HP ×${B.hp.toFixed(2)}</p>`,["Main menu"]);menu()}
 menu();
-</script></body></html>
+</script>
+<script>if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script></body></html>
