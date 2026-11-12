@@ -1,6 +1,6 @@
 {
  "name": "Arena of Ascension",
- "short_name": "Arena",
+ "short_name": "Arena of Ascension",
  "description": "Turn-based arena battler. Play offline.",
  "start_url": "./",
  "scope": "./",
