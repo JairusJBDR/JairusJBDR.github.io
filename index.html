@@ -892,6 +892,26 @@ html.lowd *,html.lowd *::before,html.lowd *::after{backdrop-filter:none!importan
 html.lowd .ch.und,html.lowd .ch.bz,html.lowd .ch.mh{filter:none!important}
 html.lowd body::before,html.lowd body::after,html.lowd .arena::after,html.lowd .arena.apoc .scene::before{animation:none!important}
 html.lowd .lun{display:none}
+
+/* compact main menu on desktop so it fits the window instead of scrolling */
+@media (min-width:760px) and (max-height:1000px){
+ #app{padding-top:clamp(34px,5vh,50px)}
+ .hero{padding:clamp(2px,1.2vh,14px) 0 0}
+ .hero .emb{width:clamp(48px,8vh,84px);height:clamp(48px,8vh,84px);font-size:clamp(26px,4.4vh,44px);border-radius:clamp(14px,2.4vh,24px);margin-bottom:clamp(6px,1.2vh,12px)}
+ .hero h1{font-size:clamp(30px,6.2vh,52px)}
+ .hero h1 br{display:none}
+ .hero .tag{margin-top:clamp(4px,.8vh,8px);font-size:11px}
+ .hero .pills{margin-top:clamp(6px,1vh,10px)}
+ .hero .pills span{font-size:11px;padding:2px 10px}
+ .rkpill{margin-top:clamp(6px,1vh,10px);padding:5px 16px;gap:4px}
+ .mm{margin:clamp(10px,2vh,20px) auto;gap:10px}
+ .mm .btn{padding:clamp(8px,1.4vh,14px) 16px}
+ .mm .btn.pri{padding:clamp(12px,2.2vh,22px) 26px}
+ .mm .mi{width:clamp(34px,5vh,44px);height:clamp(34px,5vh,44px);font-size:clamp(18px,2.6vh,23px)}
+ .mm .btn.pri .mi{width:clamp(40px,6vh,52px);height:clamp(40px,6vh,52px);font-size:clamp(22px,3.2vh,28px)}
+ .mm .btn.pri .mtx b{font-size:clamp(18px,2.6vh,22px)}
+ .lineup{margin-top:clamp(0px,.6vh,8px)}
+}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
@@ -3380,7 +3400,7 @@ function rkOpenCache(){if(RNK.cc<1)return;const m=document.createElement("div");
   m.querySelectorAll(".rwb").forEach(b=>b.onclick=()=>{if(RNK.cc<1)return;const n=b.dataset.n;RNK.cc--;const note=fragAddQ(n,CACHE_FR);fragSave();rkSave();try{sfx("buff")}catch(e){}fragToast("📦 "+n+" +"+CACHE_FR+" fragments"+(note?" — "+note:""));if(RNK.cc>0)draw();else{m.remove();rankScreen()}});
   m.querySelector("#cqx").onclick=()=>{m.remove();rankScreen()}};draw()}
 function menu(){RUNMODE=null;CK=null;token++;document.querySelectorAll(".modal").forEach(m=>m.remove());music("menu");
- $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of<br>Ascension</h1><p class="tag">Turn-based battle game</p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
+ $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of <br>Ascension</h1><p class="tag">Turn-based battle game</p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
  <div class="menu mm mmain">${MB2("pri","▶","Play","PVP, Campaign, Boss Rush","playMenu()")}${MB2("","🔮","Remnant","Fragments for each fighter","remnant()")}${MB2("","🛒","Shop","Skins and auras","shop()")}${MB2("","📖","Lore book","The story of the Arena","story()")}${MB2("","📚","Guides","Fighters, bosses and tips","guide()")}${MB2("","🧠","Rules &amp; Bot","How it all works","howto()")}${MB2("","⚙️","Settings","Audio and more","settingsMenu()")}</div>
  <div class="lineup">${NAMES.map(n=>charHTML(n)).join("")}</div>
  <div class="credit">Created by JairusJBDR</div>`}
@@ -3596,8 +3616,12 @@ async function saveApply(t){let d;try{d=JSON.parse(svOpen(t))}catch(e){fragToast
  FR=fr;fragSave();FB=fb;fbSave();relicSet(rel);CORR.u=!!cr.unlocked;CORR.l=CORR.u?Math.max(0,Math.min(12,cr.level|0)):0;corrSave();solariSet(sol);if(d.rank&&typeof d.rank==="object"){const keep=RNK.max;RNK=rkClean(d.rank);if(keep>RNK.max)RNK.max=keep;rkSave()}COS=cosClean(d.cosmetics);cosSave();
  try{sfx("buff")}catch(e){}fragToast("✅ Save imported");settingsMenu()}
 var DIP=null;addEventListener("beforeinstallprompt",e=>{e.preventDefault();DIP=e});addEventListener("appinstalled",()=>{DIP=null});
-function installApp(){if(!DIP)return;const p=DIP;DIP=null;try{p.prompt()}catch(e){}settingsMenu()}
-function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+MB("","🪶","Low detail mode: "+(LOWD?"On":"Off"),"Simpler characters, skins and auras, fewer effects","lowDetailToggle()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+(DIP&&!(matchMedia("(display-mode: standalone)").matches)?MB("","📲","Install app","Play offline from your home screen","installApp()"):"")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
+function installApp(){if(DIP){const p=DIP;DIP=null;try{p.prompt()}catch(e){}settingsMenu();return}
+ const web=/^https?:$/.test(location.protocol),ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+ const m=document.createElement("div");m.className="modal";
+ m.innerHTML=`<div class="card" style="--c:var(--ac)"><h2>📲 Install app</h2><p>${!web?"Open the game from its website (https) first. Installing doesn't work from a saved file.":ios?"In Safari, tap the <b>Share</b> button, then <b>Add to Home Screen</b>.":"Open your browser menu (⋮) and choose <b>Install app</b> or <b>Add to Home screen</b>."}<br><small style="color:var(--mu)">Once installed it also plays offline.</small></p><div class="opts"><button class="btn pri" id="inx">OK</button></div></div>`;
+ document.body.appendChild(m);m.querySelector("#inx").onclick=()=>m.remove()}
+function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+MB("","🪶","Low detail mode: "+(LOWD?"On":"Off"),"Simpler characters, skins and auras, fewer effects","lowDetailToggle()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+(!(matchMedia("(display-mode: standalone)").matches||navigator.standalone)?MB("","📲","Install app","Play offline from your home screen","installApp()"):"")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
 function audioSet(){const row=(k,l,v)=>`<label class="vr">${l}<input type="range" min="0" max="100" value="${Math.round(v*100)}" data-k="${k}"><b>${Math.round(v*100)}%</b></label>`;
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="settingsMenu()">← Back</button><h2>Settings · Audio</h2><span></span></div>
  <div class="panel" id="au">${row("m","🎵 Music",VM)}${row("s","🔊 Effects",VS)}
