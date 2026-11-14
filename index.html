@@ -4137,9 +4137,6 @@ Object.assign(SKA,{
  wyrmcut:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"slash");if(!U)trail(sx,sy,tx,ty,k,sc(4),g,0,50);
   [-55,55,0].slice(0,U?1:s1(3)).forEach((a,i)=>T(()=>{slash(tx,ty,i==2?230:170,"#ffd0b0",k,a);if(!U)burst(tx,ty,i%2?"#111":k,sc(5),50,"✦")},300+i*90));
   T(()=>{x.hit();if(!U)el("rise",tx,ty-10,"👁️","font-size:34px")},500);return 540},
- dragonfall:x=>{const{f,t,tx,ty,k,U,sc,T}=x;wind(f,t,"leap");T(()=>drop(tx,ty,"🐉",k,U?64:92),180);T(()=>gnd(f,k,260),360);
-  if(!U)T(()=>{el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);rain(tx,"🔥",sc(7),ty-160)},520);
-  T(()=>{ring(tx,ty+36,k,300);x.hit(1);if(!U)flash(k)},640);return 700},
  crescent:x=>{const{f,t,tx,ty,k,U,sc,s1,T}=x;wind(f,t,"slash");
   for(let i=0;i<s1(3);i++)T(()=>{slash(tx,ty,200-i*20,"#fff",i%2?"#6f8cff":k,-70+i*52);if(!U)burst(tx,ty,k,sc(5),52,"🌙")},280+i*100);
   T(()=>x.hit(),520);return 560},
@@ -4149,10 +4146,6 @@ Object.assign(SKA,{
  gale:x=>{const{f,t,sx,sy,tx,ty,k,g,U,s1,T}=x;wind(f,t,"leap");if(!U)fly([sx,sy],[tx,ty],g,s1(5));
   for(let i=0;i<s1(2);i++)T(()=>{ring(sx+(tx-sx)*(.4+i*.3),sy+40+(ty-sy)*(.4+i*.3),k,130+i*40);slash(tx,ty,190,"#fff",k,i?20:-20)},220+i*110);
   T(()=>x.hit(),480);return 520},
- cyclone:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");
-  for(let i=0;i<s1(4);i++)T(()=>{ring(tx,ty+36,k,110+i*55);if(!U)burst(tx,ty+10,k,sc(4),40+i*14,g)},200+i*110);
-  if(!U)T(()=>{el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);rain(tx,g,sc(8),ty-160)},420);
-  T(()=>x.hit(1),700);return 740},
  reap:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,T}=x;wind(f,t,"slash");T(()=>slash(tx,ty,230,"#fff",k,-38),260);
   if(!U){T(()=>slash(tx,ty,210,"#ffd0d4",x.c2,42),370);T(()=>trail(tx,ty,sx,sy,"#ff5b78",sc(4),"👻",0,60),420)}
   T(()=>{x.hit();if(!U)drips(tx,ty,sc(8))},470);return 520},
@@ -4172,17 +4165,66 @@ const SKMAP2={
  "Skyfeather Windcaller":{a:["gale","🪶"],s:["cyclone","🪶"]},
  "Crimson Reaper":{a:["reap","🩸",{c2:"#ff2a4a"}],s:["soulHarvest","🩸"]},
  "Thunder God":{a:["chain","⚡"],s:["tempest","⚡"]}};
-function skinFx(f,t,id){if(!f||f.simple||f.boss||f.elite||!SKMAP[f.cls]||(id!=="attack"&&id!=="skill"))return null;
- if(f.cls==="Gamer"&&id==="skill")return null;
+
+/* ===== move-specific skin effects v2 (Off = full · Low = about half · Ultra low = wind-up + one clean hit) ===== */
+{const st=document.createElement("style");st.textContent=`.fxl .ar2{width:90px;height:20px}.fxl .ar2 svg{width:100%;height:100%;overflow:visible}
+.fxl .rbp{width:76px;height:76px}.fxl .rbp svg{width:100%;height:100%;overflow:visible}
+.fxl .rbp .rj1{transform-origin:40px 40px;animation:rbj1 .15s infinite alternate}.fxl .rbp .rj2{transform-origin:40px 40px;animation:rbj2 .15s infinite alternate}
+@keyframes rbj1{from{transform:rotate(-3deg)}to{transform:rotate(-26deg)}}@keyframes rbj2{from{transform:rotate(3deg)}to{transform:rotate(26deg)}}
+html.lowd2 .fxl .rbp .rj1{animation:none;transform:rotate(-16deg)}html.lowd2 .fxl .rbp .rj2{animation:none;transform:rotate(16deg)}`;document.head.appendChild(st)}
+function arrow(ax,ay,bx,by,col,ms,sz){sz=sz||1;const an=Math.atan2(by-ay,bx-ax),o=el("ar2",ax,ay,`<svg viewBox="0 0 90 20"><path d="M2 10H70" stroke="${col}" stroke-width="3.5" stroke-linecap="round"/><path d="M2 10H70" stroke="#fff" stroke-width="1.2" opacity=".85"/><path d="M90 10L66 1l5 9-5 9z" fill="#fff" stroke="${col}" stroke-width="2" stroke-linejoin="round"/><path d="M0 2l15 8L0 18l6-8z" fill="${col}"/><path d="M12 3l12 7-12 7l4-7z" fill="${col}" opacity=".7"/></svg>`,`transform:rotate(${an}rad) scale(${sz});transition:transform ${ms}ms ease-in`);
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transform=`translate(${bx-ax}px,${by-ay}px) rotate(${an}rad) scale(${sz})`}));setTimeout(()=>o.remove(),ms+60);return o}
+const MECHP=`<svg viewBox="0 0 80 80"><defs><linearGradient id="mcpG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6f2f7"/><stop offset="1" stop-color="#6b7f8c"/></linearGradient></defs>
+<g class="rj1"><path d="M6 40A34 34 0 0 1 74 40Z" fill="url(#mcpG)" stroke="#0b2a33" stroke-width="2.2"/><path d="M14 36A26 26 0 0 1 40 14" stroke="#00e5ff" stroke-width="2" fill="none" opacity=".8"/><circle cx="34" cy="24" r="5.5" fill="#001a20" stroke="#00e5ff" stroke-width="1.6"/><circle cx="34" cy="24" r="2.2" fill="#00e5ff"/><path d="M46 40l4-8 4 8 4-8 4 8 4-8 4 8" fill="#fff" stroke="#0b2a33" stroke-width="1.2"/></g>
+<g class="rj2"><path d="M6 40A34 34 0 0 0 74 40Z" fill="url(#mcpG)" stroke="#0b2a33" stroke-width="2.2"/><path d="M16 46H30M22 56H40" stroke="#0b2a33" stroke-width="1.6"/><circle cx="26" cy="58" r="3" fill="#00e5ff"/><path d="M46 40l4 8 4-8 4 8 4-8 4 8 4-8 4 8" fill="#fff" stroke="#0b2a33" stroke-width="1.2"/></g></svg>`;
+Object.assign(SKA,{
+ moonBarrage:x=>{const{f,t,tx,ty,k,U,sc,T}=x,n=U?3:Math.max(4,Math.min(8,sc(8))),st=U?110:62;wind(f,t,"slash");
+  for(let i=0;i<n;i++)T(()=>{const px=tx+R(-30,30),py=ty+R(-38,30);slash(px,py,R(120,210),"#fff",i%2?"#ff3b5c":k,R(-80,80));if(!U&&i%2===0)burst(px,py,i%4?k:"#ff3b5c",sc(4),44,"🌙")},220+i*st);
+  const e=220+n*st;T(()=>{x.hit(1);if(!U){ring(tx,ty+36,"#ff3b5c",300);flash("#7a0f2e")}},e+80);return e+120},
+ caladbolg:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");ring(sx,sy+40,k,U?120:170);
+  if(!U)for(let i=0;i<s1(6);i++)T(()=>arrow(tx-150+R(-30,30),ty-240-R(0,50),tx+R(-26,26),ty+R(-8,30),i%2?"#fff":k,230,.9),100+i*55);
+  T(()=>{arrow(sx,sy,tx,ty,k,U?240:260,U?1.5:2.3);if(!U)trail(sx,sy,tx,ty,k,sc(5),"🌀",0,45)},U?150:380);
+  T(()=>{x.hit(1);ring(tx,ty+36,"#fff",U?150:230);if(!U){flash(k);burst(tx,ty,k,sc(10),110,g)}},U?420:680);return U?460:720},
+ heist:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"lunge");T(()=>fly([sx,sy],[tx,ty],"🃏",U?1:s1(3)),150);
+  T(()=>{ring(tx,ty+36,k,200);if(!U){burst(tx,ty,"#fff",sc(8),70,"💨");el("rise",tx,ty-10,"🫳","font-size:38px")}},420);
+  T(()=>{fly([tx,ty],[sx,sy],"🪙",U?3:s1(8));if(!U)trail(tx,ty,sx,sy,"#ffd966",sc(5),"✦",0,55);el("tx",tx,ty-70,"−10% DMG","--c:#b66cff")},560);
+  T(()=>{ring(sx,sy+36,"#ffd966",U?130:170);if(!U)burst(sx,sy,"#ffd966",sc(10),70,"✦")},1000);return 700},
+ radiantCut:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,s1,T}=x;wind(f,t,"leap");ring(sx,sy+40,"#ffe27a",U?120:180);
+  if(!U)for(let i=0;i<s1(3);i++)T(()=>drop(tx+(i-1)*36,ty,"🗡️","#ffe27a",52),180+i*70);
+  T(()=>gnd(f,"#ffe27a",240),U?200:380);
+  T(()=>{slash(tx,ty,U?220:270,"#fff","#ffe27a",-90);if(!U)for(let i=0;i<s1(3);i++)T(()=>{slash(tx,ty,210,"#fff",i%2?"#ff7a3a":k,-52+i*52);burst(tx,ty,"#ffe27a",sc(5),55,"✦")},60+i*70)},U?260:560);
+  T(()=>{if(!U)el("pil",tx,0,"",`--c:#ffe27a;height:${ty+60}px`);x.hit(1);if(!U)flash("#ffe27a")},U?420:820);return U?460:860},
+ berserkFlurry:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x,n=U?2:Math.max(3,Math.min(8,sc(6)));wind(f,t,"lunge");if(!U)trail(sx,sy,tx,ty,"#ff6a2b",sc(4),g,0,45);
+  for(let i=0;i<n;i++)T(()=>{const px=tx+R(-26,26),py=ty+R(-30,26);slash(px,py,R(130,190),"#ffe9b0",i%2?"#ff4b2b":"#ffb347",R(-75,75));if(!U){burst(px,py,"#ffb347",sc(5),50,g);if(i%2)shakeArena(120)}},200+i*75);
+  const e=200+n*75;T(()=>{if(!U){ring(tx,ty+36,"#ff6a2b",330);el("pil",tx,0,"",`--c:#ff6a2b;height:${ty+60}px`);flash("#ff6a2b");rain(tx,g,sc(7),ty-110)}x.hit(1)},e+60);return e+100},
+ cyberLevel:x=>{const{f,sx,sy,k,U,sc,s1,T}=x;try{sfx("lvl")}catch(e){}
+  for(let i=0;i<s1(3);i++)T(()=>ring(sx,sy+40-i*34,"#00e5ff",U?130:170-i*22),i*110);
+  if(!U){T(()=>el("pil",sx,0,"",`--c:#00e5ff;height:${sy+60}px`),80);for(let i=0;i<sc(6);i++)T(()=>el("rise",sx+R(-44,44),sy+R(10,56),["01","10","1","0","⬆"][R(0,4)],"color:#00e5ff;font:800 16px monospace"),i*55);burst(sx,sy,"#00e5ff",sc(10),80,"⬢")}
+  T(()=>el("tx",sx,sy-70,"LEVEL UP!","--c:#00e5ff"),60);return 380},
+ mechChomp:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,T}=x;try{sfx("waka")}catch(e){}
+  banner(x.lab||"Pac-Man Attack","#00e5ff");if(!U){flash("#00e5ff");shakeArena(500)}
+  const st=$("#u"+f.side+" .stage");if(st){st.classList.add("pow");T(()=>st.classList.remove("pow"),1000)}
+  const d=480,dx=tx-sx,dy=ty-sy,an=Math.atan2(dy,dx),z=1+Math.min(f.lvl||0,12)*.1;
+  T(()=>{if(!U)for(let i=1;i<=6;i++)el("dot",sx+dx*i/7,sy+dy*i/7,"","border-radius:2px;background:#00e5ff;box-shadow:0 0 8px #00e5ff");
+   const o=el("rbp",sx,sy,MECHP,`transform:rotate(${an}rad) scale(${z});transition:transform .6s linear`);
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transform=`translate(${dx}px,${dy}px) rotate(${an}rad) scale(${z*1.4})`}));setTimeout(()=>o.remove(),640)},d-100);
+  T(()=>{ring(tx,ty+36,"#00e5ff",300);burst(tx,ty,"#00e5ff",sc(24)||6,140,"⬢");burst(tx,ty,"#fff",sc(8),80,"01");el("tx",tx,ty-70,"BYTE CRUNCH!","--c:#00e5ff");if(!U)flash("#00e5ff");shakeArena(420)},d+520);return d+540}});
+Object.assign(SKMAP2,{
+ "Card Shark":{a:["cards","🃏",{c2:"#4fd1ff",g2:"✨"}],s:["heist","🃏"]},
+ "Mecha Vanguard":{a:["laser","01"],s:["cyberLevel","⬢"]}});
+SKMAP2["Dragon Black Knight"].s=["radiantCut","🗡️"];
+SKMAP2["Skyfeather Windcaller"].s=["caladbolg","🪶"];
+const SKMAP3={"Eclipse Swordmaiden|hunt":["moonBarrage","🌙"],"Phoenix Ascendant|bz":["berserkFlurry","🔥"],"Mecha Vanguard|enh":["mechChomp","⬢"]};
+function skinFx(f,t,id,lab){if(!f||f.simple||f.boss||f.elite||!SKMAP[f.cls]||(id!=="attack"&&id!=="skill"&&id!=="enhatk"))return null;
  if(!(f.cv?f.cv.s:cosOn(f.cls,"s")))return null;
- const MM=SKMAP2[SKINS[f.cls]&&SKINS[f.cls].n]||SKMAP[f.cls],m=MM[id==="attack"?"a":"s"],fn=SKA[m[0]];if(!fn)return null;
+ const nm=SKINS[f.cls]&&SKINS[f.cls].n;let m=id==="enhatk"?SKMAP3[nm+"|enh"]:(id==="attack"&&f.cls==="Champion"&&f.mh)?SKMAP3[nm+"|hunt"]:(id==="attack"&&f.cls==="Emanator"&&f.bz)?SKMAP3[nm+"|bz"]:null;if(!m&&id!=="enhatk"){const MM=SKMAP2[nm]||SKMAP[f.cls];m=MM[id==="attack"?"a":"s"]}if(!m)return null;const fn=SKA[m[0]];if(!fn)return null;
  const[sx,sy]=pos(f),[tx,ty]=pos(t),k=(SKINS[f.cls]&&SKINS[f.cls].c)||CLS[f.cls].c,U=LOWD>1,sc=n=>U?0:LOWD?Math.max(1,Math.ceil(n/2)):n,s1=n=>Math.max(1,sc(n)),
-  x=Object.assign({f,t,sx,sy,tx,ty,k,g:m[1],U,sc,s1,T:setTimeout,c2:"#fff",g2:m[1]},m[2]||{});
+  x=Object.assign({f,t,lab,sx,sy,tx,ty,k,g:m[1],U,sc,s1,T:setTimeout,c2:"#fff",g2:m[1]},m[2]||{});
  x.hit=big=>{if(U){ring(tx,ty+36,k,190);burst(tx,ty+10,k,6,60,x.g);shakeArena(180)}else imp(tx,ty,k,big)};
  return fn(x)}
 
 {const _vfx=vfx;vfx=function(f,t,id,tier,lab){let r=null;
- if(!tier&&(id==="attack"||id==="skill")){try{r=skinFx(f,t,id)}catch(e){r=null}if(r==null){try{r=cust(f,t,id)}catch(e){r=null}}}
+ if((!tier&&(id==="attack"||id==="skill"))||id==="enhatk"){try{r=skinFx(f,t,id,lab)}catch(e){r=null}if(r==null&&id!=="enhatk"){try{r=cust(f,t,id)}catch(e){r=null}}}
  if(r!=null)return r;
  try{if((id==="attack"||id==="skill"||id==="enhatk")&&!(f.cls==="Gamer"&&id==="skill")){wind(f,t);const k=f.simple?f.col:CLS[f.cls].c;setTimeout(()=>{try{gnd(f,k,150)}catch(e){}},280)}}catch(e){}
  return _vfx(f,t,id,tier,lab)}}
