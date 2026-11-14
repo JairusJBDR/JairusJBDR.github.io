@@ -885,8 +885,9 @@ html.lite .cx *{animation:none!important}
 html.lite .cx .asp{display:none}
 .perfrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
 .perfrow small{color:var(--mu);font-size:11px;line-height:1.3;flex:1;min-width:150px}
-/* ===== Low detail mode (Settings): static art, no auras/particles, no glows or blur, fewer effects ===== */
-html.lowd .art *,html.lowd .scene *{animation:none!important}
+/* ===== Detail mode (Settings): Low = simpler art but animated auras; Ultra low (lowd2) = simplest art, frozen, fewer effects. Both: no glows/blur ===== */
+html.lowd2 .art *,html.lowd2 .scene *{animation:none!important}
+html.lowd .scene :not(.art):not(.art *){animation:none!important}
 html.lowd .cx .asp,html.lowd .cx :is([style*="axrise"],[style*="axfall"],[style*="axrain"],[style*="axsmoke"]){display:none}
 html.lowd *,html.lowd *::before,html.lowd *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;text-shadow:none!important}
 html.lowd .ch.und,html.lowd .ch.bz,html.lowd .ch.mh{filter:none!important}
@@ -2365,25 +2366,26 @@ Champion:{n:"Eclipse Swordmaiden",c:"#9db8ff",tx:"The Sword Champion in midnight
    Berserk Emanator, Moonlight Hunt Champion and Undying King Demigod each get their own skin art (SKIN_FORM.EmanatorBz / ChampionHunt / DemigodUnd).
    Each one recolours the equipped skin (hue remap), then adds new layers: flames, lava cracks, blood moon, beast ears, fangs, ghost fire, crown of violet flame. */
 /* ===== Low detail mode ===== */
-var LOWD=false;try{LOWD=localStorage.getItem("aoa_lowd")==="1"}catch(e){}
-document.documentElement.classList.toggle("lowd",LOWD);
+var LOWD=0;try{const a=localStorage.getItem("aoa_lowd2");if(a!==null)LOWD=+a||0;else if(localStorage.getItem("aoa_lowd")==="1")LOWD=2}catch(e){}if(!(LOWD>=0&&LOWD<=2))LOWD=0;
+var SHAKE=true,LASTCRIT=false,LASTSHK=0;try{SHAKE=localStorage.getItem("aoa_shake")!=="0"}catch(e){}
+document.documentElement.classList.toggle("lowd",LOWD>0);document.documentElement.classList.toggle("lowd2",LOWD>1);
 /* lowSvg: strips fine detail from artwork (tiny dots, hairline strokes, faint overlays, blur filters, particles).
    lv 0/1 = characters / skins (face area is protected so eyes and features stay); lv 2 = auras (also thinned to a few big shapes). */
 const lowSvg=(()=>{const cache=new Map(),SKP=/^(defs|clippath|mask|pattern|filter|lineargradient|radialgradient|stop|style|title|desc)$/i,num=v=>parseFloat(v);
  const pt=e=>{const t=e.tagName.toLowerCase();let x,y;if(t==="circle"||t==="ellipse"){x=num(e.getAttribute("cx"));y=num(e.getAttribute("cy"))}else if(t==="rect"){x=num(e.getAttribute("x"))+num(e.getAttribute("width"))/2;y=num(e.getAttribute("y"))+num(e.getAttribute("height"))/2}else if(t==="path"){const m=/M\s*(-?[\d.]+)[ ,]+(-?[\d.]+)/.exec(e.getAttribute("d")||"");if(m){x=+m[1];y=+m[2]}}return isFinite(x)&&isFinite(y)?[x,y]:null};
  const inFace=e=>{const p=pt(e);return !!p&&p[0]>34&&p[0]<86&&p[1]>12&&p[1]<58};
- return(x,lv)=>{if(!x)return x;const key=lv+"|"+x;if(cache.has(key))return cache.get(key);let out=x;
+ return(x,lv)=>{if(!x)return x;const U=LOWD>1,key=(U?"U":"")+lv+"|"+x;if(cache.has(key))return cache.get(key);let out=x;
   try{const t=document.createElement("template");t.innerHTML="<svg>"+x+"</svg>";const svg=t.content.firstChild;
    const items=[...svg.querySelectorAll("*")].filter(e=>!SKP.test(e.tagName)&&!e.closest("defs,clipPath,mask,pattern,filter")),kill=new Set(),draw=[];
    items.forEach(e=>{const tg=e.tagName.toLowerCase();if(tg==="g"||tg==="svg")return;e.removeAttribute("filter");
     const cl=e.getAttribute("class")||"",st=e.getAttribute("style")||"";
     if(/\basp\b/.test(cl)||/ax(rise|fall|rain|smoke)/.test(st)){kill.add(e);return}
     if(lv<2&&inFace(e)){draw.push(e);return}
-    const B=lv===3,R=B?4.5:3.5,sw=num(e.getAttribute("stroke-width")||0),op=num(e.getAttribute("opacity")),fo=num(e.getAttribute("fill-opacity")),
+    const B=lv===3,R=U?(B?6.5:5.5):B?4.5:3.5,sw=num(e.getAttribute("stroke-width")||0),op=num(e.getAttribute("opacity")),fo=num(e.getAttribute("fill-opacity")),
      small=(tg==="circle"&&num(e.getAttribute("r"))<=R)||(tg==="ellipse"&&num(e.getAttribute("rx"))<=R)||(tg==="rect"&&(num(e.getAttribute("width"))<=R-.5||num(e.getAttribute("height"))<=R-.5)),
-     thin=e.getAttribute("fill")==="none"&&e.getAttribute("stroke")&&sw<=(B?2.6:2.2);
-    if(small||thin||op<(B?.35:.3)||(B&&fo<.25)){kill.add(e);return}draw.push(e)});
-   if(lv===2&&draw.length>12){let k=0;draw.forEach(e=>{if(k++%3===2)kill.add(e)})}
+     thin=e.getAttribute("fill")==="none"&&e.getAttribute("stroke")&&sw<=(U?(B?3.6:3.2):B?2.6:2.2);
+    if(small||thin||op<(U?.45:B?.35:.3)||((B||U)&&fo<(U?.35:.25))){kill.add(e);return}draw.push(e)});
+   if(lv===2&&draw.length>(U?6:12)){let k=0;draw.forEach(e=>{if(U?k++%2===1:k++%3===2)kill.add(e)})}
    kill.forEach(e=>e.remove());
    for(let i=0;i<3;i++)svg.querySelectorAll("g:empty").forEach(g=>g.remove());
    out=svg.innerHTML}catch(e){out=x}
@@ -2437,7 +2439,7 @@ cosHas=(n,k)=>!!(COS.o[n]&&COS.o[n][k]),cosOn=(n,k)=>!!(COS.e[n]&&COS.e[n][k]);
 const cosSkinCol=n=>SKINS[n].c,cosCache={};
 function cosSvg(k,emo,ov){const b=cosBase(k),base=ART[k]||ART.Simple,LB=(x,lv)=>LOWD?lowSvg(x,lv||0):x;if(!b)return LB(base.replace("EMO",emo||""),3);
  const sOn=ov?!!ov.s:cosOn(b,"s"),aOn=ov?!!ov.a:cosOn(b,"a");if(!sOn&&!aOn)return LB(base.replace("EMO",emo||""));
- const key=k+"|"+sOn+"|"+aOn+(LOWD?"|L":"");if(cosCache[key])return cosCache[key];
+ const key=k+"|"+sOn+"|"+aOn+(LOWD?"|L"+LOWD:"");if(cosCache[key])return cosCache[key];
  const W=(x,c="")=>x?`<g class="cx${c}">${LOWD?lowSvg(x,c?2:1):x}</g>`:"";return cosCache[key]=W(aOn?AURAS[b].back:""," cxa")+(sOn?W(SKIN_FORM[k]||SKINS[b].svg):LB(base))+W(aOn?AURAS[b].front:""," cxa")}
 function cosCol(c,col,ov){const k=CLS[c]&&CLS[c].c,b=cosBase(c);if(col&&col!==k)return col;if(b&&(ov?ov.s:cosOn(b,"s")))return cosSkinCol(b);return col||k}
 function cosToggle(n,k,w){if(!NAMES.includes(n)||!cosHas(n,k))return;COS.e[n][k]=COS.e[n][k]?0:1;cosSave();try{sfx("buff")}catch(e){}w==="shop"?shop(SHOP_TAB):remnant(n)}
@@ -2468,8 +2470,8 @@ function hit(a,d,base,o={}){let crit=false;base=Math.floor(base*(a.weak?.9:1));
  if(!crit&&o.res){
   if(d.cls==="Archer"&&chance(.2)){fx(d,"dodge","miss");L(`🌀 ${d.name} sidestepped!`);return 0}
   if(d.cls==="Titankin"&&chance(.3)){fx(d,"dodge","parry");L(`✨ ${d.name} parried!`);return 0}}
- if(!(d.imm>0))L(`${a.name} deals ${base} to ${d.name}`,"r");return recv(d,base,a)}
-function recv(d,n,a,follow){if(a&&a.fb>0&&n>0)n+=a.fb;if(d.imm>0&&n>0){d.imm--;fx(d,"dodge","immune");L(`🛡️ ${d.name}’s Overclock blocks the hit (${d.imm} left)`,"g");if(d.imm<=0){d.flat=0;L("Overclock shield broken.","m")}return 0}if(d.red>0)n=Math.floor(n*.6);if(d.key==="magma"&&d.boss&&n>0){const r=mgRes(d);n=Math.floor(n*(1-r));if(r>0)L(`🐚 The shells soak ${Math.round(r*100)}% of the damage.`,"m")}if(d.rm&&d.rm.red)n=Math.floor(n*(1-d.rm.red));d.hp=Math.max(0,d.hp-n);fx(d,"hit",n);if(d.boss){d.dt=(d.dt||0)+n;if(d.ls>0&&a&&!a.boss)healF(a,Math.max(1,Math.floor(n*(d.lsr||.7)*hm(a))))}
+ if(!(d.imm>0))L(`${a.name} deals ${base} to ${d.name}`,"r");LASTCRIT=crit;return recv(d,base,a)}
+function recv(d,n,a,follow){if(a&&a.fb>0&&n>0)n+=a.fb;if(d.imm>0&&n>0){d.imm--;fx(d,"dodge","immune");L(`🛡️ ${d.name}’s Overclock blocks the hit (${d.imm} left)`,"g");if(d.imm<=0){d.flat=0;L("Overclock shield broken.","m")}return 0}if(d.red>0)n=Math.floor(n*.6);if(d.key==="magma"&&d.boss&&n>0){const r=mgRes(d);n=Math.floor(n*(1-r));if(r>0)L(`🐚 The shells soak ${Math.round(r*100)}% of the damage.`,"m")}if(d.rm&&d.rm.red)n=Math.floor(n*(1-d.rm.red));d.hp=Math.max(0,d.hp-n);fx(d,"hit",n);try{hitShake(n,LASTCRIT)}catch(e){}LASTCRIT=false;if(d.boss){d.dt=(d.dt||0)+n;if(d.ls>0&&a&&!a.boss)healF(a,Math.max(1,Math.floor(n*(d.lsr||.7)*hm(a))))}
  if(d.cls==="Demigod"){d.ch=cl(d.ch+n,0,d.chMax);if(!d.und&&d.ch>=d.chMax)ascend(d)}
  if(d.cls==="Emanator"&&!d.bz&&n>0&&a){d.core=cl(d.core+1,0,10)}
  if(d.cls==="Trickster"&&!follow){d.stolen=cl(d.stolen+Math.floor(n*.33),0,50);
@@ -2647,7 +2649,7 @@ const ICON={enhatk:"👾",attack:"⚔️",skill:"✨",heal:"💚",ultimate:"💥
 
 /* ===== special effects layer ===== */
 var FXN={a:0,s:0};
-function el(cls,x,y,html="",css=""){const grp=/^(p|dr|rn|pin|dxs)$/.test(cls)?"a":cls==="sl"?"s":null,cap=grp==="a"?(LOWD?14:60):8;
+function el(cls,x,y,html="",css=""){const grp=/^(p|dr|rn|pin|dxs)$/.test(cls)?"a":cls==="sl"?"s":null,cap=grp==="a"?(LOWD>1?14:LOWD?30:60):8;
  if(grp&&FXN[grp]>=cap)return document.createElement("i");
  const l=$("#fxl")||document.createElement("div"),d=document.createElement("i");d.className=cls;d.style.cssText=`left:${x}px;top:${y}px;${css}`;d.innerHTML=html;l.appendChild(d);if(grp)FXN[grp]++;setTimeout(()=>{d.remove();if(grp)FXN[grp]=Math.max(0,FXN[grp]-1)},1700);return d}
 function pos(f){const a=$(".arena").getBoundingClientRect(),r=$("#u"+f.side+" .stage").getBoundingClientRect();return[r.left-a.left+r.width/2,r.top-a.top+r.height/2]}
@@ -2657,7 +2659,7 @@ function rain(x,g,n=8,top=0){for(let i=0;i<n;i++)setTimeout(()=>el("rn",x+R(-55,
 function beam(a,b,col,w){const dx=b[0]-a[0],dy=b[1]-a[1];el("bm",a[0],a[1],"",`--c:${col};width:${Math.hypot(dx,dy)}px;height:${w}px;transform:rotate(${Math.atan2(dy,dx)}rad)`)}
 function proj(a,b,col,shape,cb){const dx=b[0]-a[0],dy=b[1]-a[1],an=Math.atan2(dy,dx),o=el("pj "+shape,a[0],a[1],shape==="coin"?"🪙":"",`--c:${col};transform:rotate(${an}rad);transition:transform .32s ease-in`);requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transform=`translate(${dx}px,${dy}px) rotate(${an}rad)`}));setTimeout(()=>{o.remove();cb()},320)}
 function banner(t,k){const a=$(".arena");if(a)el("ban",a.clientWidth/2,a.clientHeight*.3,t,`--c:${k}`)}
-const flash=k=>LOWD?document.createElement("i"):el("fl2",0,0,"",`--c:${k}`);
+const flash=k=>LOWD>1?document.createElement("i"):el("fl2",0,0,"",`--c:${k}`);
 const TET=[[[0,0],[1,0],[2,0],[3,0]],[[0,0],[1,0],[0,1],[1,1]],[[0,0],[1,0],[2,0],[1,1]],[[0,0],[0,1],[1,1],[2,1]],[[1,0],[2,0],[0,1],[1,1]]],TC=["#4fd1ff","#f4e04d","#b66cff","#ffa84f","#66e08a"];
 function tetris(a,b,n){for(let i=0;i<n;i++)setTimeout(()=>{const sh=TET[R(0,4)],col=TC[R(0,4)],sx=a[0]+R(-10,20),sy=a[1]+R(-50,30),ex=b[0]+R(-20,20),ey=b[1]+R(-30,30),o=el("tt",sx,sy,sh.map(([x,y])=>`<b style="left:${x*13}px;top:${y*13}px;--c:${col}"></b>`).join(""),"transition:transform .35s ease-in;transform:scale(.6)");requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transform=`translate(${ex-sx}px,${ey-sy}px) rotate(${R(-90,90)}deg) scale(1)`}));setTimeout(()=>{o.remove();burst(ex,ey,col,5,40)},370)},i*130)}
 function fly(a,b,g,n){for(let i=0;i<n;i++)setTimeout(()=>{const o=el("fy",a[0]+R(-25,25),a[1]+R(-40,30),g,"transition:transform .5s ease-in,opacity .5s");requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.transform=`translate(${b[0]-a[0]}px,${b[1]-a[1]}px) scale(.6)`;o.style.opacity=.2}));setTimeout(()=>o.remove(),520)},i*70)}
@@ -2933,7 +2935,10 @@ function ask(h,opts){return new Promise(res=>{const m=document.createElement("di
 
 /* ===== screens ===== */
 /* ===== boss & support animations ===== */
-const shakeArena=ms=>{const a=$(".arena");if(!a)return;a.classList.add("shake");setTimeout(()=>a.classList.remove("shake"),ms||450)};
+function hitShake(n,crit){if(!SHAKE||!(n>0))return;const now=Date.now();if(now-LASTSHK<110)return;LASTSHK=now;const a=$(".arena");if(!a||!a.animate)return;
+ const amp=Math.min(13,2+n/5)+(crit?5:0),T=crit?420:260,k=[0,.18,.36,.54,.72,1].map((t,i)=>{const d=1-t,sx=i%2?-1:1;return{offset:t,transform:i===5?"translate(0,0)":`translate(${(sx*amp*d).toFixed(1)}px,${(-sx*amp*d*.45).toFixed(1)}px)`}});
+ try{a.animate(k,{duration:T,easing:"ease-out"})}catch(e){}}
+const shakeArena=ms=>{if(!SHAKE)return;const a=$(".arena");if(!a)return;a.classList.add("shake");setTimeout(()=>a.classList.remove("shake"),ms||450)};
 const aSize=()=>{const a=$(".arena");return a?[a.clientWidth||600,a.clientHeight||350]:[600,350]};
 function drips(x,y,n){for(let i=0;i<n;i++)setTimeout(()=>el("dr",x+R(-34,34),y+R(-50,10),"",`--d:${R(500,900)}ms`),i*60)}
 function hole(x,y,s,col){col=col||"#7a4dff";el("bh",x,y,"",`--s:${s}px;--c:${col}`);
@@ -3056,7 +3061,7 @@ function gMoves(n){const f=mk(n,"x",false),L=(ac)=>ac.map(([i,l,s])=>`<li><b>${l
  if(n==="Gamer"){const g=mk(n,"x");g.lvl=2;g.en=100;out.push(`<li class="gh">With levels</li>`+L(acts(g)));const h=mk(n,"x");h.imm=3;h.oct=6;h.en=0;out.push(`<li class="gh">Overclock active</li>`+L(acts(h)))}
  return out.join("")}
 const gBoss={
-below:{moves:["<b>Attack</b>: both players 10–15.","<b>Rending Claw</b> (cooldown 2): both players 10–23, and a random player gets a <b>Mark</b>.","<b>Crushing Bite</b> (enhanced skill): one player takes 30–50 and bleeds for 2 turns. It replaces the boss turn as soon as a player has <b>2 Marks</b>, and that player's Marks vanish after the bite.","<b>Tide Feast</b> (phase 2+, cooldown 3): heals itself 70, makes one player bleed for 1 turn (stacks with the bite), and has a 15% chance to Mark them.","<b>Roar of the Deep</b> (phase 3): when its energy bar is full (800) it stuns <b>every player for 3 turns</b> and forces <b>2 Crushing Bites</b> with no Marks and no cooldown. A dark aura lasts 3 turns, then it returns to normal.","<b>Bleed</b> deals 6 damage at the start of the victim's turn."],tips:["Watch the Mark tag: two Marks on one player means a 30–50 bite next turn. Burst the boss or use your support before then.","Marks only clear when the bite lands, so spreading Marks evenly gives it two bites instead of one big one.","Save immunity (your opening shield or Overclock) for the Roar: it stuns you for 3 turns and the two forced bites follow.","The bleed from Tide Feast stacks with the bite, so a bitten player can carry 3 turns of bleed."]},
+below:{moves:["<b>Attack</b>: both players 10–15.","<b>Rending Claw</b> (cooldown 2): both players 10–23, and a random player gets a <b>Mark</b>.","<b>Crushing Bite</b> (enhanced skill): one player takes 30–50 and bleeds for 2 turns. It replaces the boss turn as soon as a player has <b>2 Marks</b>, and that player's Marks vanish after the bite.","<b>Tide Feast</b> (phase 2+, cooldown 3): heals itself 70, makes one player bleed for 1 turn (stacks with the bite), and has a 15% chance to Mark them.","<b>Roar of the Deep</b> (phase 3): when its energy bar is full (800) it stuns <b>every player for 3 turns</b> and forces <b>2 Crushing Bites</b> with no Marks and no cooldown. These two forced bites <b>do not give it any energy</b>. A dark aura lasts 3 turns, then it returns to normal.","<b>Bleed</b> deals 6 damage at the start of the victim's turn."],tips:["Watch the Mark tag: two Marks on one player means a 30–50 bite next turn. Burst the boss or use your support before then.","Marks only clear when the bite lands, so spreading Marks evenly gives it two bites instead of one big one.","Save immunity (your opening shield or Overclock) for the Roar: it stuns you for 3 turns and the two forced bites follow.","The bleed from Tide Feast stacks with the bite, so a bitten player can carry 3 turns of bleed."]},
 saber:{moves:["<b>Attack</b>: 50% one target for 24–32, otherwise both players for 15–20.","<b>Corruption</b> (cooldown 5): both players 12–18 and a black Bleed for 3 turns (10 damage at the start of each of their turns).","<b>Heal</b> (phase 2+, cooldown 2): +55 HP, used below 50% HP.","<b>Excalibur</b> (phase 3): both players 70–90 once its energy bar is full (900)."],tips:["Bleed stacks pressure, so Demigod and Knight style heals matter. Kill it before it gets Excalibur.","Archer stun or Knight damage reduction before Excalibur is the safest answer.","Break through its Heal in phase 2 by stunning it right at 50% HP."]},
 devourer:{moves:["<b>Attack</b>: one random player for 26–36, and a balloon explodes on them.","<b>Coin Flip</b> (cooldown 4): heads hits both for 34–44. Tails hits both for 8–12, and the Devourer hurts itself for 40.","<b>Heal</b> (phase 2+, cooldown 2): +80 HP, used below 50% HP.","<b>Gluttony Shield</b> (phase 3): 5-hit immunity when its energy bar is full (900)."],tips:["It has the biggest heal. Burst it down during phase 2 before it sits below 50% HP.","Every hit counts toward the 5-hit shield, no matter how weak, so cheap multi-hit moves burn it fastest.","Coin Flip is random: keep both players above 45 HP in case of heads."]},
 seam:{moves:["<b>Needle Rain</b>: both players 13–18.","<b>Pinning Needle</b> (cooldown 5): one player takes 24–32, is stunned for 2 turns and takes 40% less damage while pinned.","<b>Mending Stitch</b> (phase 2+, cooldown 1): hits one player for 16–24 and heals 50% of the damage she took since her last heal (×1.6 if she was stunned), capped at 90 HP (150 if stunned).","<b>Final Suture</b> (phase 3): when her energy bar is full (700), every player drops to 1 HP. She is stunned, takes 40% less damage for 4 turns, and players heal 70% of the damage they deal in that time. When the stun ends she explodes in white, hitting every player for 50% of her remaining HP, so wounding her during the stun makes the blast smaller."],tips:["Pinned players cannot act, so a Knight or Titankin support helps most there.","Spread your damage before the Suture: afterwards you survive on lifesteal alone.","Her heal scales with damage taken, so burst her down instead of chipping."]},
@@ -3187,7 +3192,7 @@ async function bossTurn(b,P){
    if(id==="attack")await bAoe(b,A,10,15,lab);
    else if(id==="skill"){await bAoe(b,A,10,23,lab);const live=A.filter(p=>p.hp>0);if(live.length){if(b.apoc&&b.ph>=3&&live.length>1&&chance(.3)){banner("DOUBLE MARK!","#19d3c5");live.forEach(p=>addMark(b,p))}else addMark(b,live[R(0,live.length-1)])}b.cd.skill=2;await sleep(400)}
    else if(id==="enh"){const forced=b.forceEnh>0;let t;if(forced){const o=A.filter(p=>p.hp>0&&p!==b.lastT),pl=o.length?o:A.filter(p=>p.hp>0);t=pl[R(0,pl.length-1)];b.forceEnh--}else t=A.find(p=>p.mk>=2);
-    if(t){banner("CRUSHING BITE","#ff3d71");await bHit(b,t,R(30,50),lab);t.mk=0;if(t.hp>0)bleed(t,2);upd(t);b.lastT=t}if(!forced&&b.forceEnh<=0)b.forceEnh=0;await sleep(400)}
+    if(t){banner("CRUSHING BITE","#ff3d71");const ne=b.noEn;if(forced)b.noEn=1;try{await bHit(b,t,R(30,50),lab)}finally{b.noEn=ne}t.mk=0;if(t.hp>0)bleed(t,2);upd(t);b.lastT=t}if(!forced&&b.forceEnh<=0)b.forceEnh=0;await sleep(400)}
    else if(id==="heal"){const t=one();await bFx(b,t,lab);bleed(t,1);const n=healF(b,70);L(`🌊 ${b.name} feeds on the wound and heals ${n}.`,"g");try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",12,64,"✚");ring(sx,sy+36,"#19d3c5",200)}catch(e){}
     if(b.apoc){const bl=A.filter(p=>p.hp>0&&p.bld>0);if(bl.length&&chance(.3))addMark(b,bl[R(0,bl.length-1)])}else if(chance(.15))addMark(b,t);
     b.cd.heal=3;await sleep(500)}
@@ -3629,7 +3634,7 @@ function installApp(){if(DIP){const p=DIP;DIP=null;try{p.prompt()}catch(e){}sett
  const m=document.createElement("div");m.className="modal";
  m.innerHTML=`<div class="card" style="--c:var(--ac)"><h2>📲 Install app</h2><p>${!web?"Open the game from its website (https) first. Installing doesn't work from a saved file.":ios?"In Safari, tap the <b>Share</b> button, then <b>Add to Home Screen</b>.":"Open your browser menu (⋮) and choose <b>Install app</b> or <b>Add to Home screen</b>."}<br><small style="color:var(--mu)">Once installed it also plays offline.</small></p><div class="opts"><button class="btn pri" id="inx">OK</button></div></div>`;
  document.body.appendChild(m);m.querySelector("#inx").onclick=()=>m.remove()}
-function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+MB("","🪶","Low detail mode: "+(LOWD?"On":"Off"),"Simpler characters, skins and auras, fewer effects","lowDetailToggle()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+(!(matchMedia("(display-mode: standalone)").matches||navigator.standalone)?MB("","📲","Install app","Play offline from your home screen","installApp()"):"")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
+function settingsMenu(){subMenu("Settings",MB("","🔊","Audio","Music and effects volume","audioSet()")+MB("","🪶","Low detail mode: "+["Off","Low","Ultra low"][LOWD],["Tap to switch · Low: simpler art, animated auras","Tap to switch · Ultra low: simplest art, frozen auras","Tap to switch · Off: full detail"][LOWD],"lowDetailToggle()")+MB("","💥","Screen shake: "+(SHAKE?"On":"Off"),"Shake the arena when fighters get hit","shakeToggle()")+(CMD_ON?MB("","⌨️","Command","Run console commands","cmdScreen()"):"")+MB("","💾","Export save","Download your progress as a file","exportSave()")+MB("","📥","Import save","Restore progress from a file","importSave()")+(!(matchMedia("(display-mode: standalone)").matches||navigator.standalone)?MB("","📲","Install app","Play offline from your home screen","installApp()"):"")+MB("","✉️","JairusJBDR","2tapp.netlify.app","window.open('https://2tapp.netlify.app/','_blank','noopener')"))}
 function audioSet(){const row=(k,l,v)=>`<label class="vr">${l}<input type="range" min="0" max="100" value="${Math.round(v*100)}" data-k="${k}"><b>${Math.round(v*100)}%</b></label>`;
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="settingsMenu()">← Back</button><h2>Settings · Audio</h2><span></span></div>
  <div class="panel" id="au">${row("m","🎵 Music",VM)}${row("s","🔊 Effects",VS)}
@@ -3896,13 +3901,13 @@ DXF.BMagma=(x,y)=>{flash("#ff5a1f");shakeArena(700);for(let i=0;i<10;i++)setTime
 /* ===== Who Towards Death ===== */
 BOSSES.death={n:"Who Towards Death",e:"🪦",c:"#9b5cff",emax:800,ha:.7};
 BCLS.death="BDeath";CLS.BDeath={boss:1,e:"🪦",c:"#9b5cff",bars:f=>BBARS(f).concat([["Gaze",f.gaze||0,5,"#c07bff",(f.gaze||0)+"/5"]]),init:()=>{}};
-BTAG.death="Gaze · Follow-up · Terminal Eclipse · Blood blockade";BDM.death=1.25;BSK.death="Piercing Gaze";BUL.death="Fatal Ambush";
+BTAG.death="Gaze · Follow-up · Terminal Eclipse · Blood blockade";BDM.death=1.55;BSK.death="Piercing Gaze";BUL.death="Fatal Ambush";
 BLORE.death="A faceless, winged thing that drifts toward whoever is closest to the end. The six eyes in its wings are the last looks of everyone it has ever walked to, and every Piercing Gaze adds to a hidden count. When it heals it opens every eye, and whoever lands the blow that turns the last one red is ambushed on the spot. Their ghost then stands in front of it as a shield, because the dead cannot be hurt twice. Its Fatal Ambush leaves a blood blockade that locks your healing.";
 APL.death="Something in the dark is facing your way. It has no mouth to speak with, so it never names who is next. It only turns toward the one who is closest to the end, and everyone standing near learns who that is. The old fighters called it the Last Look. Its six eyes are the final glances of every soul it has walked to, and the dead do not leave it: they stand in front of it, because the dead cannot be hurt twice. The Hour is almost over, and every eye is open.";
 gBoss.death={moves:[
-"<b>Attack</b> (single target): 20–30 damage.",
-"<b>Piercing Gaze</b> (skill, AOE, cooldown 3): 13–22 to everyone and gives the boss 1–2 <b>Gaze</b>.",
-"<b>Follow-up Attack</b> (AOE): the moment Gaze reaches 5 it strikes again at once for 22–38 to everyone, and Gaze drops by 5.",
+"<b>Attack</b> (single target): 31–46 damage.",
+"<b>Piercing Gaze</b> (skill, AOE, cooldown 3): 20–34 to everyone and gives the boss 1–2 <b>Gaze</b>.",
+"<b>Follow-up Attack</b> (AOE): the moment Gaze reaches 5 it strikes again at once for 34–58 to everyone, and Gaze drops by 5.",
 "<b>Terminal Eclipse</b> (heal, phase 2+, below 70% HP, cooldown 6): heals the boss and opens all 6 eyes. Every hit it takes turns 2 eyes red. When all 6 are red, the <b>last player who hit it</b> is ambushed and killed instantly, and the boss is stunned for 1 turn.",
 "<b>Ghost shield</b>: the dead player becomes a ghost that takes every hit meant for the boss. Its hit-bar has as many hits as the current phase (1 in phase 1, up to 4). Clear it and the player returns with half HP, full energy and Charge, and +1 coin. Combo hits and bleed ticks each count as a hit. While a ghost is alive, every boss attack heals the boss for 35.",
 "<b>Fatal Ambush</b> (ultimate, phase 3+, AOE): ambushes both players and applies a <b>blood blockade</b> of 50% of their max HP.",
@@ -4120,6 +4125,15 @@ hookHelp("campSetup","camp",1);hookHelp("rushSetup","rush",1);hookHelp("remnant"
 {const o=setup;setup=function(){const k=S.mode==="pvp"?"pvp":"bot";setHelp(k);tipOnce(k);return o.apply(this,arguments)}}
 
 
+/* ===== announcements: reads announcement.json next to this file; shows once per id after TAP TO PLAY ===== */
+const ANN=(()=>{try{return fetch("announcement.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)}catch(e){return Promise.resolve(null)}})();
+async function showAnnouncement(){const a=await ANN;if(!a||typeof a!=="object"||a.enabled===false||!a.id||!a.body)return;
+ const id=String(a.id).slice(0,60);if(a.expires&&new Date()>new Date(a.expires+"T23:59:59"))return;
+ let seen=null;try{seen=localStorage.getItem("aoa_ann")}catch(e){}if(seen===id)return;
+ try{localStorage.setItem("aoa_ann",id)}catch(e){}
+ const t=escH(String(a.title||"Announcement").slice(0,80)),paras=String(a.body).slice(0,1500).split(/\n+/).map(x=>`<p class="q">${escH(x)}</p>`).join("");
+ await ask(`<h2>📢 ${t}</h2>${paras}`,[escH(String(a.button||"Got it").slice(0,24))])}
+
 /* ===== loading screen ===== */
 (function(){const L=[["TIP", "Energy reaches 100? Time to unleash your Ultimate."], ["TIP", "Greyed-out action? It's on cooldown or you're short on SP."], ["TIP", "In Boss Rush, the boss is stunned at 50% HP. Burst it down then!"], ["TIP", "Boss Rush Support is shared between both fighters, so time it well."], ["TIP", "Fill a character's Remnant fragment bar to unlock its permanent bonuses."], ["TIP", "Campaign buffs last the whole run. Pick what fits your fighter."], ["TIP", "Colored tags under a name show active effects. Keep an eye on them."], ["TIP", "Heal before you're in danger, not after."], ["TIP", "Bosses get an ultimate in phase 3. Save your defenses."], ["TIP", "Check Guides in the main menu for every fighter's moves."], ["TIP", "Rerolling a Remnant bonus costs Solari, so save up first."], ["TIP", "Ascend a Remnant at 500 fragments for an extra class bonus."], ["TIP", "Matching class Remnants can unlock a 2-Pair effect."], ["TIP", "Apocalyptic is the hard mode. Clearing it unlocks Corruption."], ["PUN", "Why did the knight bring a ladder? To reach the next floor."], ["PUN", "I'd tell you a boss joke, but it's a bit of a phase."], ["PUN", "Healers never die, they just lose their HP-itude."], ["PUN", "Why was the archer a bad friend? Always taking shots."], ["PUN", "What do you call a sleepy Titankin? A Titan-yawn."], ["PUN", "The Trickster told me a joke, but I think I fell for it."], ["PUN", "Don't trust stairs in dungeons. They're always up to something."], ["PUN", "I'm reading a book about Energy. It's quite charging."], ["PUN", "Why don't bosses play hide and seek? They always get found at 50%."], ["PUN", "My PVP skills are un-bot-lievable."], ["PUN", "Taking a nap? That's just an AFK-ward moment."], ["PUN", "Need a sword pun? I'll be blade to help."], ["PUN", "What's a mage's favorite snack? Spell-ed beans."], ["PUN", "Lag is just the game taking a dramatic pause."], ["QUOTE", "I played this game before"], ["QUOTE", "Hi"], ["QUOTE", "Luh"], ["QUOTE", "I don't nkow what to say"], ["QUOTE", "I think i made a typo on the some qoutes"], ["QUOTE", "Hmmm... Babana bread"], ["QUOTE", "I win"], ["QUOTE", "I'm craving for yakult"], ["QUOTE", "I lose"], ["QUOTE", "Jairus was here"], ["QUOTE", "Who padlock my glasses?"], ["QUOTE", "Never gonna give you up"], ["QUOTE", "Im the storm"], ["QUOTE", "Death note? Ehh??"], ["QUOTE", "AAAAAAAAAAAAAAAAAAAAAA"], ["QUOTE", "Shush"], ["QUOTE", "Iwheuehdjdiwnsiwwjwwuwhwj"], ["QUOTE", "Shhhhhhhhh"], ["QUOTE", "Oi"]];const o=document.getElementById("ldscr");if(!o)return;
 const bar=document.getElementById("ldbar"),m=document.getElementById("ldm");
@@ -4131,7 +4145,7 @@ let prog=0,shown=0,loaded=false;
 const setP=(p,t)=>{if(p>prog)prog=Math.min(1,p);if(t&&lbl)lbl.textContent=t};
 const nf=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>r())));
 function rdy(){if(ready)return;ready=true;clearInterval(tk);bar.style.width="100%";hh.textContent="TAP TO PLAY";o.classList.add("rdy")}
-function fin(){if(done||!ready)return;done=true;clearInterval(iv);try{if(typeof AC!=="undefined"&&AC&&AC.state==="suspended")AC.resume()}catch(e){}o.classList.add("out");setTimeout(()=>o.remove(),700)}
+function fin(){if(done||!ready)return;done=true;clearInterval(iv);try{if(typeof AC!=="undefined"&&AC&&AC.state==="suspended")AC.resume()}catch(e){}o.classList.add("out");setTimeout(()=>o.remove(),700);setTimeout(()=>{try{showAnnouncement()}catch(e){}},800)}
 const tk=setInterval(()=>{shown=Math.min(prog,shown+Math.max(.006,(prog-shown)*.22));bar.style.width=(shown*100)+"%";if(loaded&&shown>=.999)rdy()},50);
 /* real preload: fonts, then draw every fighter, boss, skin and aura once off-screen so the browser has compiled all gradients, filters and animations before play */
 (async function preload(){
@@ -4174,7 +4188,8 @@ o.addEventListener("click",fin);
 
 /* ===== performance: skins + auras ===== */
 /* ===== Low detail mode: toggle ===== */
-function lowDetailToggle(){LOWD=!LOWD;try{localStorage.setItem("aoa_lowd",LOWD?"1":"0")}catch(e){}document.documentElement.classList.toggle("lowd",LOWD);try{fragToast(LOWD?"🪶 Low detail mode ON":"Low detail mode OFF")}catch(e){}settingsMenu()}
+function shakeToggle(){SHAKE=!SHAKE;try{localStorage.setItem("aoa_shake",SHAKE?"1":"0")}catch(e){}try{fragToast(SHAKE?"💥 Screen shake ON":"Screen shake OFF")}catch(e){}settingsMenu()}
+function lowDetailToggle(){LOWD=(LOWD+1)%3;try{localStorage.setItem("aoa_lowd2",String(LOWD))}catch(e){}const h=document.documentElement.classList;h.toggle("lowd",LOWD>0);h.toggle("lowd2",LOWD>1);try{fragToast(["Detail: normal","🪶 Low detail (animated auras)","🪶 Ultra low detail (frozen)"][LOWD])}catch(e){}settingsMenu()}
 const PERF=(()=>{
  const root=document.documentElement,MODES=["auto","lite","full"],NAMES_={auto:"Auto",lite:"Lite",full:"Full"};
  let mode="auto",auto=false;try{const m=localStorage.getItem("aoa_perf");if(MODES.includes(m))mode=m}catch(e){}
