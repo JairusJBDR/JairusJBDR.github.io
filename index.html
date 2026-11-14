@@ -1220,7 +1220,7 @@ ART.BLord=`<circle cx="60" cy="75" r="62" fill="#7a4dff" fill-opacity=".14"/>
 <ellipse class="ap" cx="60" cy="36" rx="5" ry="9" fill="#ff3d71"/><ellipse cx="60" cy="36" rx="1.6" ry="8" fill="#fff"/><circle class="ap" cx="49" cy="34" r="2" fill="#b78bff"/><circle class="ap" cx="71" cy="34" r="2" fill="#b78bff"/>
 <g class="afl"><path d="M44 -4Q40 -22 52 -16Q50 -30 60 -24Q70 -30 68 -16Q80 -22 76 -4z" fill="#7a4dff" fill-opacity=".75"/></g>
 <path d="M38 16L35 -10 47 6 54 -16 60 4 66 -16 73 6 85 -10 82 16z" fill="#2a1450" stroke="#ff3d71" stroke-width="2"/><circle class="ap" cx="60" cy="8" r="2.5" fill="#fff"/>`;
-const art=(c,emo)=>`<svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(c,emo)}</svg>`;
+const art=(c,emo,ov)=>`<svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(c,emo,ov)}</svg>`;
 /* ===== COSMETICS: skins (15,000) and auras (10,000) ===== */
 const COS_SKIN=5000,COS_AURA=3000,COS_SKIN_WAS=10000,COS_AURA_WAS=6000,cosWas=k=>`<s class="was">${(k==="s"?COS_SKIN_WAS:COS_AURA_WAS).toLocaleString()}</s>`;
 const OL="#1a1020",SKN="#f1d3b3";
@@ -2439,7 +2439,7 @@ function cosSvg(k,emo,ov){const b=cosBase(k),base=ART[k]||ART.Simple,LB=(x,lv)=>
  const sOn=ov?!!ov.s:cosOn(b,"s"),aOn=ov?!!ov.a:cosOn(b,"a");if(!sOn&&!aOn)return LB(base.replace("EMO",emo||""));
  const key=k+"|"+sOn+"|"+aOn+(LOWD?"|L":"");if(cosCache[key])return cosCache[key];
  const W=(x,c="")=>x?`<g class="cx${c}">${LOWD?lowSvg(x,c?2:1):x}</g>`:"";return cosCache[key]=W(aOn?AURAS[b].back:""," cxa")+(sOn?W(SKIN_FORM[k]||SKINS[b].svg):LB(base))+W(aOn?AURAS[b].front:""," cxa")}
-function cosCol(c,col){const k=CLS[c]&&CLS[c].c,b=cosBase(c);if(col&&col!==k)return col;if(b&&cosOn(b,"s"))return cosSkinCol(b);return col||k}
+function cosCol(c,col,ov){const k=CLS[c]&&CLS[c].c,b=cosBase(c);if(col&&col!==k)return col;if(b&&(ov?ov.s:cosOn(b,"s")))return cosSkinCol(b);return col||k}
 function cosToggle(n,k,w){if(!NAMES.includes(n)||!cosHas(n,k))return;COS.e[n][k]=COS.e[n][k]?0:1;cosSave();try{sfx("buff")}catch(e){}w==="shop"?shop(SHOP_TAB):remnant(n)}
 async function cosBuy(n,k){if(!NAMES.includes(n)||cosHas(n,k))return;const cost=k==="s"?COS_SKIN:COS_AURA,nm=(k==="s"?SKINS:AURAS)[n].n,bal=solariBalance();
  if(bal<cost){fragToast(`Not enough Solari — ${nm} costs ${cost.toLocaleString()} (you have ${bal.toLocaleString()}).`);return}
@@ -2455,7 +2455,7 @@ function shop(tab){if(tab)SHOP_TAB=tab;token++;const k=SHOP_TAB,D=k==="s"?SKINS:
 function cosPanel(n){const row=(k,lab)=>{const D=k==="s"?SKINS:AURAS,has=cosHas(n,k),on=cosOn(n,k);return`<div class="cosrow"><div><b>${lab}: ${D[n].n}</b><small>${has?(on?"Equipped":"Owned · off"):"Not owned · "+(k==="s"?COS_SKIN:COS_AURA).toLocaleString()+" Solari"}</small></div>${has?`<button class="btn ${on?"on":""}" onclick="cosToggle('${n}','${k}')">${on?"On":"Off"}</button>`:`<button class="btn" onclick="shop('${k}')">🛒 Shop</button>`}</div>`};
  return`<div class="panel rm-cos"><label>Cosmetics</label>${row("s","🎭 Skin")}${row("a","✨ Aura")}</div>`}
 
-function charHTML(c,col,emo){return`<div class="stage" style="--c:${cosCol(c,col)}"><div class="ch">${art(c,emo)}</div><div class="sh"></div></div>`}
+function charHTML(c,col,emo,ov){return`<div class="stage" style="--c:${cosCol(c,col,ov)}"><div class="ch">${art(c,emo,ov)}</div><div class="sh"></div></div>`}
 
 /* ===== combat core ===== */
 const HEALX=1.5;
@@ -2816,8 +2816,8 @@ function upd(f){const u=$("#u"+f.side);if(!u)return;const r=f.hp/f.maxHp,hp=u.qu
  [...box.querySelectorAll(".br:not(.hp)")].forEach(e=>{if(!bars.some(b=>b[0]===e.dataset.l))e.remove()});
  bars.forEach(([l,v,mx,col,tx])=>{let e=box.querySelector(`[data-l="${l}"]`);if(!e){e=document.createElement("div");e.className="br";e.dataset.l=l;e.innerHTML=`<span>${l}</span><div class="tr"><div class="fi"></div></div><span></span>`;box.appendChild(e)}
   const fi=e.querySelector(".fi"),p=cl(v/mx*100,0,100);fi.style.width=p+"%";fi.style.background=col;if(col.includes("gradient"))fi.style.backgroundSize=`${mx/Math.max(v,1)*100}% 100%`;e.lastChild.textContent=tx||`${Math.floor(v)}/${mx}`});
- u.querySelector(".tgi").innerHTML=tagsOf(f).map(x=>`<em>${x}</em>`).join("");const ch=u.querySelector(".ch"),fm=f.cls==="Emanator"&&f.bz?"EmanatorBz":f.cls==="Champion"&&f.mh?"ChampionHunt":f.cls==="Demigod"&&f.und?"DemigodUnd":f.cls;if(ch.dataset.form!==fm){if(ch.dataset.form||fm!==f.cls)ch.innerHTML=art(fm,f.emo);ch.dataset.form=fm}ch.classList.toggle("und",!!f.und);ch.classList.toggle("bz",!!f.bz);ch.classList.toggle("mh",!!f.mh);if(f.cls==="Champion")lunSync();ch.classList.toggle("rgb",f.imm>0);u.querySelector(".stage").classList.toggle("bleeding",f.bld>0);{const mst=u.querySelector(".stage");mst.classList.toggle("marked",f.mk>0);mst.dataset.mk=f.mk||0}{const st=u.querySelector(".stage");st.classList.toggle("hbleed",f.hb>0);st.style.setProperty("--n",f.hb||0)}ch.classList.toggle("ecl",f.ecl>0);deathChk(f,u,ch)}
-function unitHTML(f,s){const k=f.simple?{c:f.col,e:f.emo}:CLS[f.cls];return`<div class="u${f.elite?" elite":""}" id="u${s}"><div class="nm"><b>${f.name}</b><small>${f.simple?(f.boss?"Boss":f.elite?"Elite":"Enemy"):f.cls}${f.ai&&!f.simple?" · Bot":""}</small></div><div class="tg"><div class="tgi"></div></div>${charHTML(f.elite?"Elite":f.cls,k.c,k.e)}<div class="bars"><div class="br hp"><span>HP</span><div class="tr"><div class="fi"></div></div><span></span></div></div></div>`}
+ u.querySelector(".tgi").innerHTML=tagsOf(f).map(x=>`<em>${x}</em>`).join("");const ch=u.querySelector(".ch"),fm=f.cls==="Emanator"&&f.bz?"EmanatorBz":f.cls==="Champion"&&f.mh?"ChampionHunt":f.cls==="Demigod"&&f.und?"DemigodUnd":f.cls;if(ch.dataset.form!==fm){if(ch.dataset.form||fm!==f.cls)ch.innerHTML=art(fm,f.emo,f.cv);ch.dataset.form=fm}ch.classList.toggle("und",!!f.und);ch.classList.toggle("bz",!!f.bz);ch.classList.toggle("mh",!!f.mh);if(f.cls==="Champion")lunSync();ch.classList.toggle("rgb",f.imm>0);u.querySelector(".stage").classList.toggle("bleeding",f.bld>0);{const mst=u.querySelector(".stage");mst.classList.toggle("marked",f.mk>0);mst.dataset.mk=f.mk||0}{const st=u.querySelector(".stage");st.classList.toggle("hbleed",f.hb>0);st.style.setProperty("--n",f.hb||0)}ch.classList.toggle("ecl",f.ecl>0);deathChk(f,u,ch)}
+function unitHTML(f,s){const k=f.simple?{c:f.col,e:f.emo}:CLS[f.cls];return`<div class="u${f.elite?" elite":""}" id="u${s}"><div class="nm"><b>${f.name}</b><small>${f.simple?(f.boss?"Boss":f.elite?"Elite":"Enemy"):f.cls}${f.ai&&!f.simple?" · Bot":""}</small></div><div class="tg"><div class="tgi"></div></div>${charHTML(f.elite?"Elite":f.cls,k.c,k.e,f.cv)}<div class="bars"><div class="br hp"><span>HP</span><div class="tr"><div class="fi"></div></div><span></span></div></div></div>`}
 
 function pick(f,o){return new Promise(res=>{const box=$("#acts");box.innerHTML="";
  acts(f).concat(o&&o.extra||[]).forEach(([id,l,s,ok])=>{const b=document.createElement("button");b.className="btn k-"+id+(id==="stop"?" stop":"");b.disabled=!ok;b.innerHTML=`<span>${ICON[id]||""} ${l}</span><small>${s}</small>`;b.onclick=()=>{box.innerHTML="";res(id)};box.appendChild(b)})})}
@@ -4206,12 +4206,14 @@ const perfBtn=()=>`<div class="perfrow"><button class="btn" onclick="PERF.cycle(
 /* ===== online PvP: Host / Join lobby, 20 s pick, Ready, synced battle ===== */
 const ON=(()=>{
  const ALPHA="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",PRE="aoa-pvp-",PICK_MS=20000,TURN_MS=6000;
- const st={phase:"idle",role:null,peer:null,conn:null,gen:0,code:"",join:"",err:"",opp:{name:"",ready:false,cls:null},me:{ready:false},deadline:0,tm:0,go:null,
+ const st={phase:"idle",role:null,peer:null,conn:null,gen:0,code:"",join:"",err:"",opp:{name:"",ready:false,cls:null,e:null},me:{ready:false},deadline:0,tm:0,go:null,
   my:null,seed:0,step:0,bn:0,n:0,snaps:{},ended:null,inbox:[],dc:null,pend:null};
  const escH=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const nm=()=>String(S.n1||"").trim().slice(0,16)||"Player";
  const mkCode=()=>Array.from({length:5},()=>ALPHA[Math.floor(Math.random()*ALPHA.length)]).join("");
  const okCls=c=>NAMES.includes(c)?c:"random";
+ const cvOf=v=>({s:v&&v.s?1:0,a:v&&v.a?1:0}),myCv=c=>NAMES.includes(c)?cvOf({s:cosOn(c,"s"),a:cosOn(c,"a")}):cvOf(),
+  myE=()=>{const o={};NAMES.forEach(n=>o[n]=myCv(n));return o};
  const send=m=>{try{if(st.conn&&st.conn.open!==false)st.conn.send(m)}catch(e){}};
  const load=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{
   const urls=["https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js","https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;
@@ -4221,7 +4223,7 @@ const ON=(()=>{
  const applyS=(f,s)=>{if(f&&s)Object.assign(f,s)};
  const stopTimer=()=>{if(st.tm)clearInterval(st.tm);st.tm=0};
  const resetFight=()=>{st.my=null;st.step=0;st.bn=0;st.n=0;st.snaps={};st.ended=null;st.inbox=[];st.dc=null;st.pend=null};
- const teardown=()=>{stopTimer();const c=st.conn,p=st.peer;st.conn=st.peer=null;st.gen++;try{c&&c.close()}catch(e){}try{p&&p.destroy()}catch(e){}st.opp={name:"",ready:false,cls:null};st.me={ready:false};st.go=null;resetFight()};
+ const teardown=()=>{stopTimer();const c=st.conn,p=st.peer;st.conn=st.peer=null;st.gen++;try{c&&c.close()}catch(e){}try{p&&p.destroy()}catch(e){}st.opp={name:"",ready:false,cls:null,e:null};st.me={ready:false};st.go=null;resetFight()};
  const fail=(gen,msg)=>{if(gen!==st.gen)return;teardown();st.phase="idle";st.err=msg;draw()};
  const lost=gen=>{
   if(gen!==st.gen)return;const was=st.phase;
@@ -4240,8 +4242,8 @@ const ON=(()=>{
  function recv(m){
   if(!m||typeof m!=="object")return;
   if(m.t==="hi"){st.opp.name=String(m.name||"Player").slice(0,16);if(["starting","hosting","joining"].includes(st.phase))enter();else draw()}
-  else if(m.t==="rdy"&&(st.phase==="lobby"||st.phase==="result")){st.opp.ready=!!m.ready;st.opp.cls=okCls(m.cls);if(st.phase==="lobby"){maybeGo();draw()}}
-  else if(m.t==="go"&&st.role==="guest"&&st.phase==="lobby"&&m.a&&m.b&&okCls(m.a.cls)!=="random"&&okCls(m.b.cls)!=="random"){begin({a:{cls:m.a.cls,name:String(m.a.name||"Player").slice(0,16)},b:{cls:m.b.cls,name:String(m.b.name||"Player").slice(0,16)},first:m.first==="b"?"b":"a",seed:m.seed>>>0})}
+  else if(m.t==="rdy"&&(st.phase==="lobby"||st.phase==="result")){st.opp.ready=!!m.ready;st.opp.cls=okCls(m.cls);st.opp.e=m.e&&typeof m.e==="object"?m.e:null;if(st.phase==="lobby"){maybeGo();draw()}}
+  else if(m.t==="go"&&st.role==="guest"&&st.phase==="lobby"&&m.a&&m.b&&okCls(m.a.cls)!=="random"&&okCls(m.b.cls)!=="random"){begin({a:{cls:m.a.cls,name:String(m.a.name||"Player").slice(0,16),cv:cvOf(m.a.cv)},b:{cls:m.b.cls,name:String(m.b.name||"Player").slice(0,16),cv:cvOf(m.b.cv)},first:m.first==="b"?"b":"a",seed:m.seed>>>0})}
   else if(m.t==="act"&&st.phase==="fight"&&typeof m.id==="string"&&m.id.length<24){st.inbox.push({n:m.n|0,id:m.id});if(st.pend)st.pend()}
   else if(m.t==="snap"&&st.role==="guest"&&st.phase==="fight"&&m.a&&m.b){st.snaps[m.bn|0]=m}
   else if(m.t==="end"&&st.role==="guest"&&st.phase==="fight"&&m.a&&m.b){st.ended=m}
@@ -4257,19 +4259,19 @@ const ON=(()=>{
  function ready(on,auto){
   if(st.phase!=="lobby"||st.go)return;
   if(!on&&Date.now()>=st.deadline)return;
-  st.me.ready=on;send({t:"rdy",ready:on,cls:okCls(S.c1)});
+  st.me.ready=on;send({t:"rdy",ready:on,cls:okCls(S.c1),e:myE()});
   if(on&&auto){try{fragToast("⏱ Time's up: ready with "+(okCls(S.c1)==="random"?"Random":S.c1))}catch(e){}}
   maybeGo();draw()}
  function maybeGo(){
   if(st.role!=="host"||st.phase!=="lobby"||!st.me.ready||!st.opp.ready||st.go)return;
-  const go={t:"go",a:{cls:pickC(okCls(S.c1)),name:nm()},b:{cls:pickC(okCls(st.opp.cls)),name:st.opp.name||"Player"},first:chance(.5)?"a":"b",seed:Math.floor(Math.random()*4294967296)>>>0};
+  const ca=pickC(okCls(S.c1)),cb=pickC(okCls(st.opp.cls)),go={t:"go",a:{cls:ca,name:nm(),cv:myCv(ca)},b:{cls:cb,name:st.opp.name||"Player",cv:cvOf(st.opp.e&&st.opp.e[cb])},first:chance(.5)?"a":"b",seed:Math.floor(Math.random()*4294967296)>>>0};
   send(go);begin(go)}
 
  /* ---- synced battle ---- */
  function begin(go){
   stopTimer();st.go=go;st.phase="fight";resetFight();st.seed=go.seed>>>0;
   B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};cycle=[];RUNMODE=null;CK=null;
-  const a=mk(go.a.cls,go.a.name,false),b=mk(go.b.cls,go.b.name,false);a.fb=b.fb=0;st.my=st.role==="host"?a:b;
+  const a=mk(go.a.cls,go.a.name,false),b=mk(go.b.cls,go.b.name,false);a.fb=b.fb=0;a.cv=cvOf(go.a.cv);b.cv=cvOf(go.b.cv);st.my=st.role==="host"?a:b;
   fight(a,b,{title:"Online PvP",sub:"online",pvp:true,online:true,first:go.first}).then(w=>after(w))}
  async function after(w){
   if(!w||st.phase!=="fight")return;
