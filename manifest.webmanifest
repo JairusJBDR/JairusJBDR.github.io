@@ -1,7 +1,7 @@
 {
   "id": "./",
   "name": "Arena of Ascension",
-  "short_name": "Arena",
+  "short_name": "Arena of Ascension",
   "description": "A turn-based battle game. Play offline.",
   "start_url": "./",
   "scope": "./",
