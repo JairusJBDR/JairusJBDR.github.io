@@ -2261,7 +2261,7 @@ ${dkS("46,60 40,34 52,52 56,26 60,52","url(#mwOb)",1.4)}
 <rect x="34" y="138" width="26" height="9" rx="4" fill="#1a1210" stroke="#0a0302" stroke-width="1.4"/><rect x="60" y="138" width="26" height="9" rx="4" fill="#1a1210" stroke="#0a0302" stroke-width="1.4"/><path class="skp" d="M36 143h22M62 143h22" stroke="#ff7a1f" stroke-width="1.4"/><path d="M34 144l-4 3 5 1zM40 147l-2 3 4-1zM86 144l4 3-5 1zM80 147l2 3-4-1z" fill="#0e0807"/>
 <path d="M26 54h68l8 62H18z" fill="url(#mwOb2)" stroke="#0a0302" stroke-width="1.8"/><path d="M36 56h48l-6 46H42z" fill="url(#mwOb)" stroke="#0a0302" stroke-width="1.4"/>
 <path d="M30 58h60" stroke="#fff" stroke-width="1" opacity=".2"/><path d="M38 66h44M40 90h40" stroke="#0a0302" stroke-width="1.6" opacity=".5"/><circle cx="34" cy="64" r="1.5" fill="#ff9a2e"/><circle cx="86" cy="64" r="1.5" fill="#ff9a2e"/><circle cx="36" cy="92" r="1.5" fill="#ff9a2e"/><circle cx="84" cy="92" r="1.5" fill="#ff9a2e"/>
-<circle cx="60" cy="78" r="18" fill="url(#mwGl)" class="skp" opacity=".7"/><circle cx="60" cy="78" r="11" fill="none" stroke="#ffb02e" stroke-width="1.4" stroke-dasharray="3 3" class="aro" style="transform-origin:60px 78px"/><circle cx="60" cy="78" r="8" fill="#fff3b0" stroke="#ff7a1f" stroke-width="2"/><circle cx="60" cy="78" r="3.2" fill="#fff"/>
+<circle cx="60" cy="78" r="18" fill="url(#mwGl)" class="skp" opacity=".7"/><circle cx="60" cy="78" r="11" fill="none" stroke="#ffb02e" stroke-width="1.4" stroke-dasharray="3 3" class="aro"/><circle cx="60" cy="78" r="8" fill="#fff3b0" stroke="#ff7a1f" stroke-width="2"/><circle cx="60" cy="78" r="3.2" fill="#fff"/>
 <path class="skp" d="M60 60v10M60 86v14M44 70l8 6M76 70l-8 6M46 96l8-6M74 96l-8-6M40 80h10M70 80h10" stroke="url(#mwLv)" stroke-width="2.2" stroke-linecap="round"/>
 <rect x="22" y="102" width="76" height="10" rx="3" fill="#1a1210" stroke="#0a0302" stroke-width="1.4"/><path d="M50 100h20l-3 14H53z" fill="url(#mwOb2)" stroke="#0a0302" stroke-width="1.2" stroke-linejoin="round"/><circle cx="60" cy="107" r="5" fill="url(#mwLv)" stroke="#7a2a0a" stroke-width="1.2"/><path class="skp" d="M26 107h24M70 107h24" stroke="#ff7a1f" stroke-width="1.4"/>
 <path d="M24 112l6 8 6-8zM84 112l6 8 6-8z" fill="url(#mwOb)" stroke="#0a0302" stroke-width="1.2" stroke-linejoin="round"/>
@@ -4092,8 +4092,97 @@ function cust(f,t,id){const[sx,sy]=pos(f),[tx,ty]=pos(t),c=f.cls,k=f.simple?f.co
   if(at){wind(f,t,"lunge");T(()=>gnd(f,k,170),300);T(()=>slash(tx,ty,160,"#fff",k,-35),330);T(()=>imp(tx,ty,k),480);return 500}
   wind(f,t,"leap");T(()=>gnd(f,k,260),380);T(()=>spikes(tx,ty,k,["#1a1424",k],6),450);T(()=>imp(tx,ty,k,1),600);return 620}
  return null}
+/* ===== skin attack effects: when a fighter has its skin equipped, Attack and Skill play skin-themed animations.
+   Detail modes: Off = full, Low = about half the particles/strikes, Ultra low = one clean hit effect (no extras, no flash) ===== */
+const SKA={
+ hammer:x=>{const{f,t,tx,ty,k,g,U,sc,T}=x;wind(f,t,"lunge");T(()=>drop(tx,ty,g,k,70),160);T(()=>gnd(f,k,170),300);T(()=>{x.hit();if(!U)rain(tx,g,sc(5),ty-100)},560);return 580},
+ orb:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,T}=x;wind(f,t,"cast");T(()=>{proj([sx,sy],[tx,ty],k,"orb",()=>x.hit());if(!U)trail(sx,sy,tx,ty,k,sc(4),g,0,60)},300);return 700},
+ beams:x=>{const{f,t,sx,sy,tx,ty,k,g,U,s1,T}=x;wind(f,t,"cast");for(let i=0;i<s1(3);i++)T(()=>{beam([sx,sy],[tx+(i-1)*18,ty+(i-1)*14],k,5);if(!U)el("rise",tx+(i-1)*26,ty+10,g,`color:${k};font:800 16px monospace`)},260+i*90);T(()=>x.hit(),560);return 600},
+ laser:x=>{const{f,t,sx,sy,tx,ty,k,g,U,s1,T}=x;wind(f,t,"cast");for(let i=0;i<s1(2);i++)T(()=>{beam([sx,sy-10+i*20],[tx,ty-10+i*20],k,6);if(!U)el("rise",tx+(i?24:-24),ty+10,g,`color:${k};font:800 16px monospace`)},240+i*140);T(()=>x.hit(),520);return 560},
+ bolt:x=>{const{f,t,tx,ty,k,g,U,sc,T}=x;wind(f,t,"cast");T(()=>{el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);if(!U)rain(tx,g,sc(8),ty-170)},280);T(()=>{x.hit(1);if(!U)flash(k)},560);return 600},
+ feathers:x=>{const{f,t,sx,sy,tx,ty,k,g,s1,T}=x;wind(f,t,"leap");fly([sx,sy],[tx,ty],g,s1(5));for(let i=0;i<s1(2);i++)T(()=>slash(tx,ty,150,"#fff",k,-40+i*60),300+i*90);T(()=>x.hit(),480);return 520},
+ slashes:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"slash");if(!U)trail(sx,sy,tx,ty,k,sc(4),g,0,50);for(let i=0;i<s1(3);i++)T(()=>{slash(tx,ty,150,"#fff",k,-50+i*28);if(!U)burst(tx,ty,k,sc(6),50,g)},300+i*80);T(()=>x.hit(),470);return 490},
+ cards:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"lunge");T(()=>fly([sx,sy],[tx,ty],g,s1(6)),200);T(()=>gnd(f,k,170),300);T(()=>{x.hit();if(!U)burst(tx,ty,x.c2,sc(12),90,x.g2)},650);return 700},
+ scythe:x=>{const{f,t,tx,ty,k,U,sc,T}=x;wind(f,t,"slash");T(()=>slash(tx,ty,210,"#fff",k,-40),280);if(!U)T(()=>slash(tx,ty,190,"#ffd0d4",x.c2,45),380);T(()=>{x.hit();if(!U)drips(tx,ty,sc(8))},470);return 520},
+ erupt:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"leap");T(()=>{gnd(f,k,300);shakeArena(300)},380);if(!U)trail(sx,sy,tx,ty,k,sc(5),g,380,45);T(()=>spikes(tx,ty,k,x.sp,s1(7)),620);T(()=>{x.hit(1);if(!U)flash(k)},760);return 780},
+ dive:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"leap");fly([sx,sy],[tx,ty-40],g,s1(6));T(()=>{if(!U)rain(tx,g,sc(9),ty-160);ring(tx,ty+36,k,260)},380);T(()=>x.hit(1),520);return 620},
+ voidf:x=>{const{f,t,tx,ty,k,U,T}=x;wind(f,t,"cast");T(()=>{hole(tx,ty,U?100:160,k);ring(tx,ty+36,k,220)},150);if(!U)T(()=>el("pil",tx,0,"",`--c:${k};height:${ty+60}px`),600);T(()=>x.hit(1),700);return 740},
+ storm:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");T(()=>gnd(f,k,240),250);for(let i=0;i<s1(3);i++)T(()=>{el("pil",tx+(i-1)*44,0,"",`--c:${k};height:${ty+60}px`);if(!U)rain(tx+(i-1)*44,g,sc(4),ty-170)},280+i*130);T(()=>{x.hit(1);if(!U)flash(k)},720);return 760},
+ whirl:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"leap");for(let i=0;i<s1(3);i++)T(()=>{ring(tx,ty+36,k,160+i*60);slash(tx,ty,180,"#fff",k,i*60-60)},250+i*110);if(!U)T(()=>rain(tx,g,sc(8),ty-150),300);T(()=>x.hit(1),640);return 680},
+ judge:x=>{const{f,t,tx,ty,k,g,U,s1,T}=x;wind(f,t,"leap");for(let i=0;i<s1(3);i++)T(()=>drop(tx+(i-1)*34,ty,g,k,50),200+i*60);T(()=>gnd(f,k,240),340);T(()=>{slash(tx,ty,200,"#fff",k,-32);if(!U){slash(tx,ty,200,"#fff",k,32);el("pil",tx,0,"",`--c:${k};height:${ty+60}px`)}},560);T(()=>x.hit(1),700);return 720},
+ party:x=>{const{f,t,tx,ty,k,g,U,sc,T}=x;wind(f,t,"cast");T(()=>drop(tx,ty,g,k,70),200);T(()=>{x.hit(1);if(!U)["#ff4fd8","#ffd34d","#4fd1ff","#66e08a"].forEach((c,i)=>burst(tx,ty,c,sc(8),70+i*16,x.g2))},560);return 620},
+ eclipse:x=>{const{f,t,tx,ty,k,U,T}=x;wind(f,t,"cast");T(()=>hole(tx,ty,U?90:150,k),120);T(()=>{slash(tx,ty,230,"#fff",k,-40);if(!U)slash(tx,ty,230,"#fff",k,40)},520);T(()=>x.hit(1),640);return 680},
+ bloom:x=>{const{f,t,tx,ty,k,g,U,sc,T}=x;wind(f,t,"slash");T(()=>{ring(tx,ty+36,k,280);if(!U){drips(tx,ty,sc(12));rain(tx,g,sc(7),ty-140)}},300);T(()=>x.hit(1),520);return 560},
+ orbital:x=>{const{f,t,tx,ty,k,g,T}=x;wind(f,t,"cast");T(()=>drop(tx,ty,g,k,64),200);T(()=>{x.hit(1);ring(tx,ty+36,x.c2,300)},520);return 600}};
+const SKMAP={
+ Titankin:{a:["hammer","🔥"],s:["erupt","🔥",{sp:["#3a0c06","#ff7a1f"]}]},
+ Emanator:{a:["orb","🔥"],s:["dive","🔥"]},
+ Genius:{a:["beams","✦"],s:["voidf","✦"]},
+ Demigod:{a:["bolt","⚡"],s:["storm","⚡"]},
+ Archer:{a:["feathers","🪶"],s:["whirl","🪶"]},
+ Knight:{a:["slashes","🔥"],s:["judge","🗡️"]},
+ Trickster:{a:["cards","🃏",{c2:"#4fd1ff",g2:"✨"}],s:["party","🎭",{g2:"✨"}]},
+ Champion:{a:["slashes","🌙"],s:["eclipse","🌙"]},
+ Hemomancer:{a:["scythe","🩸",{c2:"#ff2a4a"}],s:["bloom","🩸"]},
+ Gamer:{a:["laser","01"],s:["orbital","🚀",{c2:"#fff"}]}};
+/* ===== NEW-SKIN attack effects: skins keyed by name get their own Attack + Skill animations.
+   Off = full · Low = about half the strikes/particles · Ultra low = wind-up + one clean hit effect, no extras ===== */
+Object.assign(SKA,{
+ magmaFist:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"lunge");T(()=>drop(tx,ty,"🪨",k,72),150);T(()=>gnd(f,k,180),300);
+  if(!U)for(let i=0;i<s1(3);i++)T(()=>{crk(tx+(i-1)*46,ty-14+i*6,k);burst(tx+(i-1)*46,ty+30,"#ffb347",sc(4),44,g)},380+i*90);
+  T(()=>{x.hit();if(!U)rain(tx,g,sc(5),ty-100)},560);return 600},
+ magmaFlood:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"leap");T(()=>{gnd(f,k,300);shakeArena(300)},380);
+  if(!U)for(let i=0;i<s1(3);i++)T(()=>ring(sx+(tx-sx)*(i+1)/3,sy+40+(ty-sy)*(i+1)/3,k,150+i*50),420+i*90);
+  T(()=>spikes(tx,ty,k,["#2a0a04","#ff7a1f"],s1(6)),640);T(()=>{x.hit(1);if(!U){flash(k);burst(tx,ty,"#ffd36b",sc(14),120,g)}},800);return 840},
+ wyrmcut:x=>{const{f,t,sx,sy,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"slash");if(!U)trail(sx,sy,tx,ty,k,sc(4),g,0,50);
+  [-55,55,0].slice(0,U?1:s1(3)).forEach((a,i)=>T(()=>{slash(tx,ty,i==2?230:170,"#ffd0b0",k,a);if(!U)burst(tx,ty,i%2?"#111":k,sc(5),50,"✦")},300+i*90));
+  T(()=>{x.hit();if(!U)el("rise",tx,ty-10,"👁️","font-size:34px")},500);return 540},
+ dragonfall:x=>{const{f,t,tx,ty,k,U,sc,T}=x;wind(f,t,"leap");T(()=>drop(tx,ty,"🐉",k,U?64:92),180);T(()=>gnd(f,k,260),360);
+  if(!U)T(()=>{el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);rain(tx,"🔥",sc(7),ty-160)},520);
+  T(()=>{ring(tx,ty+36,k,300);x.hit(1);if(!U)flash(k)},640);return 700},
+ crescent:x=>{const{f,t,tx,ty,k,U,sc,s1,T}=x;wind(f,t,"slash");
+  for(let i=0;i<s1(3);i++)T(()=>{slash(tx,ty,200-i*20,"#fff",i%2?"#6f8cff":k,-70+i*52);if(!U)burst(tx,ty,k,sc(5),52,"🌙")},280+i*100);
+  T(()=>x.hit(),520);return 560},
+ blackSun:x=>{const{f,t,tx,ty,k,U,sc,T}=x;wind(f,t,"cast");T(()=>hole(tx,ty,U?100:170,"#2a2a66"),120);T(()=>ring(tx,ty+36,k,240),300);
+  T(()=>{slash(tx,ty,240,"#fff",k,-40);if(!U){slash(tx,ty,240,"#fff",k,40);el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);rain(tx,"🌸",sc(7),ty-150)}},560);
+  T(()=>{x.hit(1);if(!U)flash(k)},700);return 740},
+ gale:x=>{const{f,t,sx,sy,tx,ty,k,g,U,s1,T}=x;wind(f,t,"leap");if(!U)fly([sx,sy],[tx,ty],g,s1(5));
+  for(let i=0;i<s1(2);i++)T(()=>{ring(sx+(tx-sx)*(.4+i*.3),sy+40+(ty-sy)*(.4+i*.3),k,130+i*40);slash(tx,ty,190,"#fff",k,i?20:-20)},220+i*110);
+  T(()=>x.hit(),480);return 520},
+ cyclone:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");
+  for(let i=0;i<s1(4);i++)T(()=>{ring(tx,ty+36,k,110+i*55);if(!U)burst(tx,ty+10,k,sc(4),40+i*14,g)},200+i*110);
+  if(!U)T(()=>{el("pil",tx,0,"",`--c:${k};height:${ty+60}px`);rain(tx,g,sc(8),ty-160)},420);
+  T(()=>x.hit(1),700);return 740},
+ reap:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,T}=x;wind(f,t,"slash");T(()=>slash(tx,ty,230,"#fff",k,-38),260);
+  if(!U){T(()=>slash(tx,ty,210,"#ffd0d4",x.c2,42),370);T(()=>trail(tx,ty,sx,sy,"#ff5b78",sc(4),"👻",0,60),420)}
+  T(()=>{x.hit();if(!U)drips(tx,ty,sc(8))},470);return 520},
+ soulHarvest:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,s1,T}=x;wind(f,t,"cast");T(()=>{hole(tx,ty,U?90:150,"#3a0010");ring(tx,ty+36,k,220)},120);
+  if(!U)T(()=>fly([tx,ty],[sx,sy],"👻",s1(6)),420);T(()=>{slash(tx,ty,220,"#fff",k,-35);if(!U)drips(tx,ty,sc(10))},560);
+  T(()=>{x.hit(1);if(!U)ring(sx,sy+36,"#ff8aa0",180)},700);return 740},
+ chain:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");
+  for(let i=0;i<s1(4);i++)T(()=>{const ox=tx+R(-60,60);beam([ox,0],[tx,ty],k,5+(i%2)*3);if(!U)burst(tx,ty-60,"#fff",sc(3),30,g)},240+i*85);
+  T(()=>x.hit(),560);return 600},
+ tempest:x=>{const{f,t,tx,ty,k,g,U,sc,s1,T}=x;wind(f,t,"cast");T(()=>gnd(f,k,240),240);
+  for(let i=0;i<s1(5);i++)T(()=>{el("pil",tx+(i-2)*38,0,"",`--c:${k};height:${ty+60}px`);if(!U)ring(tx+(i-2)*38,ty+40,k,110)},260+i*90);
+  T(()=>{x.hit(1);if(!U){flash(k);rain(tx,g,sc(8),ty-170)}},760);return 800}});
+const SKMAP2={
+ "Magma Colossus":{a:["magmaFist","🔥"],s:["magmaFlood","🔥"]},
+ "Dragon Black Knight":{a:["wyrmcut","🔥"],s:["dragonfall","🔥"]},
+ "Eclipse Swordmaiden":{a:["crescent","🌙"],s:["blackSun","🌙"]},
+ "Skyfeather Windcaller":{a:["gale","🪶"],s:["cyclone","🪶"]},
+ "Crimson Reaper":{a:["reap","🩸",{c2:"#ff2a4a"}],s:["soulHarvest","🩸"]},
+ "Thunder God":{a:["chain","⚡"],s:["tempest","⚡"]}};
+function skinFx(f,t,id){if(!f||f.simple||f.boss||f.elite||!SKMAP[f.cls]||(id!=="attack"&&id!=="skill"))return null;
+ if(f.cls==="Gamer"&&id==="skill")return null;
+ if(!(f.cv?f.cv.s:cosOn(f.cls,"s")))return null;
+ const MM=SKMAP2[SKINS[f.cls]&&SKINS[f.cls].n]||SKMAP[f.cls],m=MM[id==="attack"?"a":"s"],fn=SKA[m[0]];if(!fn)return null;
+ const[sx,sy]=pos(f),[tx,ty]=pos(t),k=(SKINS[f.cls]&&SKINS[f.cls].c)||CLS[f.cls].c,U=LOWD>1,sc=n=>U?0:LOWD?Math.max(1,Math.ceil(n/2)):n,s1=n=>Math.max(1,sc(n)),
+  x=Object.assign({f,t,sx,sy,tx,ty,k,g:m[1],U,sc,s1,T:setTimeout,c2:"#fff",g2:m[1]},m[2]||{});
+ x.hit=big=>{if(U){ring(tx,ty+36,k,190);burst(tx,ty+10,k,6,60,x.g);shakeArena(180)}else imp(tx,ty,k,big)};
+ return fn(x)}
+
 {const _vfx=vfx;vfx=function(f,t,id,tier,lab){let r=null;
- if(!tier&&(id==="attack"||id==="skill")){try{r=cust(f,t,id)}catch(e){r=null}}
+ if(!tier&&(id==="attack"||id==="skill")){try{r=skinFx(f,t,id)}catch(e){r=null}if(r==null){try{r=cust(f,t,id)}catch(e){r=null}}}
  if(r!=null)return r;
  try{if((id==="attack"||id==="skill"||id==="enhatk")&&!(f.cls==="Gamer"&&id==="skill")){wind(f,t);const k=f.simple?f.col:CLS[f.cls].c;setTimeout(()=>{try{gnd(f,k,150)}catch(e){}},280)}}catch(e){}
  return _vfx(f,t,id,tier,lab)}}
@@ -4124,6 +4213,50 @@ hookHelp("campSetup","camp",1);hookHelp("rushSetup","rush",1);hookHelp("remnant"
 ["menu","playMenu","guide","story","howto","settingsMenu","audioSet"].forEach(n=>hookHelp(n,null,0));
 {const o=setup;setup=function(){const k=S.mode==="pvp"?"pvp":"bot";setHelp(k);tipOnce(k);return o.apply(this,arguments)}}
 
+
+/* ===== custom background music: import your own file per track (kept on this device in IndexedDB), own volume bar, loops forever ===== */
+const CMKINDS=[["menu","🏠","Main menu"],["camp","🗺️","Campaign"],["battle","⚔️","Battle (PVP / Bot)"],["boss","👹","Boss fight"],["rush","🔥","Boss Rush"],["apoc","☄️","Apocalypse boss"]];
+const CMT={};let CM=null,CMK=null,CMV=null,CMVT=0,CMDBP=null;
+const cmEsc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cmVolGet=k=>{try{const v=localStorage.getItem("aoa_cmv_"+k);return v===null?1:Math.max(0,Math.min(1,+v))}catch(e){return 1}};
+const cmEff=k=>Math.max(0,Math.min(1,((CMT[k]&&CMT[k].vol)||0)*VM));
+const cmDB=()=>CMDBP||(CMDBP=new Promise((res,rej)=>{try{const r=indexedDB.open("aoa_cm",1);r.onupgradeneeded=()=>r.result.createObjectStore("t");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}));
+const cmTx=async(mode,fn)=>{const db=await cmDB();return new Promise((res,rej)=>{const tx=db.transaction("t",mode),st=tx.objectStore("t"),out=fn(st);tx.oncomplete=()=>res(out&&out.result);tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error)})};
+function cmSet(k,name,blob){if(CMT[k])try{URL.revokeObjectURL(CMT[k].url)}catch(e){}CMT[k]={name,url:URL.createObjectURL(blob),vol:cmVolGet(k)}}
+function cmStart(k){const t=CMT[k];if(!t)return;
+ if(!CM){CM=new Audio();CM.preload="auto";CM.loop=true;CM.addEventListener("ended",()=>{if(CMK&&MUS&&!BGP){CM.currentTime=0;CM.play().catch(()=>{})}})}
+ CMK=k;if(CM.dataset.k!==k){CM.src=t.url;CM.dataset.k=k}CM.loop=true;CM.volume=cmEff(k);if(!BGP)CM.play().catch(()=>{})}
+function cmStop(){CMK=null;if(CM)try{CM.pause()}catch(e){}}
+function cmRefresh(){const m=mMode||"menu";if(CM)CM.dataset.k="";mMode=null;clearInterval(mT);mT=null;CMK=null;if(CM)try{CM.pause()}catch(e){}music(m)}
+{const _m=music,_s=setMus,_t=mtick,_v=setVol,_p=bgPause,_r=bgResume;
+ music=function(m){if(MUS&&CMT[m]){if(CMK===m&&mMode===m){if(CM&&CM.paused&&!BGP)CM.play().catch(()=>{});return}mMode=m;mStep=0;mNext=0;clearInterval(mT);mT=null;cmStart(m);return}if(CMK)cmStop();return _m(m)};
+ setMus=function(on){if(!on)cmStop();return _s(on)};
+ mtick=function(){if(CMK)return;return _t()};
+ setVol=function(k,v){_v(k,v);if(k==="m"&&CM&&CMK)CM.volume=cmEff(CMK)};
+ bgPause=function(){_p();if(CM&&CMK)try{CM.pause()}catch(e){}};
+ bgResume=function(){_r();if(CM&&CMK&&MUS)CM.play().catch(()=>{})}}
+["pointerup","touchend","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{if(CM&&CMK&&MUS&&!BGP&&CM.paused&&!CMV)CM.play().catch(()=>{})},true));
+function cmPreview(k){const t=CMT[k];if(!t)return;const was=CMV&&CMV.dataset.k===k;cmPreStop();if(was)return;
+ CMV=new Audio(t.url);CMV.dataset.k=k;CMV.volume=cmEff(k);if(CM&&CMK)try{CM.pause()}catch(e){}CMV.play().catch(()=>{});CMVT=setTimeout(cmPreStop,12000)}
+function cmPreStop(){clearTimeout(CMVT);if(CMV){try{CMV.pause()}catch(e){}CMV=null}if(CM&&CMK&&MUS&&!BGP)CM.play().catch(()=>{})}
+function cmToast(m){try{fragToast(m)}catch(e){}}
+async function cmImport(k,file){if(!file)return;if(!(/^audio\//.test(file.type)||/\.(mp3|m4a|aac|ogg|oga|opus|wav|flac|webm)$/i.test(file.name))){cmToast("That doesn't look like an audio file");return}
+ if(file.size>60*1024*1024){cmToast("File is too big (max 60 MB)");return}
+ const ok=await new Promise(r=>{const a=new Audio(),u=URL.createObjectURL(file);const d=v=>{URL.revokeObjectURL(u);r(v)};a.onloadedmetadata=()=>d(true);a.onerror=()=>d(false);a.src=u;setTimeout(()=>d(true),4000)});
+ if(!ok){cmToast("This browser can't play that file");return}
+ try{await cmTx("readwrite",st=>st.put({name:file.name,blob:file},k))}catch(e){cmToast("Couldn't save the music on this device");return}
+ cmSet(k,file.name,file);cmToast("🎵 Imported: "+file.name);cmRefresh();audioSet()}
+async function cmRemove(k){try{await cmTx("readwrite",st=>st.delete(k))}catch(e){}if(CMT[k]){try{URL.revokeObjectURL(CMT[k].url)}catch(e){}delete CMT[k]}cmPreStop();cmToast("Back to built-in music");cmRefresh();audioSet()}
+function cmPanel(){const app=$("#app");if(!app)return;cmPreStop();
+ if(!document.getElementById("cmcss")){const st=document.createElement("style");st.id="cmcss";st.textContent=".cmr{padding:10px 0;border-top:1px solid #ffffff18}.cmr:first-of-type{border-top:0}.cmh{display:flex;gap:8px;align-items:center;justify-content:space-between}.cmh small{display:block;color:var(--mu);word-break:break-all}.cmb{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.cmb .btn{padding:6px 10px;font-size:13px}";document.head.appendChild(st)}
+ const rows=CMKINDS.map(([k,ic,lb])=>{const t=CMT[k];return`<div class="cmr"><div class="cmh"><b>${ic} ${lb}</b></div><small style="color:var(--mu);display:block;word-break:break-all">${t?"📁 "+cmEsc(t.name):"Built-in music"}</small><div class="cmb"><button class="btn" data-a="imp" data-k="${k}">${t?"Replace":"Import"}</button>${t?`<button class="btn" data-a="pre" data-k="${k}">▶ Preview</button><button class="btn" data-a="del" data-k="${k}">Remove</button>`:""}</div>${t?`<label class="vr">Volume<input type="range" min="0" max="100" value="${Math.round(t.vol*100)}" data-v="${k}"><b>${Math.round(t.vol*100)}%</b></label>`:""}</div>`}).join("");
+ app.insertAdjacentHTML("beforeend",`<div class="panel" id="cmp"><label>🎶 Your own background music</label><small style="color:var(--mu);display:block;margin-bottom:6px">Pick an audio file for each track. It loops forever and is saved on this device only. The Music volume above still applies.</small>${rows}<input type="file" id="cmf" accept="audio/*,.mp3,.m4a,.aac,.ogg,.opus,.wav,.flac" style="display:none"></div>`);
+ const p=$("#cmp"),f=$("#cmf");let cur=null;
+ p.onclick=e=>{const b=e.target.closest("button[data-a]");if(!b)return;const k=b.dataset.k,a=b.dataset.a;if(a==="imp"){cur=k;f.value="";f.click()}else if(a==="pre")cmPreview(k);else if(a==="del")cmRemove(k)};
+ f.onchange=()=>{const fl=f.files&&f.files[0];if(cur&&fl)cmImport(cur,fl)};
+ p.oninput=e=>{const k=e.target.dataset.v;if(!k||!CMT[k])return;const v=e.target.value/100;CMT[k].vol=v;try{localStorage.setItem("aoa_cmv_"+k,String(v))}catch(er){}e.target.nextElementSibling.textContent=e.target.value+"%";if(CM&&CMK===k)CM.volume=cmEff(k);if(CMV&&CMV.dataset.k===k)CMV.volume=cmEff(k)}}
+{const _a=audioSet;audioSet=function(){_a();try{cmPanel()}catch(e){console.warn("music panel:",e)}}}
+(async function cmLoad(){try{const db=await cmDB();await new Promise(res=>{const st=db.transaction("t","readonly").objectStore("t"),rq=st.openCursor();rq.onsuccess=()=>{const c=rq.result;if(c){const v=c.value;if(v&&v.blob&&CMKINDS.some(x=>x[0]===c.key))cmSet(c.key,v.name||"track",v.blob);c.continue()}else res()};rq.onerror=()=>res()});if(Object.keys(CMT).length&&mMode)cmRefresh()}catch(e){}})();
 
 /* ===== announcements: reads announcement.json next to this file; shows once per id after TAP TO PLAY ===== */
 const ANN=(()=>{try{return fetch("announcement.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)}catch(e){return Promise.resolve(null)}})();
