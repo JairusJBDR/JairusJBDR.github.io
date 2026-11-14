@@ -912,6 +912,13 @@ html.lowd .lun{display:none}
  .mm .btn.pri .mtx b{font-size:clamp(18px,2.6vh,22px)}
  .lineup{margin-top:clamp(0px,.6vh,8px)}
 }
+
+/* ===== online PvP ===== */
+.olcode{font:400 40px "Alfa Slab One",serif;letter-spacing:8px;text-align:center;padding:12px 8px;margin:6px 0;border:2px dashed var(--ac);border-radius:14px;cursor:pointer;user-select:all;-webkit-user-select:all}
+.olrow{display:flex;gap:8px}.olrow input{flex:1;min-width:0;text-transform:uppercase;letter-spacing:4px;text-align:center}
+.oltm{font:400 18px "Alfa Slab One",serif;color:var(--ac);min-width:46px;text-align:right}
+.olerr{color:#ff8a8a;margin:8px 0 0}.olst{font-size:15px;margin:2px 0 0}
+.olvs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}.olvs .art{width:100%;max-width:150px;height:auto}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
@@ -979,7 +986,8 @@ Object.defineProperty(app,"innerHTML",{configurable:true,get(){return desc.get.c
 </script>
 <script>
 /* ===== helpers & global modifiers (campaign scaling, same as the GLOBAL and ENEMY bonuses in the Python) ===== */
-const $=s=>document.querySelector(s),R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,cl=(v,a,b)=>Math.max(a,Math.min(b,v)),chance=p=>Math.random()<p,sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let RNG=Math.random; /* online PvP swaps this for a seeded generator while a turn is resolved */
+const $=s=>document.querySelector(s),R=(a,b)=>Math.floor(RNG()*(b-a+1))+a,cl=(v,a,b)=>Math.max(a,Math.min(b,v)),chance=p=>RNG()<p,sleep=ms=>new Promise(r=>setTimeout(r,ms));
 let B={dmg:1,heal:1,hp:1},E={dmg:1,heal:1,hp:1},G=null,cycle=[],token=0;
 const dm=f=>(f.ai?E.dmg:B.dmg)*(f.up>0?1.3:1)*(f.atkdn>0?.7:1)*(f.rb||1)*(f.am||1)*(1+((f.rm&&f.rm.dmg)||0))*((f.rm&&f.rm.eff&&(f.enh||f.bz||f.ens))?1+f.rm.eff:1),hm=f=>(f.ai?E.heal:B.heal)*(f.rh||1)*(1+((f.rm&&f.rm.heal)||0))*((f.rm&&f.rm.eff&&(f.enh||f.bz||f.ens))?1+f.rm.eff:1),hpm=f=>f.ai?E.hp:B.hp;
 
@@ -2820,22 +2828,22 @@ async function fight(a,b,o={}){const my=++token;a.side="a";b.side="b";G={a,b};co
  <div class="cols"><div class="panel"><p class="sec">Actions</p><div class="who" id="who"></div><div id="acts"></div></div><div class="panel"><p class="sec">Battle log</p><div id="log"></div></div></div>`;
  let cur=o.first==="b"?b:o.first==="a"?a:(chance(.5)?a:b);if(o.resume){Object.assign(a,o.resume.a);Object.assign(b,o.resume.b);cur=o.resume.cur==="a"?a:b;upd(a);upd(b);L("💾 Battle resumed.","m")}if(!o.resume){const c0=cur;setTimeout(()=>banner(`${c0.name} goes first!`,c0.simple?c0.col:CLS[c0.cls].c),200)}L(cur===a?`${a.name} acts first.`:`${b.name} strikes first!`,"a");setTimeout(()=>say(a,TALK(a.cls,"intro")),300);setTimeout(()=>say(b,TALK(b.cls,"intro")),1500);if(b.elite)setTimeout(()=>{banner("★ ELITE ★","#ffd36b");flash("#ffd36b");sfx("ult")},1100);
  let fresh=o.resume?o.resume.fresh:true;
- while(a.hp>0&&b.hp>0){if(my!==token)return null;
+ do{while(a.hp>0&&b.hp>0){if(my!==token)return null;if(o.online){const r=await ON.barrier(a,b,cur===a?"a":"b",fresh);if(my!==token)return null;cur=r.cur==="a"?a:b;fresh=r.fresh;if(a.hp<=0||b.hp<=0)break}
   if(o.snap){const sa=snapF(a),sb=snapF(b);if(sa&&sb)o.snap({a:sa,b:sb,cur:cur===a?"a":"b",fresh})}const f=cur,t=f===a?b:a;f.tgt=t;upd(a);upd(b);
   if(fresh&&f.hb>0){await bleedTick(f);if(my!==token)return null;upd(a);upd(b);if(a.hp<=0||b.hp<=0)break}$("#ua").classList.toggle("act",f===a);$("#ub").classList.toggle("act",f===b);
-  const wk=f.simple?{c:f.col,e:f.emo}:CLS[f.cls],wh=$("#who");wh.style.setProperty("--c",wk.c);$("#acts").style.setProperty("--c",wk.c);$("#turn").textContent=`▶ ${f.name}’s turn`;wh.innerHTML=`<span class="pt">${wk.e}</span><b>${f.name}</b><small style="color:var(--mu)">${f.simple?"Enemy":f.cls} · ${f.ai?"Bot is moving":"your move"}</small>`;
+  const wk=f.simple?{c:f.col,e:f.emo}:CLS[f.cls],wh=$("#who");wh.style.setProperty("--c",wk.c);$("#acts").style.setProperty("--c",wk.c);$("#turn").textContent=`▶ ${f.name}’s turn`;wh.innerHTML=`<span class="pt">${wk.e}</span><b>${f.name}</b><small style="color:var(--mu)">${f.simple?"Enemy":f.cls} · ${f.ai?"Bot is moving":o.online&&f!==ON.me()?"opponent's move":"your move"}</small>`;
   let id;if(f.ai){$("#acts").innerHTML=`<p style="color:var(--mu);margin:6px">${f.name} is thinking…</p>`;await sleep(900);id=aiPick(f,t,o.hard)}
-  else{$("#acts").innerHTML="";if(!(o.pvp)||true)id=await pick(f,t)}
+  else{$("#acts").innerHTML="";id=o.online?await ON.turn(f,t):await pick(f,t)}
   if(my!==token)return null;
-  const lab=(acts(f).find(x=>x[0]===id)||[0,id])[1];L(`▶ ${f.name}: ${lab}`,"a");fx(f,"atk");
+  if(id==="__skip"){L(`⏭ ${f.name} skipped their turn.`,"m");ON.det(()=>post(f));upd(a);upd(b);cur=t;fresh=true;continue}const lab=(acts(f).find(x=>x[0]===id)||[0,id])[1];L(`▶ ${f.name}: ${lab}`,"a");fx(f,"atk");
   if(id==="ultimate"||id==="conquer")sfx("ult");if(id==="spend")sfx("coin");if(chance(f.ai?(f.simple?.5:.9):.6))say(f,TALK(f.cls,(id==="skill"&&f.cls==="Demigod"&&!f.und)?"atk":(KEY[id]||"atk")));
   const tier=id==="ultimate"||id==="conquer"?"ult":id==="spend"?"spend":(f.enh||(f.ens&&id==="skill")||(f.bz&&id==="skill")||id==="enhatk")?"enh":0;
-  await sleep(Math.max(220,vfx(f,t,id,tier,lab.toUpperCase())));const hp0=t.hp,again=DO(f,t,id);upd(a);upd(b);
+  await sleep(Math.max(220,vfx(f,t,id,tier,lab.toUpperCase())));const hp0=t.hp,again=o.online?ON.det(()=>DO(f,t,id)):DO(f,t,id);upd(a);upd(b);
   if(t.hp<hp0&&t.hp>0){if(t.hp<=t.maxHp*.3&&!t.warned){t.warned=1;say(t,TALK(t.cls,"low"))}else if(chance(.35))say(t,TALK(t.cls,"hurt"))}
   await sleep(850);
   if(a.hp<=0||b.hp<=0)break;
-  post(f);upd(a);upd(b);if(again||(f.cls==="Archer"&&f.lock)){if(f.lock&&f.ai)L("🏹 Combo continues!","a");fresh=false;continue}
-  cur=t;fresh=true}
+  if(o.online)ON.det(()=>post(f));else post(f);upd(a);upd(b);if(again||(f.cls==="Archer"&&f.lock)){if(f.lock&&f.ai)L("🏹 Combo continues!","a");fresh=false;continue}
+  cur=t;fresh=true}}while(o.online&&await ON.more(a,b));
  if(my!==token)return null;const w=a.hp>0?a:b;sfx(w.ai?"lose":"win");L(`🏆 ${w.name} wins!`,"a");upd(a);upd(b);await sleep(1700);return w}
 
 
@@ -3638,7 +3646,7 @@ function setup(){const seg=(k,v,l)=>`<button class="btn ${S[k]===v?"on":""}" onc
  ${S.mode==="ai"?`<label>Bot difficulty</label><div class="seg">${seg("diff","normal","Normal 🤖")}${seg("diff","hard","Hard 💀")}</div>`:""}</div>
  <div class="duo"><div class="panel"><label>Your name</label><input type="text" id="n1" value="${S.n1}" placeholder="Player 1" oninput="S.n1=this.value"><label>${S.mode==="pvp"?"Player 1 fighter":"Your fighter"}</label>${chips("c1",S.mode==="pvp"?"P1":"YOU")}</div>
  <div class="panel">${S.mode==="pvp"?`<label>Player 2 name</label><input type="text" value="${S.n2}" placeholder="Player 2" oninput="S.n2=this.value"><label>Player 2 fighter</label>`:`<label>Bot fighter</label>`}${chips("c2",S.mode==="pvp"?"P2":"Bot")}</div></div>
- <div class="row"><button class="btn pri" onclick="startBattle()">⚔️ Fight</button></div>`}
+ <div class="row"><button class="btn pri" onclick="startBattle()">⚔️ Fight</button>${S.mode==="pvp"?`<button class="btn" onclick="ON.open()">🌐 Host</button>`:""}</div>`}
 const pickC=c=>c==="random"?NAMES[R(0,NAMES.length-1)]:c;
 function startBattle(){const p1=mk(pickC(S.c1),S.n1.trim()||"Player 1",false),pvp=S.mode==="pvp",p2=mk(pickC(S.c2),pvp?(S.n2.trim()||"Player 2"):"Bot Opponent",!pvp);
  fight(p1,p2,{title:pvp?"PvP":"vs Bot",sub:pvp?"hot-seat":S.diff,hard:S.diff==="hard",pvp}).then(async w=>{if(!w)return;if(pvp)rkEvt(["pvp"],20,{});else if(w===p1)rkEvt(S.diff==="hard"?["win","hard"]:["win"],S.diff==="hard"?40:S.diff==="easy"?15:25,{cls:p1.cls});else rkEvt([],5,{});await ask(`<h2>🏆 ${w.name} wins!</h2><p class="q">“${TALK(w.cls,"win")}”</p><p style="color:var(--mu)">${w.cls} takes the arena.</p>`,["Rematch","Main menu"]).then(i=>i?menu():startBattle())})}
@@ -3829,7 +3837,7 @@ function snapF(f){try{return JSON.parse(JSON.stringify(f,(k,v)=>(k==="tgt"||k===
 function svGet(m){try{return JSON.parse(localStorage.getItem(svKey(m)))}catch(e){return null}}
 function svDel(m){try{localStorage.removeItem(svKey(m))}catch(e){}}
 let svBusy=false;
-async function leave(){
+async function leave(){if(ON.inFight()){const i=await ask(`<h2>Forfeit the match?</h2><p>Leaving now counts as a loss.</p>`,["Forfeit","Keep fighting"]);if(i===0)menu();return}
  if(!RUNMODE||!CK){menu();return}
  if(svBusy)return;svBusy=true;
  const i=await ask(`<h2>Leave the battle?</h2><p>Save your progress to continue later, or discard this run.</p>`,["💾 Save progress","🗑️ Don't save","Cancel"]);
@@ -4193,6 +4201,175 @@ const PERF=(()=>{
  }
 })();
 const perfBtn=()=>`<div class="perfrow"><button class="btn" onclick="PERF.cycle(this)">${PERF.label()}</button><small>Auto switches skins and auras to Lite if the game starts to stutter. Lite = still glow, no particles. Full = always animated.</small></div>`;
+
+
+/* ===== online PvP: Host / Join lobby, 20 s pick, Ready, synced battle ===== */
+const ON=(()=>{
+ const ALPHA="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",PRE="aoa-pvp-",PICK_MS=20000,TURN_MS=6000;
+ const st={phase:"idle",role:null,peer:null,conn:null,gen:0,code:"",join:"",err:"",opp:{name:"",ready:false,cls:null},me:{ready:false},deadline:0,tm:0,go:null,
+  my:null,seed:0,step:0,bn:0,n:0,snaps:{},ended:null,inbox:[],dc:null,pend:null};
+ const escH=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const nm=()=>String(S.n1||"").trim().slice(0,16)||"Player";
+ const mkCode=()=>Array.from({length:5},()=>ALPHA[Math.floor(Math.random()*ALPHA.length)]).join("");
+ const okCls=c=>NAMES.includes(c)?c:"random";
+ const send=m=>{try{if(st.conn&&st.conn.open!==false)st.conn.send(m)}catch(e){}};
+ const load=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{
+  const urls=["https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js","https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;
+  const next=()=>{if(i>=urls.length)return rej(new Error("load"));const t=document.createElement("script");t.src=urls[i++];t.onload=()=>window.Peer?res():next();t.onerror=()=>{t.remove();next()};document.head.appendChild(t)};next()});
+ const mulberry=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+ const snapS=f=>JSON.parse(JSON.stringify(f,(k,v)=>(k==="tgt"||k==="hbs"||k==="PL"||k==="SUP")?undefined:v));
+ const applyS=(f,s)=>{if(f&&s)Object.assign(f,s)};
+ const stopTimer=()=>{if(st.tm)clearInterval(st.tm);st.tm=0};
+ const resetFight=()=>{st.my=null;st.step=0;st.bn=0;st.n=0;st.snaps={};st.ended=null;st.inbox=[];st.dc=null;st.pend=null};
+ const teardown=()=>{stopTimer();const c=st.conn,p=st.peer;st.conn=st.peer=null;st.gen++;try{c&&c.close()}catch(e){}try{p&&p.destroy()}catch(e){}st.opp={name:"",ready:false,cls:null};st.me={ready:false};st.go=null;resetFight()};
+ const fail=(gen,msg)=>{if(gen!==st.gen)return;teardown();st.phase="idle";st.err=msg;draw()};
+ const lost=gen=>{
+  if(gen!==st.gen)return;const was=st.phase;
+  if(st.dc){const d=st.dc;st.dc=null;d()}
+  document.querySelectorAll(".modal").forEach(m=>m.remove());
+  if(was==="fight"){token++;teardown();st.phase="idle";try{rkEvt(["pvp"],20,{})}catch(e){}ask(`<h2>Opponent disconnected</h2><p>You win by forfeit.</p>`,["Main menu"]).then(()=>menu());return}
+  teardown();st.phase="idle";st.err=was==="lobby"||was==="result"?"Your opponent left the room.":"Connection lost.";
+  draw()};
+
+ function wire(c,gen){
+  const hi=()=>send({t:"hi",name:nm()});
+  c.on("open",()=>{if(gen===st.gen)hi()});if(c.open)hi();
+  c.on("data",m=>{if(gen===st.gen)recv(m)});
+  c.on("close",()=>lost(gen));c.on("error",()=>lost(gen));
+ }
+ function recv(m){
+  if(!m||typeof m!=="object")return;
+  if(m.t==="hi"){st.opp.name=String(m.name||"Player").slice(0,16);if(["starting","hosting","joining"].includes(st.phase))enter();else draw()}
+  else if(m.t==="rdy"&&(st.phase==="lobby"||st.phase==="result")){st.opp.ready=!!m.ready;st.opp.cls=okCls(m.cls);if(st.phase==="lobby"){maybeGo();draw()}}
+  else if(m.t==="go"&&st.role==="guest"&&st.phase==="lobby"&&m.a&&m.b&&okCls(m.a.cls)!=="random"&&okCls(m.b.cls)!=="random"){begin({a:{cls:m.a.cls,name:String(m.a.name||"Player").slice(0,16)},b:{cls:m.b.cls,name:String(m.b.name||"Player").slice(0,16)},first:m.first==="b"?"b":"a",seed:m.seed>>>0})}
+  else if(m.t==="act"&&st.phase==="fight"&&typeof m.id==="string"&&m.id.length<24){st.inbox.push({n:m.n|0,id:m.id});if(st.pend)st.pend()}
+  else if(m.t==="snap"&&st.role==="guest"&&st.phase==="fight"&&m.a&&m.b){st.snaps[m.bn|0]=m}
+  else if(m.t==="end"&&st.role==="guest"&&st.phase==="fight"&&m.a&&m.b){st.ended=m}
+  else if(m.t==="full"){fail(st.gen,"That room already has two players.")}
+ }
+ function startTimer(){stopTimer();st.deadline=Date.now()+PICK_MS;st.tm=setInterval(tick,250)}
+ function enter(){st.phase="lobby";st.me.ready=false;st.opp.ready=false;st.go=null;startTimer();draw()}
+ function again(){if(st.phase!=="result"||!st.conn)return;st.phase="lobby";st.me.ready=false;st.go=null;startTimer();draw()}
+ function tick(){
+  if(st.phase!=="lobby"){stopTimer();return}
+  const left=Math.max(0,Math.ceil((st.deadline-Date.now())/1000)),e=$("#oltm");if(e)e.textContent=left;
+  if(!st.me.ready&&left<=0)ready(true,true)}
+ function ready(on,auto){
+  if(st.phase!=="lobby"||st.go)return;
+  if(!on&&Date.now()>=st.deadline)return;
+  st.me.ready=on;send({t:"rdy",ready:on,cls:okCls(S.c1)});
+  if(on&&auto){try{fragToast("⏱ Time's up: ready with "+(okCls(S.c1)==="random"?"Random":S.c1))}catch(e){}}
+  maybeGo();draw()}
+ function maybeGo(){
+  if(st.role!=="host"||st.phase!=="lobby"||!st.me.ready||!st.opp.ready||st.go)return;
+  const go={t:"go",a:{cls:pickC(okCls(S.c1)),name:nm()},b:{cls:pickC(okCls(st.opp.cls)),name:st.opp.name||"Player"},first:chance(.5)?"a":"b",seed:Math.floor(Math.random()*4294967296)>>>0};
+  send(go);begin(go)}
+
+ /* ---- synced battle ---- */
+ function begin(go){
+  stopTimer();st.go=go;st.phase="fight";resetFight();st.seed=go.seed>>>0;
+  B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};cycle=[];RUNMODE=null;CK=null;
+  const a=mk(go.a.cls,go.a.name,false),b=mk(go.b.cls,go.b.name,false);a.fb=b.fb=0;st.my=st.role==="host"?a:b;
+  fight(a,b,{title:"Online PvP",sub:"online",pvp:true,online:true,first:go.first}).then(w=>after(w))}
+ async function after(w){
+  if(!w||st.phase!=="fight")return;
+  st.phase="result";st.me.ready=false;st.opp.ready=false;try{rkEvt(["pvp"],20,{})}catch(e){}
+  const mine=w===st.my;
+  const i=await ask(`<h2>🏆 ${escH(w.name)} wins!</h2><p class="q">“${TALK(w.cls,"win")}”</p><p style="color:var(--mu)">${mine?"Victory!":"Better luck next time."}</p>`,["Play again","Main menu"]);
+  if(st.phase!=="result")return;
+  if(i===0&&st.conn)again();else menu()}
+ /* deterministic dice: each resolved step gets its own seed derived from the match seed */
+ function det(fn){
+  const s=(Math.imul((st.seed^0x9E3779B9)>>>0,2654435761)+Math.imul(++st.step,0x85EBCA6B))>>>0,old=RNG;RNG=mulberry(s);
+  try{return fn()}finally{RNG=old}}
+ /* start of every loop pass: host publishes the authoritative state, guest adopts it */
+ async function barrier(a,b,cur,fresh){
+  const bn=++st.bn;
+  if(st.role==="host"){send({t:"snap",bn,step:st.step,cur,fresh,a:snapS(a),b:snapS(b)});return{cur,fresh}}
+  const t0=Date.now();while(!st.snaps[bn]&&!st.ended&&st.phase==="fight"&&Date.now()-t0<5000)await sleep(40);
+  const s=st.snaps[bn];
+  if(s){delete st.snaps[bn];applyS(a,s.a);applyS(b,s.b);st.step=s.step|0;upd(a);upd(b);return{cur:s.cur==="b"?"b":"a",fresh:!!s.fresh}}
+  if(st.ended){applyS(a,st.ended.a);applyS(b,st.ended.b);upd(a);upd(b)}
+  return{cur,fresh}}
+ /* after the loop: host announces the end; guest confirms it (or carries on if the host's fight continues) */
+ async function more(a,b){
+  if(st.role==="host"){send({t:"end",step:st.step,a:snapS(a),b:snapS(b)});return false}
+  const t0=Date.now();while(!st.ended&&!st.snaps[st.bn+1]&&st.phase==="fight"&&Date.now()-t0<5000)await sleep(40);
+  if(st.ended){applyS(a,st.ended.a);applyS(b,st.ended.b);upd(a);upd(b);return false}
+  return !!st.snaps[st.bn+1]}
+ const valid=(f,id)=>id==="__skip"?id:(acts(f).find(x=>x[0]===id&&x[3])?id:"__skip");
+ async function turn(f,t){
+  const n=++st.n;
+  const t0=Date.now(),left=()=>Math.max(0,Math.ceil((TURN_MS-(Date.now()-t0))/1000));
+  const clock=el=>{const e=$("#turn");if(e)e.textContent=el()};
+  if(f===st.my){
+   let iv=0;
+   const tmo=new Promise(res=>{
+    const tk=()=>{if(st.phase!=="fight"){clearInterval(iv);return}const l=left();clock(()=>`▶ Your turn · ⏱ ${l}s`);if(l<=0){clearInterval(iv);res("__skip")}};
+    tk();iv=setInterval(tk,250)});
+   const id=await Promise.race([pick(f,t),tmo]);
+   clearInterval(iv);
+   if(id==="__skip"){const b=$("#acts");if(b)b.innerHTML="";try{fragToast("⏱ Time's up: turn skipped")}catch(e){}}
+   if(st.phase==="fight")send({t:"act",n,id});return id}
+  $("#acts").innerHTML=`<p style="color:var(--mu);margin:6px">⏳ Waiting for ${escH(f.name)}…</p>`;
+  return new Promise(res=>{
+   const iv=setInterval(()=>{if(st.phase!=="fight"){clearInterval(iv);return}const l=left();clock(()=>`▶ ${f.name}’s turn · ⏱ ${l}s`)},500);
+   const take=()=>{const i=st.inbox.findIndex(m=>m.n===n);if(i<0)return false;const m=st.inbox.splice(i,1)[0];clearInterval(iv);st.pend=st.dc=null;res(valid(f,m.id));return true};
+   if(take())return;st.pend=take;st.dc=()=>{clearInterval(iv);st.pend=st.dc=null;res("__dc")}})}
+
+ async function host(retry){
+  teardown();const gen=st.gen;st.role="host";st.phase="starting";st.err="";draw();
+  try{await load()}catch(e){return fail(gen,"Couldn't load the online library. Check your internet connection.")}
+  if(gen!==st.gen)return;
+  st.code=mkCode();const p=new Peer(PRE+st.code);st.peer=p;
+  p.on("open",()=>{if(gen===st.gen){st.phase="hosting";draw()}});
+  p.on("connection",c=>{if(gen!==st.gen)return;if(st.conn){const f=()=>{try{c.send({t:"full"})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400)};c.on("open",f);if(c.open)f();return}st.conn=c;wire(c,gen)});
+  p.on("disconnected",()=>{if(gen===st.gen&&!st.conn){try{p.reconnect()}catch(e){}}});
+  p.on("error",e=>{if(gen!==st.gen)return;if(e.type==="unavailable-id"&&(retry||0)<4)return host((retry||0)+1);fail(gen,["network","server-error","socket-error","socket-closed"].includes(e.type)?"Can't reach the matchmaking server.":"Connection error ("+e.type+").")});
+ }
+ async function join(){
+  const code=String(st.join||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(code.length<4){st.err="Type the host's room code first.";draw();return}
+  teardown();const gen=st.gen;st.role="guest";st.phase="joining";st.err="";st.code=code;draw();
+  try{await load()}catch(e){return fail(gen,"Couldn't load the online library. Check your internet connection.")}
+  if(gen!==st.gen)return;
+  const p=new Peer();st.peer=p;
+  p.on("open",()=>{if(gen!==st.gen)return;const c=p.connect(PRE+code,{reliable:true});st.conn=c;wire(c,gen);
+   setTimeout(()=>{if(gen===st.gen&&st.phase==="joining")fail(gen,"Couldn't reach room "+code+". Check the code and try again.")},12000)});
+  p.on("error",e=>{if(gen!==st.gen)return;fail(gen,e.type==="peer-unavailable"?"Room "+code+" not found. Check the code.":"Connection error ("+e.type+").")});
+ }
+
+ function draw(){
+  if(!["idle","starting","hosting","joining","lobby"].includes(st.phase))return;
+  const app=$("#app");if(!app)return;
+  const hud=(t,b)=>`<div class="hud"><button class="btn" onclick="ON.back()">${b}</button><h2>${t}</h2>${st.phase==="lobby"?`<span class="oltm"><b id="oltm">${Math.max(0,Math.ceil((st.deadline-Date.now())/1000))}</b>s</span>`:"<span></span>"}</div>`;
+  if(st.phase==="lobby"){
+   const me=st.me,op=st.opp,lock=me.ready?' style="opacity:.55;pointer-events:none"':"";
+   app.innerHTML=hud("Pick your fighter","← Leave")+`<div class="duo"><div class="panel"><p class="sec">You · ${escH(nm())}</p><p class="olst">${me.ready?"✅ Ready":"✏️ Picking…"}</p></div><div class="panel"><p class="sec">${escH(op.name||"Opponent")}</p><p class="olst">${op.ready?"✅ Ready":"✏️ Picking…"}</p></div></div>
+<div class="panel"${lock}>${chips("c1","YOU","ON.pick")}</div>
+<div class="row"><button class="btn pri" onclick="ON.toggle()">${me.ready?"Cancel ready":"✔ Ready"}</button></div>
+<p class="lore" style="text-align:center">Both players must be ready. At 0 s you're set ready automatically.</p>`;return}
+  const hosting=st.phase==="hosting";
+  app.innerHTML=hud("Online PvP","← Back")+`<div class="panel"><label>Your name</label><input type="text" maxlength="16" value="${escH(S.n1||"")}" placeholder="Player" oninput="S.n1=this.value">
+<label>Your room code</label>${hosting?`<div class="olcode" onclick="ON.share()">${st.code}</div><p class="lore">Waiting for a friend… give them this code. They tap <b>Host</b>, type it under “Join” and press Join.</p><div class="row" style="margin:10px 0 0"><button class="btn" onclick="ON.share()">📋 Share code</button></div>`:st.phase==="starting"?`<p class="lore">Opening a room…</p>`:st.phase==="joining"?`<p class="lore">Joining room ${escH(st.code)}…</p>`:`<div class="row" style="margin:10px 0 0"><button class="btn pri" onclick="ON.open()">🌐 Host a room</button></div>`}</div>
+<div class="panel"><label>Join a friend's room</label><div class="olrow"><input type="text" id="oljc" maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="CODE" value="${escH(st.join)}" oninput="ON.setJoin(this.value)"><button class="btn pri" onclick="ON.join()"${st.phase==="joining"?" disabled":""}>Join</button></div></div>${st.err?`<p class="olerr">⚠️ ${escH(st.err)}</p>`:""}`;
+ }
+
+ return{
+  st,det,barrier,more,turn,
+  me:()=>st.my,
+  inFight:()=>st.phase==="fight",
+  open(){st.err="";host(0)},
+  join,
+  setJoin(v){st.join=String(v).toUpperCase()},
+  pick(){draw()},
+  toggle(){ready(!st.me.ready,false)},
+  share(){const t=`Join my Arena of Ascension duel! Room code: ${st.code}`;try{if(navigator.share){navigator.share({text:t}).catch(()=>{});return}}catch(e){}try{navigator.clipboard.writeText(st.code);fragToast("Room code copied")}catch(e){fragToast("Code: "+st.code)}},
+  back(){this.close();setup()},
+  close(){if(st.phase==="idle"&&!st.peer&&!st.conn){st.err="";return}teardown();st.phase="idle";st.err=""}
+ };
+})();
+{const o=menu;menu=function(){ON.close();return o.apply(this,arguments)}}
 
 menu();
 </script>
