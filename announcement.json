@@ -1,8 +1,8 @@
 {
   "enabled": true,
-  "id": "2026-11-14-update-1",
+  "id": "2026-11-14-update-2",
   "title": "New update!",
-  "body": "Online battles are here: host a room, share the code and fight a friend.\nYou can now see your opponent's skin and aura.\nNew in Settings: screen shake and a two-level low detail mode.",
+  "body": "Online battles are here: host a room, share the code and fight a friend.\nYou can now see your opponent's skin and aura.\nNew in Settings: screen shake and a two-level low detail mode. \nNew in Audio: you can now import your own music as background music. \nNew attack animations/effects in character's skins",
   "button": "Got it",
   "expires": "2026-12-31"
 }
