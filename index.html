@@ -1223,7 +1223,7 @@ ART.BLord=`<circle cx="60" cy="75" r="62" fill="#7a4dff" fill-opacity=".14"/>
 <path d="M38 16L35 -10 47 6 54 -16 60 4 66 -16 73 6 85 -10 82 16z" fill="#2a1450" stroke="#ff3d71" stroke-width="2"/><circle class="ap" cx="60" cy="8" r="2.5" fill="#fff"/>`;
 const art=(c,emo,ov)=>`<svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(c,emo,ov)}</svg>`;
 /* ===== COSMETICS: skins (15,000) and auras (10,000) ===== */
-const COS_SKIN=5000,COS_AURA=3000,COS_SKIN_WAS=10000,COS_AURA_WAS=6000,cosWas=k=>`<s class="was">${(k==="s"?COS_SKIN_WAS:COS_AURA_WAS).toLocaleString()}</s>`;
+const COS_SKIN=10000,COS_AURA=8000,COS_SKIN_WAS=20000,COS_AURA_WAS=16000,cosWas=k=>`<s class="was">${(k==="s"?COS_SKIN_WAS:COS_AURA_WAS).toLocaleString()}</s>`;
 const OL="#1a1020",SKN="#f1d3b3";
 const SKINS={
 Titankin:{n:"Stone Colossus",c:"#5fd6c4",tx:"A living mountain. Glowing runes, boulder shoulders, a maul of rock.",svg:`
@@ -2443,17 +2443,19 @@ function cosSvg(k,emo,ov){const b=cosBase(k),base=ART[k]||ART.Simple,LB=(x,lv)=>
  const W=(x,c="")=>x?`<g class="cx${c}">${LOWD?lowSvg(x,c?2:1):x}</g>`:"";return cosCache[key]=W(aOn?AURAS[b].back:""," cxa")+(sOn?W(SKIN_FORM[k]||SKINS[b].svg):LB(base))+W(aOn?AURAS[b].front:""," cxa")}
 function cosCol(c,col,ov){const k=CLS[c]&&CLS[c].c,b=cosBase(c);if(col&&col!==k)return col;if(b&&(ov?ov.s:cosOn(b,"s")))return cosSkinCol(b);return col||k}
 function cosToggle(n,k,w){if(!NAMES.includes(n)||!cosHas(n,k))return;COS.e[n][k]=COS.e[n][k]?0:1;cosSave();try{sfx("buff")}catch(e){}w==="shop"?shop(SHOP_TAB):remnant(n)}
-async function cosBuy(n,k){if(!NAMES.includes(n)||cosHas(n,k))return;const cost=k==="s"?COS_SKIN:COS_AURA,nm=(k==="s"?SKINS:AURAS)[n].n,bal=solariBalance();
- if(bal<cost){fragToast(`Not enough Solari — ${nm} costs ${cost.toLocaleString()} (you have ${bal.toLocaleString()}).`);return}
- const i=await ask(`<h2>Buy ${nm}?</h2><p>${k==="s"?"Skin":"Aura"} for <b>${n}</b> — ${cosWas(k)}<b>${cost.toLocaleString()}</b> Solari.<br><small style="color:var(--mu)">You'll have ${(bal-cost).toLocaleString()} left. You can toggle it in Remnant.</small></p>`,["Buy","Cancel"]);
+/* old saves: leftover Prisms (retired currency) become Solari once */
+try{const _o=parseInt(localStorage.getItem("aoa_prism"))||0;localStorage.removeItem("aoa_prism");if(_o>0)setTimeout(()=>{solariSet(solariBalance()+_o);fragToast("Prisms were removed: +"+_o.toLocaleString()+" ☀️ Solari converted")},900)}catch(e){}
+async function cosBuy(n,k){if(!NAMES.includes(n)||cosHas(n,k))return;if(riftLock(n,k)){fragToast("🔒 Weekly Rift exclusive — win it in 🌠 Weekly Rift this week.");return}const cost=k==="s"?COS_SKIN:COS_AURA,nm=(k==="s"?SKINS:AURAS)[n].n,bal=solariBalance();
+ if(bal<cost){fragToast(`Not enough Solari ☀️ — ${nm} costs ${cost.toLocaleString()} (you have ${bal.toLocaleString()}). Win battles to earn more.`);return}
+ const i=await ask(`<h2>Buy ${nm}?</h2><p>${k==="s"?"Skin":"Aura"} for <b>${n}</b> — ${cosWas(k)}<b>${cost.toLocaleString()}</b> ☀️ Solari.<br><small style="color:var(--mu)">You'll have ${(bal-cost).toLocaleString()} left. You can toggle it in Remnant.</small></p>`,["Buy","Cancel"]);
  if(i!==0)return;if(solariBalance()<cost)return;solariSet(solariBalance()-cost);COS.o[n][k]=1;COS.e[n][k]=1;cosSave();try{sfx("buff")}catch(e){}fragToast(`🛒 ${nm} unlocked and equipped!`);shop(SHOP_TAB)}
 var SHOP_TAB="s";
 function shop(tab){if(tab)SHOP_TAB=tab;token++;const k=SHOP_TAB,D=k==="s"?SKINS:AURAS,cost=k==="s"?COS_SKIN:COS_AURA,owned=NAMES.filter(n=>cosHas(n,k)).length;
- $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>Shop</h2><span class="relic-pill" title="Solari">🪙 ${solariBalance().toLocaleString()}</span></div>
+ $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>Shop</h2><span class="relic-pill" title="Solari">☀️ ${solariBalance().toLocaleString()}</span></div>
  <div class="seg shtab"><button class="btn ${k==="s"?"on":""}" onclick="shop('s')">🎭 Skins · ${cosWas("s")}${COS_SKIN.toLocaleString()}</button><button class="btn ${k==="a"?"on":""}" onclick="shop('a')">✨ Auras · ${cosWas("a")}${COS_AURA.toLocaleString()}</button></div>
  <p class="shsub">${owned} / ${NAMES.length} owned · Equip or unequip any time in <b>Remnant</b>. Cosmetics show on that fighter in every mode.</p>${perfBtn()}
- <div class="salebar">🔥 MEGA SALE · 50% OFF ALL ${k==="s"?"SKINS":"AURAS"}!</div><div class="shgrid">${NAMES.map(n=>{const c=CLS[n],d=D[n],has=cosHas(n,k),on=cosOn(n,k),pv=k==="s"?{s:1,a:0}:{s:0,a:1},col=k==="s"?cosSkinCol(n):c.c;
-  return`<div class="shc ${has?"own":""}" style="--c:${col}">${has?"":'<i class="sal">SALE −50%</i>'}<div class="shp"><div class="stage" style="--c:${col}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(n,"",pv)}</svg></div><div class="sh"></div></div></div><b>${d.n}</b><small>${n} · ${d.tx}</small>${has?`<button class="btn ${on?"":"pri"}" onclick="cosToggle('${n}','${k}','shop')">${on?"✓ Equipped — tap to remove":"Equip"}</button>`:`<button class="btn pri" onclick="cosBuy('${n}','${k}')">🪙 ${cosWas(k)}${cost.toLocaleString()}</button>`}</div>`}).join("")}</div>`}
+ <div class="salebar">🔥 MEGA SALE · 50% OFF ALL ${k==="s"?"SKINS":"AURAS"}! <small style="display:block;opacity:.85;font-weight:600">☀️ Solari drops from wins, bosses, rank-ups and daily sweeps — spend it here and on Remnant Rerolls.</small></div><div class="shgrid">${NAMES.map(n=>{const c=CLS[n],d=D[n],has=cosHas(n,k),on=cosOn(n,k),pv=k==="s"?{s:1,a:0}:{s:0,a:1},col=k==="s"?cosSkinCol(n):c.c;
+  return`<div class="shc ${has?"own":""}" style="--c:${col}">${has?"":'<i class="sal">SALE −50%</i>'}<div class="shp"><div class="stage" style="--c:${col}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(n,"",pv)}</svg></div><div class="sh"></div></div></div><b>${d.n}</b><small>${n} · ${d.tx}</small>${has?`<button class="btn ${on?"":"pri"}" onclick="cosToggle('${n}','${k}','shop')">${on?"✓ Equipped — tap to remove":"Equip"}</button>`:`${riftLock(n,k)?'<button class="btn" onclick="rift()">🔒 Weekly Rift exclusive</button>':`<button class="btn pri" onclick="cosBuy('${n}','${k}')">☀️ ${cosWas(k)}${cost.toLocaleString()}</button>`}`}</div>`}).join("")}</div>`}
 function cosPanel(n){const row=(k,lab)=>{const D=k==="s"?SKINS:AURAS,has=cosHas(n,k),on=cosOn(n,k);return`<div class="cosrow"><div><b>${lab}: ${D[n].n}</b><small>${has?(on?"Equipped":"Owned · off"):"Not owned · "+(k==="s"?COS_SKIN:COS_AURA).toLocaleString()+" Solari"}</small></div>${has?`<button class="btn ${on?"on":""}" onclick="cosToggle('${n}','${k}')">${on?"On":"Off"}</button>`:`<button class="btn" onclick="shop('${k}')">🛒 Shop</button>`}</div>`};
  return`<div class="panel rm-cos"><label>Cosmetics</label>${row("s","🎭 Skin")}${row("a","✨ Aura")}</div>`}
 
@@ -3111,7 +3113,7 @@ function gRewards(){const row=(a,b,c)=>`<tr><td>${a}</td><td>${b}</td><td>${c}</
  return`<div class="panel"><h3>💰 Campaign</h3><table class="gtab"><tr><th>Win</th><th>Solari</th><th>Fragments</th></tr>${row("Enemy","10–15","1–7 (your class)")}${row("Elite","15–20","5–10 (your class)")}${row("Boss","30–50","8–15 (your class) + <b>20</b> (the boss's class)")}</table></div>
  <div class="panel"><h3>👥 Boss Rush · per boss defeated</h3><table class="gtab"><tr><th>Difficulty</th><th>Solari</th><th>Fragments</th></tr>${row("Normal","100–150","15–20 for each of your two fighters")}${row("☄️ Apocalyptic","300–600","20–25 for each of your two fighters")}</table><p class="lore">The Support fighter does not earn fragments.</p></div>
  <div class="panel"><h3>👑 Boss Rush · 5 bosses cleared</h3><table class="gtab"><tr><th>Difficulty</th><th>🔧 Reworkable Relic</th><th>Fragments</th></tr>${row("Normal","×1","+30 for every character")}${row("☄️ Apocalyptic","×3","+60 for every character")}</table><p class="lore">Paid once, when you defeat the final boss. These come on top of the per-boss rewards above.</p></div>
- <div class="panel"><h3>What the rewards do</h3><ul><li><b>Solari:</b> spend it on Remnant Rerolls (150 each).</li><li><b>🎟️ Reroll Token:</b> a free Remnant reroll. Earned from dailies, goals, rank-ups and the Daily Sweep.</li><li><b>📦 Fragment Cache:</b> ${CACHE_FR} fragments for any fighter you pick. Open it from the Rank screen.</li><li><b>🛒 Shop:</b> skins (${COS_SKIN.toLocaleString()} Solari) and auras (${COS_AURA.toLocaleString()}) for each fighter. Toggle them in Remnant.</li><li><b>🎖️ Badges and emblems:</b> goal tiers award badges, and every new title changes your menu emblem.</li><li><b>Fragments:</b> 100 unlocks a character's two Remnants, then 500 per Ascend (two Ascends in total).</li><li><b>🔧 Reworkable Relic:</b> pick a Remnant's regular stat yourself (1 relic Common, 2 relics Rare).</li><li><b>PVP:</b> no rewards.</li></ul></div>`}
+ <div class="panel"><h3>What the rewards do</h3><ul><li><b>Solari:</b> spend it on Remnant Rerolls (150 each).</li><li><b>☀️ Solari also buys skins and auras in the Shop.</b></li><li><b>🎟️ Reroll Token:</b> a free Remnant reroll. Earned from dailies, goals, rank-ups and the Daily Sweep.</li><li><b>📦 Fragment Cache:</b> ${CACHE_FR} fragments for any fighter you pick. Open it from the Rank screen.</li><li><b>🛒 Shop:</b> skins (${COS_SKIN.toLocaleString()} Solari) and auras (${COS_AURA.toLocaleString()}) for each fighter. Toggle them in Remnant.</li><li><b>🎖️ Badges and emblems:</b> goal tiers award badges, and every new title changes your menu emblem.</li><li><b>Fragments:</b> 100 unlocks a character's two Remnants, then 500 per Ascend (two Ascends in total).</li><li><b>🔧 Reworkable Relic:</b> pick a Remnant's regular stat yourself (1 relic Common, 2 relics Rare).</li><li><b>PVP:</b> no rewards.</li></ul></div>`}
 /* ===== Hemomancer: bleed engine ===== */
 const HM={lan:[13,19],rupB:8,rupS:10,heal:[35,50],healS:6,vit:3,ecl:1.5,ult:[30,40],tick:3,max:6};
 function addBleed(src,t,n){if(!t||t.hp<=0)return;t.hb=Math.min(HM.max,(t.hb||0)+n);t.hbt=3;t.hbs=src;
@@ -3387,10 +3389,10 @@ function rkLevel(){let x=RNK.xp,l=1;while(l<RK_MAX&&x>=rkNeed(l)){x-=rkNeed(l);l
 function rkTier(l){let i=0;RK_TITLES.forEach((t,k)=>{if(l>=t[0])i=k});return i}
 const rkTitle=l=>RK_TITLES[rkTier(l)][1],rkCol=l=>RK_COLS[rkTier(l)];
 const rkSol=n=>{try{solariSet(solariBalance()+n)}catch(e){}};
-function rkAddXp(n){if(n<=0)return;const b=rkLevel().l;RNK.xp+=n;const a=rkLevel().l;rkSave();fragToast("+"+n+" XP");for(let l=b+1;l<=a;l++){const r=rkRew(l);rkGive(r);fragToast("⭐ Rank "+l+" · "+rkTitle(l)+" — "+rkTxt(r));if(rkTier(l)!==rkTier(l-1))fragToast("🏅 New title: "+rkTitle(l)+" "+rkEmb(l))}rkSave()}
+function rkAddXp(n){if(n<=0)return;const b=rkLevel().l;RNK.xp+=n;const a=rkLevel().l;rkSave();fragToast("+"+n+" XP");for(let l=b+1;l<=a;l++){const r=rkRew(l);rkGive(r);fragToast("⭐ Rank "+l+" · "+rkTitle(l)+" — "+rkTxt(r));if(rkTier(l)!==rkTier(l-1)){riftGain(RF_TITLE);fragToast("🏅 New title: "+rkTitle(l)+" "+rkEmb(l)+" · +"+RF_TITLE+" 🔷 Rift Shards")}}rkSave()}
 function rkEvt(ev,xp,d){d=d||{};rkDay();let bonus=xp||0;const cl=[].concat(d.cls||[]);
  RNK.dq.forEach(q=>{if(q.c)return;const def=DQ.find(x=>x.id===q.id);if(!def||!ev.includes(def.e))return;if(def.e==="cls"){cl.forEach(c=>{if(!q.u.includes(c))q.u.push(c)});q.p=Math.min(def.g,q.u.length)}else q.p=Math.min(def.g,q.p+1);if(q.p>=def.g){q.c=1;bonus+=60;rkGive(def.r);fragToast("✅ Daily done: "+def.t+" — "+rkTxt(def.r))}});
- if(RNK.dq.length&&RNK.dq.every(q=>q.c)&&RNK.sw!==RNK.day){RNK.sw=RNK.day;RNK.st=RNK.sd===rkPrev(RNK.day)?RNK.st+1:1;RNK.sd=RNK.day;const sw={sol:50,tk:1,cc:1};if(RNK.st%3===0)sw.tk+=2;if(RNK.st%7===0){sw.rel=1;sw.cc+=2}rkGive(sw);bonus+=40;fragToast("🌟 Daily Sweep! Day "+RNK.st+" streak — "+rkTxt(sw))}
+ if(RNK.dq.length&&RNK.dq.every(q=>q.c)&&RNK.sw!==RNK.day){RNK.sw=RNK.day;RNK.st=RNK.sd===rkPrev(RNK.day)?RNK.st+1:1;RNK.sd=RNK.day;const sw={sol:50,tk:1,cc:1};if(RNK.st%3===0)sw.tk+=2;if(RNK.st%7===0){sw.rel=1;sw.cc+=2}rkGive(sw);riftGain(RF_DAILY);bonus+=40;fragToast("🌟 Daily Sweep! Day "+RNK.st+" streak — "+rkTxt(sw)+" · +"+RF_DAILY+" 🔷")}
  ["win","boss","camp","rush","apoc"].forEach(k=>{if(ev.includes(k))RNK.t[k]=(RNK.t[k]||0)+1});
  GQ.forEach(g=>{while(RNK.g[g.k]<g.t.length&&RNK.t[g.k]>=g.t[RNK.g[g.k]]){const i=RNK.g[g.k]++;bonus+=100*(i+1);rkGive(g.rw[i]);RNK.bd.push(g.k+i);fragToast("🏆 "+g.n+" "+["I","II","III"][i]+" — "+rkTxt(g.rw[i]));fragToast("🎖️ Badge earned: "+g.bd[i])}});
  rkSave();rkAddXp(bonus)}
@@ -3403,18 +3405,164 @@ function rankScreen(){token++;rkDay();const v=rkLevel(),pc=v.l>=RK_MAX?100:Math.
  ${v.l<RK_MAX?`<p class="rkx">Next rank: <b>${rkTxt(rkRew(nx))}</b>${RK_TR[nx]?` <span class="rkn2">· 🏅 new title: ${rkTitle(nx)} ${RK_EMB[rkTier(nx)]}</span>`:""}</p>`:""}</div>
  <div class="panel"><h3 class="sec">Inventory</h3><div class="rkinv"><span>🎟️ Reroll Tokens <b>${RNK.tk}</b></span><span>📦 Fragment Caches <b>${RNK.cc}</b></span><span>🔧 Relics <b>${relicGet()}</b></span></div><small class="rkm">Tokens pay for a Remnant reroll instead of 150 Solari. A Cache gives ${CACHE_FR} fragments to any fighter you choose.</small>${RNK.cc>0?`<div class="opts"><button class="btn pri" onclick="rkOpenCache()">📦 Open a Fragment Cache</button></div>`:""}</div>
  <div class="panel"><h3 class="sec">Daily quests</h3>${RNK.dq.map(q=>{const d=DQ.find(x=>x.id===q.id);return`<div class="rkq ${q.c?"ok":""}"><span>${q.c?"✅":"🎯"} ${d.t}</span><small>${q.p}/${d.g} · +60 XP · ${rkTxt(d.r)}</small><div class="tr"><div class="fi" style="width:${q.p/d.g*100}%;background:var(--ac)"></div></div></div>`}).join("")}
- <div class="rkq ${RNK.sw===RNK.day?"ok":""}"><span>${RNK.sw===RNK.day?"✅":"🌟"} Daily Sweep</span><small>Finish all 3 quests · +40 XP · +50 Solari · +1 🎟️ · +1 📦 · every 3rd day +2 🎟️ · every 7th day +1 🔧 and +2 📦</small><small>🔥 Streak: <b>${RNK.sd===RNK.day||RNK.sd===rkPrev(RNK.day)?RNK.st:0}</b> day${RNK.st===1?"":"s"}</small></div>
+ <div class="rkq ${RNK.sw===RNK.day?"ok":""}"><span>${RNK.sw===RNK.day?"✅":"🌟"} Daily Sweep</span><small>Finish all 3 quests · +40 XP · +50 Solari · +50 🔷 · +1 🎟️ · +1 📦 · every 3rd day +2 🎟️ · every 7th day +1 🔧 and +2 📦</small><small>🔥 Streak: <b>${RNK.sd===RNK.day||RNK.sd===rkPrev(RNK.day)?RNK.st:0}</b> day${RNK.st===1?"":"s"}</small></div>
  <small class="rkm">${clock?"⚠️ Your clock was moved back, so today's set stays until the real date catches up.":"New quests appear each day."}</small></div>
  <div class="panel"><h3 class="sec">Goals</h3>${GQ.map(g=>{const t=RNK.t[g.k]||0,i=RNK.g[g.k],done=i>=g.t.length,tg=done?g.t[g.t.length-1]:g.t[i];return`<div class="rkq ${done?"ok":""}"><span>${done?"✅":"🏆"} ${g.n} ${["I","II","III"][Math.min(i,2)]}</span><small>${Math.min(t,tg)}/${tg} ${g.u}${done?"":" · Reward: "+rkTxt(g.rw[i])+" · 🎖️ "+g.bd[i]}</small><div class="tr"><div class="fi" style="width:${Math.min(1,t/tg)*100}%;background:var(--ac)"></div></div></div>`}).join("")}</div>
  <div class="panel"><h3 class="sec">Badges</h3><div class="rkt">${GQ.map(g=>g.bd.map((b,i)=>`<span class="${RNK.bd.includes(g.k+i)?"on":""}" style="--rc:${RK_COLS[3+i*2]}">${RNK.bd.includes(g.k+i)?"":"🔒 "}${b}<small> · ${g.n} ${["I","II","III"][i]}</small></span>`).join("")).join("")}</div></div>
- <div class="panel"><h3 class="sec">Titles</h3><div class="rkt">${RK_TITLES.map((t,i)=>`<span class="${v.l>=t[0]?"on":""}" style="--rc:${RK_COLS[i]}">${v.l>=t[0]?"":"🔒 "}${RK_EMB[i]} ${t[1]}<small> · Rank ${t[0]}${RK_TR[t[0]]?" · "+rkTxt(RK_TR[t[0]]).replace(/ Solari/,""):""}</small></span>`).join("")}</div></div>`}
+ <div class="panel"><h3 class="sec">Titles</h3><small style="display:block;color:var(--mu);margin-bottom:6px">🔷 Every new title pays +${RF_TITLE} Rift Shards.</small><div class="rkt">${RK_TITLES.map((t,i)=>`<span class="${v.l>=t[0]?"on":""}" style="--rc:${RK_COLS[i]}">${v.l>=t[0]?"":"🔒 "}${RK_EMB[i]} ${t[1]}<small> · Rank ${t[0]}${RK_TR[t[0]]?" · "+rkTxt(RK_TR[t[0]]).replace(/ Solari/,""):""}</small></span>`).join("")}</div></div>`}
 function rkOpenCache(){if(RNK.cc<1)return;const m=document.createElement("div");m.className="modal";document.body.appendChild(m);
  const draw=()=>{m.innerHTML=`<div class="card" style="--c:var(--ac)"><h2>📦 Fragment Cache</h2><p>Pick a fighter to receive <b>${CACHE_FR}</b> fragments. You have <b>${RNK.cc}</b>.</p><div class="rw-grid">${NAMES.map(n=>{const f=fragGet(n),full=f.a>=2||(f.m===500&&f.p>=500);return`<button class="btn rwb" data-n="${n}" ${full?"disabled":""}><b>${CLS[n].e} ${n}</b><small>${full?(f.a>=2?"fully ascended":"ready to Ascend"):f.p+" / "+f.m}</small></button>`}).join("")}</div><div class="opts"><button class="btn" id="cqx">Close</button></div></div>`;
   m.querySelectorAll(".rwb").forEach(b=>b.onclick=()=>{if(RNK.cc<1)return;const n=b.dataset.n;RNK.cc--;const note=fragAddQ(n,CACHE_FR);fragSave();rkSave();try{sfx("buff")}catch(e){}fragToast("📦 "+n+" +"+CACHE_FR+" fragments"+(note?" — "+note:""));if(RNK.cc>0)draw();else{m.remove();rankScreen()}});
   m.querySelector("#cqx").onclick=()=>{m.remove();rankScreen()}};draw()}
+/* ===== Weekly Rift event: spend Rift Shards 🔷 for random rewards; one weekly exclusive skin/aura (max 1 per week) ===== */
+var RIFT=riftClean((function(){try{return JSON.parse(localStorage.getItem("aoa_rift")||"{}")}catch(e){return{}}})());
+function riftClean(o){o=o&&typeof o==="object"?o:{};const n=v=>Math.max(0,Math.min(999999,Math.floor(+v)||0));return{dc:/^\d{4}-\d{2}-\d{2}$/.test(o.dc)?o.dc:"",lk:+o.lk>=0&&+o.lk<=100?+o.lk:-1,sh:n(o.sh),w:n(o.w),x:n(o.x),pt:n(o.pt),fk:typeof o.fk==="string"?o.fk.slice(0,40):"",np:n(o.np),last:Array.isArray(o.last)?o.last.slice(0,10).map(r=>({i:String(r&&r.i||"").slice(0,8),t:String(r&&r.t||"").slice(0,40),r:["","rare","epic"].includes(r&&r.r)?r.r:""})):[]}}
+function riftSave(){try{localStorage.setItem("aoa_rift",JSON.stringify(RIFT))}catch(e){}}
+const RF_COST=10,RF_GIFT=10,RF_BASE=.005,RF_STEP=.0005,RF_CAP=.04,RF_HARD=150;
+/* week id = number of Mondays since 2024-01-01 (local time) */
+function riftWk(){const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));return Math.round((m-new Date(2024,0,1))/864e5/7)+1}
+function riftLeft(){const d=new Date(),e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+(8-(d.getDay()||7))%7+((d.getDay()===1)?7:0));let ms=Math.max(0,e-d);const D=Math.floor(ms/864e5),H=Math.floor(ms%864e5/36e5);return D?D+"d "+H+"h":H+"h "+Math.floor(ms%36e5/6e4)+"m"}
+/* featured exclusive: rotates through every skin & aura; skips ones the player already owns */
+function riftFeat(){const L=[];NAMES.forEach(n=>{L.push([n,"s"]);L.push([n,"a"])});const w=riftWk();for(let i=0;i<L.length;i++){const[n,k]=L[(w+i)%L.length];if(!cosHas(n,k))return{n,k}}return null}
+function riftLock(n,k){if(RIFT.x===riftWk())return false;const f=riftFeat();return!!f&&f.n===n&&f.k===k}
+function riftSync(){const f=riftFeat(),k=f?f.n+"|"+f.k:"";if(RIFT.fk!==k){RIFT.fk=k;RIFT.pt=0;riftSave()}}
+function riftP(){return RIFT.lk>=0?RIFT.lk/100:RIFT.pt>=RF_HARD?1:Math.min(RF_CAP,RF_BASE+RF_STEP*RIFT.pt)}
+function riftGain(a){a=Math.max(0,Math.floor(a)||0);if(a){RIFT.sh=Math.min(999999,RIFT.sh+a);riftSave()}return a}
+function riftTick(){const w=riftWk();if(RIFT.w!==w){RIFT.w=w;RIFT.sh+=RF_GIFT;riftSave();setTimeout(()=>fragToast("🎁 Weekly Rift gift: +"+RF_GIFT+" 🔷 Rift Shards"),400)}}
+{const _s=window.solari;window.solari=function(rg){const a=_s.apply(this,arguments);try{riftGain(Math.max(1,Math.round((a||0)/10)))}catch(e){}return a}}
+const RF_TAB=[
+ {w:42,f:()=>{const a=120+Math.floor(Math.random()*241);return{i:"☀️",t:"+"+a+" Solari",r:"",g:()=>solariSet(solariBalance()+a)}}},
+ {w:25,f:()=>{const a=Math.random()<.2?2:1;return{i:"🎟️",t:"+"+a+" Reroll Token"+(a>1?"s":""),r:"",g:()=>{RNK.tk=(RNK.tk||0)+a;rkSave()}}}},
+ {w:20,f:()=>{const a=Math.random()<.1?2:1;return{i:"📦",t:"+"+a+" Fragment Cache"+(a>1?"s":""),r:"rare",g:()=>{RNK.cc=(RNK.cc||0)+a;rkSave()}}}},
+ {w:13,f:()=>({i:"🔧",t:"+1 Reworkable Relic",r:"epic",g:()=>relicSet(relicGet()+1)})}];
+function riftRoll(ft){const wk=riftWk();riftSync();
+ if(ft&&RIFT.x!==wk){const p=riftP();if(Math.random()<p){RIFT.x=wk;RIFT.pt=0;COS.o[ft.n][ft.k]=1;COS.e[ft.n][ft.k]=1;cosSave();return{i:"🌟",t:(ft.k==="s"?SKINS:AURAS)[ft.n].n+" (exclusive!)",r:"epic",ex:ft}}RIFT.pt++}
+ let x=Math.random()*100;for(const e of RF_TAB){if(x<e.w){const r=e.f();r.g();return r}x-=e.w}const r=RF_TAB[0].f();r.g();return r}
+let riftBusy=false;
+async function riftPull(n){if(riftBusy)return;riftTick();if(RIFT.sh<RF_COST*n){fragToast("Not enough Rift Shards 🔷 — you need "+RF_COST*n+" (you have "+RIFT.sh+"). Win battles to earn more.");return}
+ riftBusy=true;try{RIFT.sh-=RF_COST*n;RIFT.np++;const out=[];let ex=null;
+  for(let i=0;i<n;i++){const r=riftRoll(riftFeat());out.push({i:r.i,t:r.t,r:r.r,x:r.ex?1:0});if(r.ex)ex=r.ex}
+  RIFT.last=out.slice(0,10);riftSave();await riftReveal(out,ex,n)}finally{riftBusy=false}rift()}
+/* Pull reveal: charging orb → flash → cards flip one by one. Exclusive gets a golden showcase. Low detail = shorter, no sparkles/rays; Ultra low = instant results. */
+function riftReveal(out,ex,n){return new Promise(async res=>{try{
+ const U=LOWD>1,top=ex?"x":out.some(r=>r.r==="epic")?"epic":out.some(r=>r.r==="rare")?"rare":"",col={x:"#ffcf4a",epic:"#ffcf4a",rare:"#4fb7ff","":"#9be0ff"}[top];
+ const ov=document.createElement("div");ov.className="rfov"+(LOWD?" lite":"");ov.style.setProperty("--rc",col);
+ ov.innerHTML='<div class="rfstage"></div><button class="btn rfskip">Skip ›</button>';document.body.appendChild(ov);
+ const st=ov.firstChild;let skip=false;ov.querySelector(".rfskip").onclick=e=>{skip=true;e.target.remove()};
+ const W=ms=>skip||U?Promise.resolve():sleep(ms),cont=lab=>new Promise(r=>{const b=document.createElement("button");b.className="btn pri rfcont";b.textContent=lab;b.onclick=()=>r();st.appendChild(b)}),
+  flash=()=>{if(U)return;const f=document.createElement("div");f.className="rfflash";ov.appendChild(f);setTimeout(()=>f.remove(),700)};
+ if(!U){st.innerHTML=`<div class="rforb ${top}"><i></i><i></i><i></i></div><div class="rfhint">${ex?"Something exceptional stirs…":"Opening the Rift…"}</div>`;try{sfx("charge")}catch(e){}await W(ex?(LOWD?1100:1800):n>1?(LOWD?500:1000):(LOWD?450:850));flash();try{sfx(ex?"buff":"pick")}catch(e){}}
+ if(ex){const D=ex.k==="s"?SKINS:AURAS,pv=ex.k==="s"?{s:1,a:0}:{s:0,a:1},c=ex.k==="s"?cosSkinCol(ex.n):CLS[ex.n].c;
+  const sp=U||LOWD?"":Array.from({length:18},(_,i)=>`<s style="--a:${Math.round(i*20+Math.random()*14)}deg;--d:${120+Math.round(Math.random()*110)}px;--t:${Math.round(Math.random()*600)}ms">✦</s>`).join("");
+  st.innerHTML=`<div class="rfex"><div class="rfrays"></div><div class="rfttl">WEEKLY EXCLUSIVE</div><div class="rfring"><div class="stage" style="--c:${c}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(ex.n,"",pv)}</svg></div><div class="sh"></div></div></div><h2>${D[ex.n].n}</h2><p>${ex.n} · ${ex.k==="s"?"Skin":"Aura"} — unlocked &amp; equipped!</p>${sp}</div>`;
+  await cont(n>1?"Next ›":"Awesome!")}
+ if(!(ex&&n===1)){st.innerHTML=`<div class="rfcards n${out.length}">${out.map(r=>`<div class="rfc ${r.r} ${r.x?"x":""}"><div class="in"><div class="bk">✦</div><div class="fr"><span>${r.i}</span><b>${r.t}</b></div></div></div>`).join("")}</div>`;
+  const cs=[...st.querySelectorAll(".rfc")];await W(250);for(const c of cs){c.classList.add("on");if(c.classList.contains("epic")||c.classList.contains("rare")){try{sfx("pick")}catch(e){}}await W(out.length>1?190:0)}
+  await cont("Continue")}
+ ov.classList.add("out");setTimeout(()=>{ov.remove();res()},U?0:220)}catch(e){document.querySelectorAll(".rfov").forEach(o=>o.remove());res()}})}
+{const st=document.createElement("style");st.textContent=`.rfov{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:16px;overflow:auto;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--rc) 24%,#06030f),#06030ff2 72%);animation:rfin .25s both}.rfov.out{opacity:0;transition:opacity .2s}@keyframes rfin{from{opacity:0}to{opacity:1}}
+.rfskip{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;opacity:.85;z-index:3}
+.rfstage{display:grid;place-items:center;gap:16px;text-align:center;width:100%;max-width:600px;color:#fff;position:relative}
+.rforb{position:relative;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,var(--rc) 45%,#0000 72%);box-shadow:0 0 60px var(--rc),0 0 120px var(--rc);animation:rfch 1s ease-in infinite}.rforb.x{animation:rfch .5s ease-in infinite,rfsh .22s infinite}
+.rforb i{position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--rc);animation:rfrg 1s linear infinite}.rforb i:nth-child(2){animation-delay:.33s}.rforb i:nth-child(3){animation-delay:.66s}
+@keyframes rfch{from{transform:scale(.7);filter:brightness(1)}to{transform:scale(1.3);filter:brightness(1.7)}}@keyframes rfrg{from{transform:scale(.7);opacity:.9}to{transform:scale(2.4);opacity:0}}@keyframes rfsh{0%,100%{translate:0 0}25%{translate:-4px 2px}50%{translate:3px -3px}75%{translate:-2px -2px}}
+.rfhint{opacity:.85;letter-spacing:3px;text-transform:uppercase;font-size:12px}.rfflash{position:absolute;inset:0;background:#fff;pointer-events:none;animation:rfhl .7s both;z-index:2}@keyframes rfhl{from{opacity:.95}to{opacity:0}}
+.rfcards{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;perspective:800px}.rfcards.n1{grid-template-columns:minmax(0,210px);justify-content:center}
+.rfc{aspect-ratio:3/4}.rfc .in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.3,1)}.rfc.on .in{transform:rotateY(180deg)}
+.rfc .bk,.rfc .fr{position:absolute;inset:0;border-radius:12px;display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--ln)}
+.rfc .bk{font-size:26px;color:var(--rc);background:linear-gradient(145deg,#2a1d4d,#120a24)}.rfc .fr{transform:rotateY(180deg);align-content:center;gap:4px;padding:5px;font-size:10px;background:var(--pn);color:var(--tx)}.rfc .fr span{font-size:28px}
+.rfc.rare .fr{border-color:#4fb7ff;box-shadow:0 0 14px #4fb7ffaa}.rfc.epic .fr{border-color:#ffcf4a;box-shadow:0 0 18px #ffcf4acc}.rfc.x .fr{background:linear-gradient(145deg,#5a3500,#ffcf4a66);border-color:#ffe27a}
+.rfcards.n1 .fr{font-size:15px;gap:8px}.rfcards.n1 .fr span{font-size:58px}
+.rfex{position:relative;display:grid;place-items:center;gap:8px;width:100%;isolation:isolate;padding:8px 0}
+.rfrays{position:absolute;width:min(140vw,760px);aspect-ratio:1;left:50%;top:42%;translate:-50% -50%;z-index:-1;background:repeating-conic-gradient(#ffcf4a66 0 6deg,#0000 6deg 18deg);-webkit-mask:radial-gradient(circle,#000 0 18%,#0000 68%);mask:radial-gradient(circle,#000 0 18%,#0000 68%);animation:rfsp2 16s linear infinite}@keyframes rfsp2{to{rotate:360deg}}
+.rfttl{font:400 14px "Alfa Slab One",Georgia,serif;letter-spacing:6px;color:#ffe9a8;animation:rfdr .6s both}.rfring{position:relative;padding:8px;animation:rfpi .75s cubic-bezier(.2,1.4,.4,1) both .15s}
+.rfring::before{content:"";position:absolute;inset:-4px;border-radius:50%;border:3px solid #ffcf4a;box-shadow:0 0 30px #ffcf4a,inset 0 0 30px #ffcf4a55;animation:rfpl 1.4s ease-in-out infinite}
+.rfex h2{margin:0;font-size:28px;background:linear-gradient(180deg,#fff,#ffcf4a);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rfdr .6s both .5s}.rfex p{margin:0;opacity:.92;animation:rfdr .6s both .75s}
+.rfex s{position:absolute;left:50%;top:42%;text-decoration:none;color:#ffe9a8;font-size:18px;animation:rfsk 1.5s ease-out both;animation-delay:var(--t)}
+@keyframes rfsk{from{transform:rotate(var(--a)) translateX(0) scale(.4);opacity:1}to{transform:rotate(var(--a)) translateX(var(--d)) scale(1.3);opacity:0}}@keyframes rfdr{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}@keyframes rfpi{from{opacity:0;transform:scale(.3) rotate(-20deg)}to{opacity:1;transform:none}}@keyframes rfpl{50%{transform:scale(1.06);opacity:.7}}
+.rfov.lite .rfrays,.rfov.lite .rfring::before{animation:none}.rfov.lite .rfc .in{transition-duration:.2s}.rfov.lite .rforb i{display:none}html.lowd2 .rfov,html.lowd2 .rfov *{animation:none!important;transition:none!important}
+@media(max-width:420px){.rfcards{gap:6px}.rfc .fr{font-size:9px}}`;document.head.appendChild(st)}
+function riftPool(){const L=[];NAMES.forEach(n=>{L.push([n,"s"]);L.push([n,"a"])});const ft=riftFeat(),w=riftWk();const ord={};if(ft){for(let i=0;i<L.length;i++){const[n,k]=L[(w+i)%L.length];if(!cosHas(n,k)&&!(ord[n+k]!=null))ord[n+k]=Object.keys(ord).length}}
+ const chip=([n,k])=>{const D=k==="s"?SKINS:AURAS,own=cosHas(n,k),cur=ft&&ft.n===n&&ft.k===k,key=n+k,nx=ord[key];return`<div class="rfchip ${cur?"epic":own?"rare":""}" title="${D[n].tx.replace(/"/g,"&quot;")}"><span>${k==="s"?"🛡️":"✨"}</span><b>${D[n].n}<br><small>${n}${cur?" · FEATURED":own?" · Owned":nx!=null?" · Up in "+nx+"w":""}</small></b></div>`};
+ const own=L.filter(([n,k])=>cosHas(n,k)).length;
+ return`<div class="panel"><button type="button" class="btn" style="width:100%;text-align:left" onclick="const b=this.nextElementSibling;b.hidden=!b.hidden;this.querySelector('i').textContent=b.hidden?'▸':'▾'"><i style="font-style:normal">▸</i> 🌟 Exclusive skins &amp; auras (${own}/${L.length} owned)</button><div hidden><small style="display:block;color:var(--mu);margin:6px 0">One is featured each week. Owned ones are skipped.</small><div class="rflist">${L.filter(x=>!cosHas(x[0],x[1])||(ft&&ft.n===x[0]&&ft.k===x[1])).map(chip).join("")||"<small>You own everything!</small>"}</div></div></div>`}
+function riftBtn(){const cls="ev"+(RIFT.w!==riftWk()?" glow":"");let ft=null;try{riftSync();ft=riftFeat()}catch(e){}
+ if(!ft)return MB2(cls,"🌠","Weekly Rift",riftSub(),"rift()");
+ const D=ft.k==="s"?SKINS:AURAS,won=RIFT.x===riftWk(),th=cosSvg(ft.n,"",ft.k==="s"?{s:1,a:0}:{s:0,a:1});
+ return`<button class="btn ${cls}" onclick="rift()"><span class="mi" style="width:46px;height:56px;overflow:visible;border-color:${ft.k==="s"?cosSkinCol(ft.n):CLS[ft.n].c}"><svg class="art" viewBox="0 0 120 150" width="40" height="50" aria-hidden="true">${th}</svg></span><span class="mtx"><b>Weekly Rift</b><small>🌟 ${won?"Claimed":"Exclusive"}: <b style="display:inline;font-size:12px">${D[ft.n].n}</b> (${ft.n} ${ft.k==="s"?"skin":"aura"}) · ${riftSub()}</small></span><i class="mar">›</i></button>`}
+function riftSub(){return RIFT.w!==riftWk()?"🎁 Free weekly gift ready! · Skins, auras & rewards":"🔷 "+RIFT.sh+" shards · resets in "+riftLeft()+""}
+function rift(){token++;riftTick();riftSync();const wk=riftWk(),ft=riftFeat(),won=RIFT.x===wk,p=riftP();
+ let card;if(ft){const D=ft.k==="s"?SKINS:AURAS,col=ft.k==="s"?cosSkinCol(ft.n):CLS[ft.n].c,pv=ft.k==="s"?{s:1,a:0}:{s:0,a:1};
+  card=`<div class="shc own rfx" style="--c:${col}"><i class="sal">${won?"CLAIMED THIS WEEK":"WEEKLY EXCLUSIVE"}</i><div class="shp"><div class="stage" style="--c:${col}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(ft.n,"",pv)}</svg></div><div class="sh"></div></div></div><b>${D[ft.n].n}</b><small>${ft.n} · ${ft.k==="s"?"Skin":"Aura"} · ${D[ft.n].tx}</small><small><b>${won?"Already won — one per week":"Chance per pull: "+(p*100).toFixed(2)+"%"+(RIFT.lk>=0?" 🍀":"")}</b></small></div>`}
+  else card=`<div class="panel"><b>🎉 You own every skin and aura!</b><small style="display:block;color:var(--mu)">No exclusives left to win — pulls still pay Solari, Tokens, Caches and Relics.</small></div>`;
+ $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>🌠 Weekly Rift</h2><span class="relic-pill" title="Rift Shards">🔷 ${RIFT.sh.toLocaleString()}</span></div>
+ <p class="shsub">Resets in <b>${riftLeft()}</b> · Spend <b>${RF_COST} 🔷</b> per pull. Only <b>one exclusive per week</b>.</p>
+ <div class="rfwrap">${card}
+ <div class="rf-btns"><button class="btn pri" ${RIFT.sh<RF_COST?"disabled":""} onclick="riftPull(1)">Pull ×1<br><small>${RF_COST} 🔷</small></button><button class="btn pri" ${RIFT.sh<RF_COST*10?"disabled":""} onclick="riftPull(10)">Pull ×10<br><small>${RF_COST*10} 🔷</small></button></div>
+ ${RIFT.last.length?`<div class="panel"><label>Last pull</label><div class="rflist">${RIFT.last.map((r,i)=>`<div class="rfchip ${r.r}" style="animation-delay:${i*70}ms"><span>${r.i}</span><b>${r.t}</b></div>`).join("")}</div></div>`:""}
+ ${riftPool()}
+ <div class="panel"><label>Rewards</label><ul class="rfodds"><li>☀️ Solari 120–360 <b>42%</b></li><li>🎟️ Reroll Token <b>25%</b></li><li>📦 Fragment Cache <b>20%</b></li><li>🔧 Reworkable Relic <b>13%</b></li><li>🌟 Weekly exclusive <b>${(p*100).toFixed(2)}%</b> <small>(rises each miss, guaranteed by ${RF_HARD} misses)</small></li></ul><small style="display:block;margin-top:6px;color:var(--mu)">🎯 Pity: <b>${RIFT.pt}/${RF_HARD}</b> — resets to 0 whenever a new exclusive skin/aura is featured.</small></div>
+ <div class="panel"><label>Earn 🔷 Rift Shards</label><small style="color:var(--mu)">🎁 ${RF_GIFT} free every Monday · ⚔️ Every Solari reward also pays shards (about 1 per 10 Solari): enemies 1, Boss Rush 10–15 per boss.</small></div></div>`}
+{const st=document.createElement("style");st.textContent=`.rfwrap{display:grid;gap:12px;max-width:520px;margin:0 auto}.rfx{max-width:230px;margin:0 auto;width:100%}.rf-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rf-btns .btn small{opacity:.85}
+.rflist{display:grid;grid-template-columns:1fr 1fr;gap:6px}.rfchip{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;border:2px solid var(--ln);background:var(--pn2);animation:rfpop .35s both;font-size:12px}.rfchip span{font-size:20px}
+.rfchip.rare{border-color:#4fb7ff;box-shadow:0 0 10px #4fb7ff55}.rfchip.epic{border-color:#ffcf4a;box-shadow:0 0 12px #ffcf4a66}@keyframes rfpop{from{opacity:0;transform:scale(.7) translateY(8px)}to{opacity:1;transform:none}}
+.rfodds{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-size:13px}.rfodds li{display:flex;justify-content:space-between;gap:8px}.rfodds small{color:var(--mu)}
+.menu.mm.mmain{grid-template-columns:repeat(2,1fr)}
+.mm.mmain .btn{grid-column:auto!important;min-height:70px}
+.mm.mmain .btn.pri,.mm.mmain .btn.ev{grid-column:1/-1!important}
+.mm .btn.ev{padding:16px 20px;border:2px solid var(--ac);background:linear-gradient(120deg,color-mix(in srgb,#7a4dff 26%,var(--pn)),color-mix(in srgb,#ff4fd8 20%,var(--pn)))}
+.mm .btn.ev .mar{display:block;color:var(--ac)}.mm .btn.ev .mtx b{font-size:18px}
+.mm .btn.ev.glow .mi{box-shadow:0 0 0 3px #ffcf4a99}
+@media(min-width:820px){.menu.mm.mmain{grid-template-columns:repeat(3,1fr);max-width:820px}.mm.mmain .btn{min-height:76px}}
+@media(min-width:820px){.rfwrap{max-width:900px;grid-template-columns:270px 1fr;align-items:start;column-gap:18px}.rfwrap>:first-child{grid-column:1;grid-row:1/span 6}.rfwrap>:not(:first-child){grid-column:2}.rfx{max-width:none}}
+html.lowd .rfchip{animation:none}html.lowd2 .rfx .stage *{animation:none}`;document.head.appendChild(st)}
+/* ===== Daily Challenge (Play menu). The Daily Challenge and the Daily Sweep (all 3 quests) each pay RF_DAILY Rift Shards ===== */
+const RF_DAILY=50,RF_TITLE=100;
+const dcInfo=()=>`<div class="dcinfo"><b>🌟 Daily Sweep (all 3 quests)</b><small>${RNK.sw===RNK.day?"✅ Claimed today · ":""}Streak: ${RNK.st||0} day${(RNK.st||0)===1?"":"s"}</small><ul><li>☀️ 50 Solari · 🎟️ 1 Reroll Token · 📦 1 Fragment Cache · +40 XP · <b>+${RF_DAILY} 🔷</b></li><li>Every 3rd streak day: +2 🎟️ Tokens</li><li>Every 7th streak day: +1 🔧 Relic and +2 📦 Caches</li></ul><b>📅 Daily Challenge</b><ul><li>+${RF_DAILY} 🔷 · +200 ☀️ · +60 XP, once per day</li></ul><b>🏅 Rank titles</b><ul><li>Every new rank title: <b>+${RF_TITLE} 🔷 Rift Shards</b></li></ul></div>`;
+const DC_MODS=[
+ {id:"glass",i:"💥",n:"Glass Cannon",d:"Your damage ×1.5 but your HP ×0.75.",B:{dmg:1.5,hp:.75}},
+ {id:"iron",i:"🛡️",n:"Ironclad",d:"Enemies have +40% HP. Your healing ×1.5.",B:{heal:1.5},E:{hp:1.4}},
+ {id:"fren",i:"🔥",n:"Frenzy",d:"Everyone deals +30% damage.",B:{dmg:1.3},E:{dmg:1.3}},
+ {id:"mara",i:"⏳",n:"Marathon",d:"Everyone has +60% HP.",B:{hp:1.6},E:{hp:1.6}},
+ {id:"brit",i:"🎯",n:"Brittle Foes",d:"Enemies have −30% HP but hit +25% harder.",E:{hp:.7,dmg:1.25}}];
+function dcToday(){rkDay();const day=rkToday();let h=0;for(const c of day)h=(h*31+c.charCodeAt(0)+7)>>>0;const r=()=>{h=(h*1664525+1013904223)>>>0;return h/4294967296};
+ const cls=NAMES[Math.floor(r()*NAMES.length)];let bc=NAMES[Math.floor(r()*NAMES.length)];if(bc===cls)bc=NAMES[(NAMES.indexOf(bc)+1)%NAMES.length];const mod=DC_MODS[Math.floor(r()*DC_MODS.length)],rush=r()<.3,pool=[...NAMES];for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}const bk=Object.keys(BOSSES).filter(k=>k!=="below"),boss=bk[Math.floor(r()*bk.length)];return{day,cls,bc,mod,rush,tm:pool.slice(0,3),boss}}
+function dcLeft(){const d=new Date(),e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),ms=Math.max(0,e-d);return Math.floor(ms/36e5)+"h "+Math.floor(ms%36e5/6e4)+"m"}
+function dcSub(){return RIFT.dc===dcToday().day?"✅ Done today · quests below":"Win today's gauntlet · +"+RF_DAILY+" 🔷 shards"}
+function dailyScreen(){token++;const d=dcToday(),done=RIFT.dc===d.day,k=CLS[d.cls],bk=CLS[d.bc],m=d.mod,[n1,n2]=ENEMY[d.bc];
+ $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="playMenu()">← Back</button><h2>📅 Daily</h2><span class="relic-pill" title="Rift Shards">🔷 ${RIFT.sh.toLocaleString()}</span></div>
+ <div class="rfwrap dcwrap"><div class="panel dcmain"><h3 class="sec">Daily Challenge</h3>${d.rush?`<div class="dcrow"><span>👥</span><div><b>${CLS[d.tm[0]].e} ${d.tm[0]} + ${CLS[d.tm[1]].e} ${d.tm[1]} · Support ${CLS[d.tm[2]].e} ${d.tm[2]}</b><small>Boss Rush day: random Player 1, Player 2 and Support</small></div></div><div class="dcrow"><span>${BOSSES[d.boss].e}</span><div><b>${BOSSES[d.boss].n}</b><small>One normal Boss Rush boss · Remnant effects active</small></div></div>`:`<div class="dcrow"><span>${k.e}</span><div><b>Your fighter: ${d.cls}</b><small>Fixed for today — same for everyone · Remnant effects active</small></div></div>
+ <div class="dcrow"><span>⚔️</span><div><b>${n1} → ${n2} → ${bk.e} ${d.bc} Boss</b><small>Three fights in a row, full HP at each start</small></div></div>`}
+ <div class="dcrow"><span>${m.i}</span><div><b>${m.n}</b><small>${m.d}</small></div></div>
+ <div class="dcrow"><span>🎁</span><div><b>+${RF_DAILY} 🔷 Rift Shards · +200 ☀️ Solari · +60 XP</b><small>${done?"Claimed today — replay for practice (no reward)":"Win all three fights. Retry as often as you like."}</small></div></div>
+ <button class="btn pri" onclick="dcStart()">${done?"↻ Replay (practice)":"▶ Start challenge"}</button><small style="color:var(--mu);text-align:center">Resets in ${dcLeft()}</small></div>
+ <div class="panel"><h3 class="sec">Daily quests</h3>${RNK.dq.map(q=>{const df=DQ.find(x=>x.id===q.id);return`<div class="rkq ${q.c?"ok":""}"><span>${q.c?"✅":"🎯"} ${df.t}</span><small>${q.p}/${df.g} · +60 XP · ${rkTxt(df.r)}</small><div class="tr"><div class="fi" style="width:${q.p/df.g*100}%;background:var(--ac)"></div></div></div>`}).join("")}${dcInfo()}</div></div>`}
+async function dcStart(){const d=dcToday(),m=d.mod,k=CLS[d.bc],[n1,n2]=ENEMY[d.bc];token++;RMON=true;RUN=null;
+ if(d.rush)return dcRush(d);
+ B={dmg:1,heal:1,hp:1};E={dmg:1.2,heal:1.1,hp:1.15};for(const a in m.B||{})B[a]*=m.B[a];for(const a in m.E||{})E[a]*=m.E[a];
+ const p=mk(d.cls,S.n1.trim()||"Hero",false),st=[()=>mkSimple(n1,Math.floor(150*E.hp),[10,30],[20,30],null,k.c,k.e),()=>{const e=mkSimple(n2,Math.floor(180*E.hp),[10,30],[20,35],[30,40],k.c,k.e);e.elite=true;return e},()=>{const b=mk(d.bc,d.bc+" Boss",true);b.maxHp=b.hp=Math.floor(300*E.hp*1.15);return b}];
+ await ask(`<h2>📅 Daily Challenge</h2><p>${CLS[d.cls].e} ${d.cls} vs ${n1} → ${n2} → ${d.bc} Boss<br>${m.i} <b>${m.n}</b> — ${m.d}</p>`,["Fight!"]);
+ for(let s=0;s<3;s++){CK=null;RUNMODE=null;resetF(p);const e=st[s](),w=await fight(p,e,{title:`Daily · ${["Enemy","Elite","Boss"][s]}`,sub:`${m.i} ${m.n}`,hard:true,boss:s===2,first:chance(.5)?"a":"b"});
+  if(!w)return;if(w!==p){await ask(`<h2>💀 Challenge failed</h2><p>${m.i} ${m.n} got you at fight ${s+1}/3. Try again!</p>`,["Back"]);dailyScreen();return}
+  if(s<2)fragToast("✅ Fight "+(s+1)+"/3 cleared")}
+ let msg=`<p>All three fights cleared.<br><small style="color:var(--mu)">Reward already claimed today.</small></p>`;
+ if(RIFT.dc!==d.day){RIFT.dc=d.day;riftGain(RF_DAILY);riftSave();solari([200,200]);rkEvt(["win","boss"],60,{cls:d.cls});msg=`<p>All three fights cleared!<br><b>+${RF_DAILY} 🔷 Rift Shards · +200 ☀️ Solari · +60 XP</b></p>`}
+ await ask(`<h2>🏆 Daily Challenge complete!</h2>${msg}`,["Continue"]);dailyScreen()}
+async function dcRush(d){const m=d.mod,bd=BOSSES[d.boss];B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};RUN={bf:new Set(),all:false,cr:0};B.hp=cHP();
+ for(const a in m.B||{})B[a]*=m.B[a];for(const a in m.E||{})if(a!=="hp")E[a]*=m.E[a];
+ const P=[mk(d.tm[0],"Player 1",false),mk(d.tm[1],"Player 2",false)],sup={c:d.tm[2],cd:0};P.forEach(p=>{p.rm=rmOf(p.cls);if(p.rm&&p.rm.hp){p.maxHp=Math.round(p.maxHp*(1+p.rm.hp));p.hp=p.maxHp}});
+ await ask(`<h2>📅 Daily Boss Rush</h2><p>${CLS[d.tm[0]].e} ${d.tm[0]} + ${CLS[d.tm[1]].e} ${d.tm[1]} · Support ${CLS[d.tm[2]].e} ${d.tm[2]}<br>vs ${bd.e} <b>${bd.n}</b><br>${m.i} <b>${m.n}</b> — ${m.d}</p>`,["Fight!"]);
+ const b=mkBoss(d.boss,false);if(m.E&&m.E.hp)b.maxHp=b.hp=Math.round(b.maxHp*m.E.hp);P.forEach(p=>resetF(p));RUN.rv=0;RUNMODE="rush";CK=null;
+ const w=await rushFight(P,sup,b,false,null);RUN=null;if(w===null)return;
+ if(!w){await ask(`<h2>💀 Challenge failed</h2><p>${b.name} wins this time. Try again!</p>`,["Back"]);dailyScreen();return}
+ let msg=`<p>${b.name} falls!<br><small style="color:var(--mu)">Reward already claimed today.</small></p>`;
+ if(RIFT.dc!==d.day){RIFT.dc=d.day;riftGain(RF_DAILY);riftSave();solari([200,200]);rkEvt(["boss","win"],60,{cls:P.map(x=>x.cls)});msg=`<p>${b.name} falls!<br><b>+${RF_DAILY} 🔷 Rift Shards · +200 ☀️ Solari · +60 XP</b></p>`}
+ await ask(`<h2>🏆 Daily Challenge complete!</h2>${msg}`,["Continue"]);dailyScreen()}
+{const st=document.createElement("style");st.textContent=`.dcwrap{max-width:560px}.dcmain{display:grid;gap:10px}.dcrow{display:flex;gap:12px;align-items:center}.dcrow>span{font-size:26px;width:36px;text-align:center}.dcrow b{display:block;font-size:14px}.dcrow small{color:var(--mu)}
+@media(min-width:820px){.dcwrap{max-width:900px;grid-template-columns:1fr 1fr!important;align-items:start}.dcwrap>*{grid-column:auto!important;grid-row:auto!important}}`;document.head.appendChild(st)}
 function menu(){RUNMODE=null;CK=null;token++;document.querySelectorAll(".modal").forEach(m=>m.remove());music("menu");
  $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of <br>Ascension</h1><p class="tag">Turn-based battle game</p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
- <div class="menu mm mmain">${MB2("pri","▶","Play","PVP, Campaign, Boss Rush","playMenu()")}${MB2("","🔮","Remnant","Fragments for each fighter","remnant()")}${MB2("","🛒","Shop","Skins and auras","shop()")}${MB2("","📖","Lore book","The story of the Arena","story()")}${MB2("","📚","Guides","Fighters, bosses and tips","guide()")}${MB2("","🧠","Rules &amp; Bot","How it all works","howto()")}${MB2("","⚙️","Settings","Audio and more","settingsMenu()")}</div>
+ <div class="menu mm mmain">${MB2("pri","▶","Play","PVP, Campaign, Boss Rush","playMenu()")}${riftBtn()}${MB2("","🔮","Remnant","Fragments for each fighter","remnant()")}${MB2("","🛒","Shop","Skins and auras","shop()")}${MB2("","📖","Lore book","The story of the Arena","story()")}${MB2("","📚","Guides","Fighters, bosses and tips","guide()")}${MB2("","🧠","Rules &amp; Bot","How it all works","howto()")}${MB2("","⚙️","Settings","Audio and more","settingsMenu()")}</div>
  <div class="lineup">${NAMES.map(n=>charHTML(n)).join("")}</div>
  <div class="credit">Created by JairusJBDR</div>`}
 var FR={};try{FR=JSON.parse(localStorage.getItem("aoa_frag"))||{}}catch(e){}
@@ -3429,7 +3577,7 @@ const CMD_ON=false;
 var CMDL=[];
 function cmdScreen(){if(!CMD_ON)return;$("#app").innerHTML=`<div class="hud"><button class="btn" onclick="settingsMenu()">← Back</button><h2>Command</h2><span></span></div><div class="panel"><label>Console</label><div style="display:flex;gap:8px"><input type="text" id="cmdIn" placeholder="/fragments Knight +100" autocapitalize="off" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')cmdGo()"><button class="btn pri" onclick="cmdGo()">Run</button></div><div id="cmdLog" class="cmdlog"></div></div><div class="panel cmdhelp"><label>Commands</label>
 <p class="lore">Not case-sensitive. <b>+</b> adds, <b>-</b> subtracts, a plain number sets it exactly.</p>
-<div class="ch-row"><b>💰 Solari</b><code>/solari +100</code> add<code>/solari -100</code> subtract<code>/solari 500</code> set to 500</div>
+<div class="ch-row"><b>💰 Solari</b><code>/solari +100</code> add<code>/solari -100</code> subtract<code>/solari 500</code> set to 500</div><div class="ch-row"><b>🔷 Rift Shards</b><code>/shard +10</code> add<code>/shard -5</code> subtract<code>/shard 50</code> set to 50</div><div class="ch-row"><b>🍀 Luck</b><code>/luck 50</code> weekly-exclusive chance per Rift pull<code>/luck off</code> normal odds</div>
 <div class="ch-row"><b>🔮 Fragments</b><code>/fragments Knight +100</code> one character<code>/fragments all +100</code> everyone<code>/fragments +100</code> the character open in Remnant</div>
 <div class="ch-row"><b>⚔️ Buff</b><code>/buff Knight 1000</code> +1000 damage and +1000 healing<code>/buff all 500</code> everyone<code>/buff Knight 0</code> remove<br><small>Flat bonus added to every hit and every heal. Works in all modes.</small></div>
 <div class="ch-row"><b>🎭 Skin</b><code>/skin Knight</code> unlock and equip<code>/skin all</code> everyone<code>/skin Knight off</code> unequip</div>
@@ -3443,9 +3591,11 @@ function cmdGo(){const i=document.getElementById("cmdIn");if(!i)return;const raw
 function findChar(q){q=(q||"").trim().toLowerCase();if(!q)return null;let f=NAMES.find(x=>x.toLowerCase()===q);if(f)return f;const p=NAMES.filter(x=>x.toLowerCase().startsWith(q));return p.length===1?p[0]:null}
 function cmdRun(raw){if(!CMD_ON)return[false,"Unavailable."];
  const t=raw.replace(/^\//,"").trim().split(/\s+/),c=(t[0]||"").toLowerCase(),last=t[t.length-1],m=/^([+\-−]?)(\d+)$/.exec(last);
- if(c==="help"||c==="?")return[true,"/solari +100 · /fragments Knight +100 · /buff Knight 1000 · /skin Knight · /aura Knight · /token 5 · /cache 5 · /reset Knight · /reset all"];
+ if(c==="help"||c==="?")return[true,"/solari +100 · /shard +10 · /luck 50 · /fragments Knight +100 · /buff Knight 1000 · /skin Knight · /aura Knight · /token 5 · /cache 5 · /reset Knight · /reset all"];
  if(c==="buff"){const num=/^\+?(\d+)$/.exec(last);if(t.length<3||!num)return[false,"Use: /buff Knight 1000  (or /buff all 1000). Use 0 to remove."];const v=parseInt(num[1],10),q=t.slice(1,-1).join(" ").toLowerCase();let who;if(q==="all")who=NAMES.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+t.slice(1,-1).join(" ")+". Characters: "+NAMES.join(", ")];who=[f]}
   who.forEach(n=>{if(v>0)FB[n]=v;else delete FB[n]});fbSave();return[true,v>0?`⚔️ ${q==="all"?"All characters":who[0]}: +${v.toLocaleString()} damage and +${v.toLocaleString()} healing on every hit and heal (all modes).`:`Buff removed for ${q==="all"?"all characters":who[0]}.`]}
+ if(c==="luck"){const a=(t[1]||"").replace("%","").toLowerCase();if(a==="off"||a==="reset"){RIFT.lk=-1;riftSave();return[true,"🍀 Luck reset to normal odds."]}
+  if(!/^\d+(\.\d+)?$/.test(a))return[false,"Use: /luck 50  (0–100% = chance of the weekly exclusive on each Rift pull) or /luck off"+(RIFT.lk>=0?" · now "+RIFT.lk+"%":"")];const x=Math.max(0,Math.min(100,+a));RIFT.lk=x;riftSave();return[true,`🍀 Rift luck: ${x}% chance of the weekly exclusive per pull.`]}
  if(c==="skin"||c==="aura"){const k=c==="skin"?"s":"a",lab=c==="skin"?"Skin":"Aura",D=k==="s"?SKINS:AURAS;let q=t.slice(1).join(" ").toLowerCase(),off=false;if(/\s+off$/.test(q)){off=true;q=q.replace(/\s+off$/,"")}
   if(!q)return[false,"Use: /"+c+" Knight  (or /"+c+" all). Add 'off' to unequip: /"+c+" Knight off"];
   let who;if(q==="all")who=NAMES.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+q+". Characters: "+NAMES.join(", ")];who=[f]}
@@ -3458,7 +3608,8 @@ function cmdRun(raw){if(!CMD_ON)return[false,"Unavailable."];
  if(!m||t.length<2)return[false,c==="fragments"||c==="frag"||c==="fragment"?"Use: /fragments Knight +100  (or all, or just +100 for the Remnant character)":"Use: /"+(c||"solari")+" +100, -100 or a number."];
  const op=m[1]==="−"?"-":m[1],v=parseInt(m[2],10);
  if(c==="token"||c==="tokens"||c==="cache"||c==="caches"){if(t.length>2)return[false,"Usage: /"+c+" +5"];const key=c.startsWith("token")?"tk":"cc",lab=key==="tk"?"🎟️ Reroll Tokens":"📦 Fragment Caches",cur=RNK[key]||0,nv=Math.max(0,op==="+"?cur+v:op==="-"?cur-v:v);RNK[key]=nv;rkSave();return[true,`${lab}: ${cur} → ${nv}`]}
- if(c==="solari"){if(t.length>2)return[false,"Usage: /solari +100"];const cur=solariBalance(),nv=Math.max(0,op==="+"?cur+v:op==="-"?cur-v:v);solariSet(nv);return[true,`Solari: ${cur.toLocaleString()} → ${nv.toLocaleString()}`]}
+ if(c==="shard"||c==="shards"){if(t.length>2)return[false,"Usage: /shard +10"];const cur=RIFT.sh,nv=Math.max(0,Math.min(999999,op==="+"?cur+v:op==="-"?cur-v:v));RIFT.sh=nv;riftSave();return[true,`🔷 Rift Shards: ${cur.toLocaleString()} → ${nv.toLocaleString()}`]}
+  if(c==="solari"){if(t.length>2)return[false,"Usage: /solari +100"];const cur=solariBalance(),nv=Math.max(0,op==="+"?cur+v:op==="-"?cur-v:v);solariSet(nv);return[true,`Solari: ${cur.toLocaleString()} → ${nv.toLocaleString()}`]}
  if(c==="fragments"||c==="fragment"||c==="frag"){
   const nm=t.slice(1,-1).join(" ").toLowerCase();let who;
   if(!nm){if(!RM)return[false,"Open Remnant and pick a character first, or add a name: /fragments Name +100"];who=[RM]}
@@ -3468,7 +3619,7 @@ function cmdRun(raw){if(!CMD_ON)return[false,"Unavailable."];
    if(f.m===100&&np>=100){f.u=true;f.m=500;f.p=0;remEnsure(n);note=" 🔓 unlocked"}else f.p=Math.max(0,Math.min(f.m,np));
    return `${n}: ${was} → ${f.p}/${f.m}${note}`});
   fragSave();return[true,out.length>4?`Updated ${out.length} characters.`:out.join("<br>")]}
- return[false,"Unknown command: /"+c+". Try /solari, /fragments, /skin, /aura, /token, /cache or /reset (or /help)."]}
+ return[false,"Unknown command: /"+c+". Try /solari, /shard, /luck, /fragments, /skin, /aura, /token, /cache or /reset (or /help)."]}
 var RMON=false;(function(){const w=(n,v)=>{const o=window[n];window[n]=function(){RMON=v;return o.apply(this,arguments)}};w("campaign",true);w("startRush",true);w("startBattle",false)})();
 
 /* ===== Reworkable Relic, flat buffs, all-clear reward ===== */
@@ -3593,11 +3744,11 @@ function remnant(n){RM=n||RM||NAMES[0];const k=CLS[RM];
  <div class="rm-cards">${reg(0)}${reg(1)}</div>
  <div class="panel rm-fx"><label>Effects <small style="font-weight:500;color:var(--mu)">· active in Campaign and Boss Rush only</small></label><div class="rm-fxbox">${(eff||"None yet — reach 100 fragments.")+(window.pxLine?pxLine(f,tot):"")}</div></div>${cosPanel(RM)}</div></div>`}
 function subMenu(t,btns){token++;$("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>${t}</h2><span></span></div><div class="menu mm sub">${btns}</div>`}
-function playMenu(){subMenu("Play",MB("","⚔️","PVP","Duel a friend or a Bot","S.mode='pvp';setup()")+MB("","🗺️","Campaign","Floors, bosses and buffs","campSetup()")+MB("","👥","Boss Rush","2 players vs a boss · ☄️ Apocalyptic","rushSetup()"))}
+function playMenu(){subMenu("Play",MB("pri","📅","Daily Challenge",dcSub(),"dailyScreen()")+MB("","⚔️","PVP","Duel a friend or a Bot","S.mode='pvp';setup()")+MB("","🗺️","Campaign","Floors, bosses and buffs","campSetup()")+MB("","👥","Boss Rush","Solo or Host a co-op room · ☄️ Apocalyptic","rushChoose()"))}
 /* ===== export / import save ===== */
 const SAVE_GAME="Arena of Ascension",SAVE_VER=2,svOwn=(o,k)=>typeof k==="string"&&Object.prototype.hasOwnProperty.call(o,k);
 function saveCollect(){const chars={};NAMES.forEach(n=>{const f=FR[n];if(!f)return;const e=[];(f.r||[]).forEach((k,i)=>{if(k&&svOwn(RMS,k))e.push(`${i?"Crystal":"Ornament"}: ${RMS[k].d}`)});(f.c||[]).forEach((c,i)=>{if(c&&i<(f.a||0)){const k=crTab(i)[c];if(k&&CRD[k])e.push(`${c}'s ${i?"Crystal":"Ornament"}: ${CRD[k]}`)}});chars[n]=Object.assign(JSON.parse(JSON.stringify(f)),{effects:e})});
- return{game:SAVE_GAME,version:SAVE_VER,exported:new Date().toISOString(),solari:(typeof solariBalance==="function"?solariBalance():0),relics:relicGet(),corruption:{unlocked:!!CORR.u,level:CORR.l},characters:chars,fighterBuffs:JSON.parse(JSON.stringify(FB||{})),rank:JSON.parse(JSON.stringify(RNK)),cosmetics:JSON.parse(JSON.stringify(COS))}}
+ return{game:SAVE_GAME,version:SAVE_VER,exported:new Date().toISOString(),solari:(typeof solariBalance==="function"?solariBalance():0),relics:relicGet(),corruption:{unlocked:!!CORR.u,level:CORR.l},characters:chars,fighterBuffs:JSON.parse(JSON.stringify(FB||{})),rank:JSON.parse(JSON.stringify(RNK)),rift:JSON.parse(JSON.stringify(RIFT)),cosmetics:JSON.parse(JSON.stringify(COS))}}
 function saveCleanFR(src){const o={};NAMES.forEach(n=>{const f=svOwn(src,n)&&src[n];if(!f||typeof f!=="object")return;const rk=Array.isArray(f.r)?f.r:[],ck=Array.isArray(f.c)?f.c:[],m=+f.m===500?500:100;
  o[n]={p:Math.max(0,Math.min(m,Math.floor(+f.p)||0)),m,u:!!f.u,a:Math.max(0,Math.min(2,f.a|0)),r:[svOwn(RMS,rk[0])?rk[0]:null,svOwn(RMS,rk[1])?rk[1]:null],c:[NAMES.includes(ck[0])?ck[0]:null,NAMES.includes(ck[1])?ck[1]:null]}});return o}
 /* ===== sealed saves: scrambled + signed, so edited or hand-written files are rejected ===== */
@@ -3626,7 +3777,7 @@ async function saveApply(t){let d;try{d=JSON.parse(svOpen(t))}catch(e){fragToast
  const ch=Object.keys(fr).filter(n=>fr[n].u).length;let when="at an unknown time";try{const x=new Date(d.exported);if(!isNaN(x))when=x.toLocaleString()}catch(e){}
  const i=await ask(`<h2>Replace your progress?</h2><p>This save has <b>${sol.toLocaleString()}</b> Solari, <b>${rel}</b> relic${rel===1?"":"s"}, <b>${ch}</b> character${ch===1?"":"s"} with Remnants unlocked${cr.unlocked?" and Corruption unlocked":""}.<br><small style="color:var(--mu)">Exported ${when}. Your current progress will be overwritten.</small></p>`,["Import","Cancel"]);
  if(i!==0)return;
- FR=fr;fragSave();FB=fb;fbSave();relicSet(rel);CORR.u=!!cr.unlocked;CORR.l=CORR.u?Math.max(0,Math.min(12,cr.level|0)):0;corrSave();solariSet(sol);if(d.rank&&typeof d.rank==="object"){const keep=RNK.max;RNK=rkClean(d.rank);if(keep>RNK.max)RNK.max=keep;rkSave()}COS=cosClean(d.cosmetics);cosSave();
+ FR=fr;fragSave();FB=fb;fbSave();relicSet(rel);CORR.u=!!cr.unlocked;CORR.l=CORR.u?Math.max(0,Math.min(12,cr.level|0)):0;corrSave();solariSet(sol);if(d.prism!=null)solariSet(solariBalance()+Math.max(0,Math.floor(+d.prism)||0));if(d.rank&&typeof d.rank==="object"){const keep=RNK.max;RNK=rkClean(d.rank);if(keep>RNK.max)RNK.max=keep;rkSave()}COS=cosClean(d.cosmetics);cosSave();try{if(d.rift){RIFT=riftClean(d.rift);riftSave()}}catch(e){}
  try{sfx("buff")}catch(e){}fragToast("✅ Save imported");settingsMenu()}
 var DIP=null;addEventListener("beforeinstallprompt",e=>{e.preventDefault();DIP=e});addEventListener("appinstalled",()=>{DIP=null});
 function installApp(){if(DIP){const p=DIP;DIP=null;try{p.prompt()}catch(e){}settingsMenu();return}
@@ -4562,6 +4713,250 @@ const ON=(()=>{
  };
 })();
 {const o=menu;menu=function(){ON.close();return o.apply(this,arguments)}}
+
+/* ===== Boss Rush: Solo / Host. Online co-op for up to 4 players (host-authoritative). Boss Rush → Solo (classic) or Host/Join ===== */
+const RH=(()=>{
+ const ALPHA="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",PRE="aoa-rush-",SEL_MS=60000,TURN_MS=6000,MAXP=4,SIDES=["a","b","d","e"];
+ const st={phase:"idle",role:null,peer:null,conn:null,conns:{},seq:0,gen:0,code:"",join:"",err:"",ps:[],me:"h",diff:"normal",boss:"random",cr:0,deadline:0,tm:0,inbox:[],pend:null,iv:0,fight:false,P:null,B:null,turnT:0};
+ const escH=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const nm=()=>String(S.n1||"").trim().slice(0,16)||"Player";
+ const mkCode=()=>Array.from({length:5},()=>ALPHA[Math.floor(Math.random()*ALPHA.length)]).join("");
+ const cvOf=v=>({s:v&&v.s?1:0,a:v&&v.a?1:0}),myCv=c=>NAMES.includes(c)?cvOf({s:cosOn(c,"s"),a:cosOn(c,"a")}):cvOf();
+ const cleanRm=o=>{if(!o||typeof o!=="object")return null;const r={};Object.keys(o).slice(0,24).forEach(k=>{if(/^\w{1,12}$/.test(k))r[k]=Math.max(0,Math.min(2,+o[k]||0))});return r};
+ const okN=c=>NAMES.includes(c)?c:null,supTx=n=>(SUPD[n]||"").replace(/\s*to (both|all players)/,"")+" (you only)";
+ const sendTo=(c,m)=>{try{if(c&&c.open!==false)c.send(m)}catch(e){}};
+ const bc=m=>Object.values(st.conns).forEach(c=>sendTo(c,m));
+ const load=()=>window.Peer?Promise.resolve():new Promise((res,rej)=>{
+  const urls=["https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js","https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"];let i=0;
+  const next=()=>{if(i>=urls.length)return rej(new Error("load"));const t=document.createElement("script");t.src=urls[i++];t.onload=()=>window.Peer?res():next();t.onerror=()=>{t.remove();next()};document.head.appendChild(t)};next()});
+ const stopTimer=()=>{if(st.tm)clearInterval(st.tm);st.tm=0};
+ const pubPs=()=>st.ps.map(p=>({id:p.id,name:p.name,cls:p.cls,sup:p.sup,ready:!!p.ready}));
+ const mePl=()=>st.ps.find(p=>p.id===st.me);
+ const teardown=()=>{stopTimer();clearInterval(st.iv);st.iv=0;const cs=Object.values(st.conns).concat(st.conn?[st.conn]:[]),p=st.peer;st.conns={};st.conn=null;st.peer=null;st.gen++;cs.forEach(c=>{try{c.close()}catch(e){}});try{p&&p.destroy()}catch(e){}st.ps=[];st.me="h";st.inbox=[];st.pend=null;st.fight=false;restoreHooks()};
+ const fail=(gen,msg)=>{if(gen!==st.gen)return;teardown();st.phase="idle";st.err=msg;draw()};
+ /* hooks so the host's log and banners reach every player */
+ let oL=null,oBan=null;
+ const setHooks=()=>{if(oL)return;oL=L;oBan=banner;L=function(t,k){oL(t,k);bc({t:"lg",x:String(t).slice(0,300),k:String(k||"m")})};banner=function(t,k){oBan(t,k);bc({t:"bn",x:String(t).slice(0,60),k:String(k||"#fff")})}};
+ function restoreHooks(){if(oL){L=oL;banner=oBan;oL=oBan=null}}
+
+ /* ---------- lobby ---------- */
+ const lbMsg=()=>({t:"lb",ps:pubPs(),diff:st.diff,boss:st.boss,cr:st.cr,ph:st.phase,dl:Math.max(0,st.deadline-Date.now())});
+ const lbSend=()=>{if(st.role==="host")bc(lbMsg());draw()};
+ function startTimer(){stopTimer();st.deadline=Date.now()+SEL_MS;st.tm=setInterval(tick,250)}
+ function tick(){
+  if(st.phase!=="select"){stopTimer();return}
+  const left=Math.max(0,Math.ceil((st.deadline-Date.now())/1000)),e=$("#rhtm");if(e)e.textContent=left;
+  if(st.role==="host"&&(left<=0||st.ps.every(p=>p.ready)))begin()}
+ function toSelect(){if(st.role!=="host"||st.phase!=="room")return;st.phase="select";st.ps.forEach(p=>{p.cls=null;p.sup=null;p.ready=false});startTimer();lbSend()}
+ function setPick(id,cls,sup,ready,rm,fb,cv){
+  const p=st.ps.find(x=>x.id===id);if(!p||st.phase!=="select"||p.ready&&ready)return;
+  if(cls!==undefined){const c=okN(cls);if(c&&!st.ps.some(q=>q.id!==id&&q.cls===c))p.cls=c}
+  if(sup!==undefined){const s=okN(sup);if(s)p.sup=s}
+  if(rm!==undefined)p.rm=cleanRm(rm);if(fb!==undefined)p.fb=Math.max(0,Math.min(100,+fb||0));if(cv!==undefined)p.cv=cvOf(cv);
+  if(ready!==undefined)p.ready=!!ready&&!!p.cls&&!!p.sup;lbSend();
+  if(st.ps.length&&st.ps.every(q=>q.ready))begin()}
+ const myPayload=ex=>{const c=(mePl()||{}).cls;return Object.assign({t:"pk",rm:c&&RMON?rmOf(c):null,fb:c?(window.FB&&FB[c])||0:0,cv:myCv(c)},ex)};
+ function mine(ex){ /* a change by this device */
+  const p=mePl();if(!p||st.phase!=="select")return;
+  if(st.role==="host"){const c=ex.cls||p.cls;setPick("h",ex.cls,ex.sup,ex.ready,c&&RMON?rmOf(c):null,c?(window.FB&&FB[c])||0:0,myCv(c))}
+  else{if(ex.cls&&!st.ps.some(q=>q.id!==p.id&&q.cls===ex.cls))p.cls=ex.cls;if(ex.sup)p.sup=ex.sup;if(ex.ready!==undefined&&p.cls&&p.sup)p.ready=!!ex.ready;draw();sendTo(st.conn,myPayload(ex))}}
+
+ /* ---------- connection ---------- */
+ function recvH(id,m){
+  if(!m||typeof m!=="object")return;
+  if(m.t==="hi"&&!st.ps.some(p=>p.id===id)&&st.phase==="room"&&st.ps.length<MAXP){st.ps.push({id,name:String(m.name||"Player").slice(0,16),cls:null,sup:null,ready:false,rm:null,fb:0,cv:cvOf()});lbSend()}
+  else if(m.t==="pk")setPick(id,m.cls,m.sup,m.ready,m.rm,m.fb,m.cv);
+  else if(m.t==="act"&&st.fight&&typeof m.id==="string"&&m.id.length<24){st.inbox.push({id:id,n:m.n|0,a:m.id});if(st.pend)st.pend()}}
+ function dropH(id,gen){
+  if(gen!==st.gen||!st.conns[id])return;delete st.conns[id];const p=st.ps.find(x=>x.id===id);
+  if(st.fight){if(p){p.dc=1;L(`🔌 ${p.name} disconnected. A bot plays their fighter.`,"r")}if(st.pend)st.pend();return}
+  st.ps=st.ps.filter(x=>x.id!==id);if(st.phase==="select"&&st.ps.length&&st.ps.every(q=>q.ready))begin();lbSend()}
+ function recvG(m){
+  if(!m||typeof m!=="object")return;
+  if(m.t==="lb"&&Array.isArray(m.ps)){
+   const was=st.phase;st.ps=m.ps.slice(0,MAXP).map(p=>({id:String(p.id).slice(0,6),name:String(p.name||"Player").slice(0,16),cls:okN(p.cls),sup:okN(p.sup),ready:!!p.ready}));
+   st.diff=m.diff==="apoc"?"apoc":"normal";st.boss=m.boss==="random"||BOSSES[m.boss]?m.boss:"random";st.cr=Math.max(0,Math.min(12,m.cr|0));
+   st.phase=m.ph==="select"?"select":"room";st.deadline=Date.now()+Math.max(0,+m.dl||0);if(st.phase==="select"&&!st.tm)st.tm=setInterval(tick,250);if(st.phase==="room")stopTimer();
+   if(!st.fight)draw();if(was!==st.phase&&!st.fight)draw()}
+  else if(m.t==="you"){st.me=String(m.id).slice(0,6)}
+  else if(m.t==="go"&&!st.fight&&Array.isArray(m.ps))guestGo(m);
+  else if(m.t==="st"&&st.fight&&Array.isArray(m.u))guestSt(m);
+  else if(m.t==="lg"&&st.fight)L(String(m.x||""),String(m.k||"m").slice(0,2));
+  else if(m.t==="bn"&&st.fight)banner(String(m.x||""),String(m.k||"#fff").slice(0,20));
+  else if(m.t==="tn"&&st.fight){const e=$("#turn");if(e)e.textContent=String(m.x||"").slice(0,80)}
+  else if(m.t==="turn"&&st.fight)guestTurn(m);
+  else if(m.t==="end"&&st.fight)guestEnd(m);
+  else if(m.t==="full"){fail(st.gen,m.why==="started"?"That Boss Rush already started.":"That room is full (4 players max).")}}
+ function lostG(gen){
+  if(gen!==st.gen)return;const was=st.fight;document.querySelectorAll(".modal").forEach(m=>m.remove());
+  if(was){token++;teardown();st.phase="idle";ask(`<h2>Host disconnected</h2><p>The Boss Rush ended.</p>`,["Main menu"]).then(()=>menu());return}
+  teardown();st.phase="idle";st.err="The host left the room.";draw()}
+
+ async function open(retry){
+  teardown();const gen=st.gen;st.role="host";st.phase="starting";st.err="";st.me="h";draw();
+  try{await load()}catch(e){return fail(gen,"Couldn't load the online library. Check your internet connection.")}
+  if(gen!==st.gen)return;
+  st.code=mkCode();const p=new Peer(PRE+st.code);st.peer=p;
+  p.on("open",()=>{if(gen!==st.gen)return;st.phase="room";st.diff="normal";st.boss="random";st.cr=0;st.ps=[{id:"h",name:nm(),cls:null,sup:null,ready:false,rm:null,fb:0,cv:cvOf()}];draw()});
+  p.on("connection",c=>{if(gen!==st.gen)return;
+   if(st.phase!=="room"||st.ps.length>=MAXP||Object.keys(st.conns).length>=MAXP-1){const f=()=>{sendTo(c,{t:"full",why:st.phase!=="room"?"started":"full"});setTimeout(()=>{try{c.close()}catch(e){}},400)};c.on("open",f);if(c.open)f();return}
+   const id="g"+(++st.seq);st.conns[id]=c;c.on("open",()=>sendTo(c,{t:"you",id}));if(c.open)sendTo(c,{t:"you",id});c.on("data",m=>{if(gen===st.gen)recvH(id,m)});c.on("close",()=>dropH(id,gen));c.on("error",()=>dropH(id,gen))});
+  p.on("disconnected",()=>{if(gen===st.gen){try{p.reconnect()}catch(e){}}});
+  p.on("error",e=>{if(gen!==st.gen)return;if(e.type==="unavailable-id"&&(retry||0)<4)return open((retry||0)+1);fail(gen,["network","server-error","socket-error","socket-closed"].includes(e.type)?"Can't reach the matchmaking server.":"Connection error ("+e.type+").")})}
+ async function join(){
+  const code=String(st.join||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(code.length<4){st.err="Type the host's room code first.";draw();return}
+  teardown();const gen=st.gen;st.role="guest";st.phase="joining";st.err="";st.code=code;draw();
+  try{await load()}catch(e){return fail(gen,"Couldn't load the online library. Check your internet connection.")}
+  if(gen!==st.gen)return;
+  const p=new Peer();st.peer=p;
+  p.on("open",()=>{if(gen!==st.gen)return;const c=p.connect(PRE+code,{reliable:true});st.conn=c;const hi=()=>sendTo(c,{t:"hi",name:nm()});
+   c.on("open",()=>{if(gen===st.gen)hi()});if(c.open)hi();c.on("data",m=>{if(gen===st.gen)recvG(m)});c.on("close",()=>lostG(gen));c.on("error",()=>lostG(gen));
+   setTimeout(()=>{if(gen===st.gen&&st.phase==="joining")fail(gen,"Couldn't reach room "+code+". Check the code and try again.")},12000)});
+  p.on("error",e=>{if(gen!==st.gen)return;fail(gen,e.type==="peer-unavailable"?"Room "+code+" not found. Check the code.":"Connection error ("+e.type+").")})}
+
+ /* ---------- screens ---------- */
+ function chooseScreen(){
+  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="playMenu()">← Back</button><h2>Boss Rush</h2><span></span></div>
+<div class="menu mm"><button class="btn pri" onclick="rushSetup()"><span class="mi">🧍</span><span class="mtx"><b>Solo</b><small>You control two fighters + one shared support</small></span><i class="mar">›</i></button>
+<button class="btn" style="grid-column:1/-1" onclick="RH.open()"><span class="mi">🌐</span><span class="mtx"><b>Host</b><small>Co-op with up to 3 friends · pick the boss &amp; difficulty</small></span><i class="mar">›</i></button></div>
+<div class="panel"><label>Your name</label><input type="text" maxlength="16" value="${escH(S.n1||"")}" placeholder="Player" oninput="S.n1=this.value"><label>Join a friend's room</label><div class="olrow"><input type="text" id="rhjc" maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="CODE" value="${escH(st.join)}" oninput="RH.setJoin(this.value)"><button class="btn pri" onclick="RH.join()">Join</button></div></div>${st.err?`<p class="olerr">⚠️ ${escH(st.err)}</p>`:""}`}
+ const plRow=p=>{const k=p.cls?CLS[p.cls]:null;return`<div class="rfchip ${p.ready?"rare":""}" style="${p.id===st.me?"outline:2px solid var(--ac)":""}"><span>${k?k.e:"❔"}</span><b>${escH(p.name)}${p.id==="h"?" 👑":""}<br><small>${p.cls||"Picking…"}${p.sup?" · 🤝 "+p.sup:""}${p.ready?" · ✅":""}</small></b></div>`};
+ function draw(){
+  if(st.fight)return;const app=$("#app");if(!app)return;
+  if(st.phase==="idle")return chooseScreen();
+  const host=st.role==="host",hud=(t,tm)=>`<div class="hud"><button class="btn" onclick="RH.back()">← Leave</button><h2>${t}</h2>${tm?`<span class="oltm"><b id="rhtm">${Math.max(0,Math.ceil((st.deadline-Date.now())/1000))}</b>s</span>`:"<span></span>"}</div>`;
+  if(st.phase==="starting"||st.phase==="joining"){app.innerHTML=hud("Boss Rush")+`<div class="panel"><p class="lore">${st.phase==="starting"?"Opening a room…":"Joining room "+escH(st.code)+"…"}</p></div>`;return}
+  const bk=st.boss==="random"?null:BOSSES[st.boss];
+  if(st.phase==="room"){
+   const bc2=k=>{const d=BOSSES[k],on=st.boss===k;return`<button class="btn pk ${on?"on":""}" style="--c:${d.c}" ${host?"":"disabled"} onclick="RH.setBoss('${k}')">${on?'<i class="bd">BOSS</i>':""}<div class="mini">${art(BCLS[k]||"BBelow",d.e)}</div><b>${d.n}</b></button>`};
+   const apoc=st.diff==="apoc";
+   app.innerHTML=hud(host?"Your Boss Rush room":"Boss Rush room")+`<div class="panel"><label>Room code</label><div class="olcode" onclick="RH.share()">${st.code}</div><p class="lore">Friends tap <b>Boss Rush → Join</b> and type this code. Up to 4 players.</p></div>
+<div class="panel"><label>Players (${st.ps.length}/${MAXP})</label><div class="rflist">${st.ps.map(plRow).join("")}</div></div>
+<div class="panel"><label>Difficulty</label><div class="seg"><button class="btn ${!apoc?"on":""}" ${host?"":"disabled"} onclick="RH.setDiff('normal')">Normal ⚔️</button><button class="btn apocb ${apoc?"on":""}" ${host?"":"disabled"} onclick="RH.setDiff('apoc')">Apocalyptic ☄️</button></div>${apoc?(CORR.u?(host?corrHost():`<p class="lore">☠️ Corruption ${st.cr}</p>`):`<p class="lore">☠️ Corruption is locked for the host (clear Apocalyptic Boss Rush to unlock it).</p>`):""}</div>
+<div class="panel"><label>Boss: <b style="color:var(--tx)">${bk?bk.e+" "+bk.n:"🎲 Random"}</b></label><div class="seg"><button class="btn ${st.boss==="random"?"on":""}" ${host?"":"disabled"} onclick="RH.setBoss('random')">🎲 Random</button></div><div class="pick cs" style="margin-top:8px">${Object.keys(BOSSES).map(bc2).join("")}</div></div>
+${host?`<div class="row"><button class="btn pri" onclick="RH.toSelect()">▶ Start character selection (1 min)</button></div>`:`<p class="lore" style="text-align:center">⏳ Waiting for the host to start character selection…</p>`}${st.err?`<p class="olerr">⚠️ ${escH(st.err)}</p>`:""}`;return}
+  /* select */
+  const me=mePl()||{},lock=me.ready?' style="opacity:.55;pointer-events:none"':"";
+  const cc=NAMES.map(n=>{const by=st.ps.find(q=>q.cls===n),taken=by&&by.id!==st.me;return`<button class="btn pk ${me.cls===n?"on":""}" style="--c:${CLS[n].c}" ${taken?"disabled":""} onclick="RH.setCls('${n}')"><div class="mini">${art(n,CLS[n].e,myCv(n))}</div><b>${n}</b><small>${taken?"🔒 "+escH(by.name):CLS[n].tag}</small></button>`}).join("");
+  const sc=NAMES.map(n=>`<button class="btn ${me.sup===n?"on":""}" style="text-align:left" onclick="RH.setSup('${n}')"><b>${CLS[n].e} ${n}</b><small style="display:block">${supTx(n)}</small></button>`).join("");
+  app.innerHTML=hud("Pick your fighter",1)+`<div class="panel"><label>Players</label><div class="rflist">${st.ps.map(plRow).join("")}</div></div>
+<div class="panel"${lock}><label>1. Your fighter <small style="font-weight:500">(each character can be picked once)</small></label><div class="pick cs" style="max-height:none;overflow:visible">${cc}</div></div>
+<div class="panel"${lock}><label>2. Your support <small style="font-weight:500">(only affects you · own 10-turn cooldown)</small></label><div class="rflist">${sc}</div></div>
+<div class="row"><button class="btn pri" ${me.cls&&me.sup?"":"disabled"} onclick="RH.ready()">${me.ready?"Cancel ready":"✔ Ready"}</button></div><p class="lore" style="text-align:center">The fight starts when everyone is ready. At 0 s anyone unready gets a random free fighter and support.</p>`}
+ const corrHost=()=>{const L=st.cr;return`<div class="corr"><div class="corr-row"><b>☠️ Corruption</b><div class="corr-ctl"><button class="btn" ${L<=0?"disabled":""} onclick="RH.corr(-1)">−</button><span class="corr-n">${L}</span><button class="btn" ${L>=CORR.l?"disabled":""} onclick="RH.corr(1)">+</button></div></div><small class="corr-d">Up to your unlocked level (${CORR.l}). Boss HP ×${(1+.12*L).toFixed(2)} · boss damage ×${(1+.05*L).toFixed(2)}</small></div>`};
+
+ /* ---------- fight (host runs the simulation, everyone renders it) ---------- */
+ function arena(P,b,title){
+  const bg=BGS[R(0,BGS.length-1)],n=P.length;
+  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="leave()">← Menu</button><h3 id="ttl">${title}</h3><span id="doom" style="font-size:12px;font-weight:800;color:#ff7a4d"></span><span id="ord" style="font-size:12px;color:var(--mu)"></span></div>
+ <div class="arena rush" style="grid-template-columns:repeat(${n},1fr) .25fr 1.6fr"><div class="scene" style="background:${bg.s}"><svg viewBox="0 0 600 200" preserveAspectRatio="none">${bg.a}</svg></div><span class="turn" id="turn"></span><div class="fxl" id="fxl"></div>${P.map(p=>unitHTML(p,p.side)).join("")}<div></div>${unitHTML(b,"c")}</div>
+ <div class="cols"><div class="panel"><p class="sec">Actions</p><div class="who" id="who"></div><div id="acts"></div></div><div class="panel"><p class="sec">Battle log</p><div id="log"></div></div></div>`;
+  [...P,b].forEach(upd)}
+ const snapU=f=>JSON.parse(JSON.stringify(f,(k,v)=>(k==="tgt"||k==="hbs"||k==="PL"||k==="SUP")?undefined:v));
+ const bossTitle=(b,ap,n)=>`${ap?"☄️ Apocalypse":"Boss Rush"} · ${b.name} · ${n} players${b.cr?` <small style="color:#d58cff">☠️ ${b.cr}</small>`:""}`;
+ function begin(){
+  if(st.role!=="host"||st.phase!=="select")return;stopTimer();
+  const used=new Set(st.ps.map(p=>p.cls).filter(Boolean)),pool=NAMES.filter(n=>!used.has(n)).sort(()=>Math.random()-.5);
+  st.ps.forEach(p=>{if(!p.cls)p.cls=pool.pop();if(!p.sup)p.sup=NAMES[R(0,NAMES.length-1)]});
+  const ap=st.diff==="apoc",cr=ap&&CORR.u?Math.min(st.cr,CORR.l):0,key=st.boss==="random"?Object.keys(BOSSES)[R(0,Object.keys(BOSSES).length-1)]:st.boss;
+  st.phase="fight";const go={t:"go",boss:key,ap,cr,ps:st.ps.map((p,i)=>({id:p.id,name:p.name,cls:p.cls,sup:p.sup,cv:p.cv||cvOf(),side:SIDES[i]}))};
+  bc(go);hostFight(go)}
+ function mkPlayers(go){return go.ps.map(q=>{const f=mk(q.cls,q.name,false);f.cv=cvOf(q.cv);f.side=q.side;f.pid=q.id;return f})}
+ async function hostFight(go){
+  token++;const my=token,ap=go.ap,n=go.ps.length;st.fight=true;st.inbox=[];setHooks();
+  B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};RUN={bf:new Set(),all:false,cr:go.cr,rv:0};RUNMODE="rush";CK=null;B.hp=cHP();
+  const P=mkPlayers(go),sups=go.ps.map(q=>({c:q.sup,cd:0,pid:q.id}));
+  P.forEach((f,i)=>{const q=st.ps.find(x=>x.id===f.pid)||{};resetF(f);f.rm=RMON||f.pid!=="h"?(f.pid==="h"?rmOf(f.cls):q.rm||null):null;f.fb=f.pid==="h"?((window.FB&&FB[f.cls])||0):(q.fb||0);f.maxHp=Math.round(300*B.hp*(1+((f.rm&&f.rm.hp)||0)));f.hp=f.maxHp;f.dc=0});
+  const b=mkBoss(go.boss,ap);b.maxHp=b.hp=Math.round(b.hp*(.5+.25*n)*cBH());if(go.cr){b.pw=(b.pw||1)*cPW();b.cr=go.cr}
+  const shim={c:"",get cd(){return 0},set cd(v){sups.forEach(s=>s.cd=v)}};b.side="c";b.PL=P;b.SUP=shim;
+  P.forEach(p=>{const q=RUSHBUFF[p.cls]||{};p.rb=q.dmg||1;p.rh=q.heal||1;p.mk=0;p.mgS=0});rbApply(P);if(ap)P.forEach(q=>{q.imm=Math.max(q.imm||0,2);q.oct=99});
+  G={a:P[0],b:P[1]||P[0],c:b};st.P=P;st.B=b;music(ap?"apoc":"rush");arena(P,b,bossTitle(b,ap,n));
+  st.iv=setInterval(()=>{if(st.fight)bc({t:"st",u:[...P,b].map(snapU)})},350);
+  setTimeout(()=>banner(`${b.name} appears!`,b.col),200);if(ap)apocSetup(P,b);
+  const order=[...P,b].sort(()=>Math.random()-.5),ordTxt=f=>order.map(x=>x===f?`<b style="color:var(--ac)">${x.name}</b>`:`<span style="opacity:${x.hp>0?1:.35}">${x.name}</span>`).join(" → ");
+  const setTurn=t=>{const e=$("#turn");if(e)e.textContent=t;bc({t:"tn",x:t})};
+  L("Turn order (fixed for this fight): "+order.map(x=>x.name).join(" → "),"a");
+  let res=null,round=0;
+  try{outer:for(;;){round++;L(`— Round ${round} —`,"m");
+   if(ap){const r=(round-1)%10;$("#doom").textContent=r===0&&round>1?"☄️ DOOM!":`☄️ Doom in ${10-r}`;if(round>1&&r===0){await doom(P,b,shim,Math.floor((round-1)/10)-1);if(allDown(P)){res=false;break outer}}}
+   for(const f of order){if(my!==token)return;if(b.pend4){b.pend4=0;await apocForm(b)}if(ap)apocAura(P,b);rvChk(P);if(f.hp<=0)continue;
+    [...P,b].forEach(x=>{upd(x);$("#u"+x.side).classList.toggle("act",x===f)});$("#ord").innerHTML=ordTxt(f);setTurn(`▶ ${f.name}'s turn`);
+    if(f.boss){await sleep(500);if(f.hb>0)await bleedTick(f);if(!bossDead(f))await bossTurn(f,P);if(f.atkdn>0)f.atkdn--}
+    else{f.tgt=b;const sup=sups[P.indexOf(f)];
+     if(f.bld>0){f.bld--;const bd=f.bldD||10;if(f.bld<=0)f.bldD=0;f.hp=Math.max(0,f.hp-bd);fx(f,"hit",bd);L(`🩸 ${f.name} bleeds for ${bd}.`,"r");upd(f);await sleep(500);if(f.hp<=0){if(allDown(P)){res=false;break outer}continue}}
+     if(f.stun>0){f.stun--;if(f.red>0)f.red--;if(f.up>0)f.up--;if(f.atkdn>0)f.atkdn--;L(`📍 ${f.name} is pinned and cannot act.`,"r");upd(f);await sleep(800);continue}
+     let again;do{again=false;const wk=CLS[f.cls],wh=$("#who");wh.style.setProperty("--c",wk.c);$("#acts").style.setProperty("--c",wk.c);wh.innerHTML=`<span class="pt">${wk.e}</span><b>${escH(f.name)}</b><small style="color:var(--mu)">${f.cls}</small>`;
+      const id=await takeTurn(f,b,sup,setTurn);if(my!==token)return;
+      if(id==="__skip"){L(`⏱ ${f.name} ran out of time.`,"r");post(f);rcd(f);upd(f);break}
+      if(id==="support"){await doSupport(sup.c,f,[f],b);sup.cd=10;if(bossDead(b))break;again=true;continue}
+      L(`▶ ${f.name}: ${(acts(f).find(x=>x[0]===id)||[0,id])[1]}`,"a");fx(f,"atk");if(id==="ultimate")sfx("ult");
+      await sleep(Math.max(220,vfx(f,b,id,id==="ultimate"?"ult":0,id.toUpperCase())));f.am=rbAm(f,id);again=DO(f,b,id);f.am=1;if(b.key==="magma")await mgAfter(f,b,id);bossChk(b);[f,b].forEach(upd);await sleep(600);
+      if(bossDead(b))break;post(f);rcd(f);upd(f);if(f.cls==="Archer"&&f.lock)again=true}while(again&&f.hp>0)}
+    if(bossDead(b)){sfx("win");L(`🏆 ${b.name} is defeated!`,"a");upd(b);await sleep(2000);res=true;break outer}
+    if(allDown(P)){sfx("lose");P.forEach(upd);await sleep(1700);res=false;break outer}}
+   sups.forEach(s=>s.cd=Math.max(0,s.cd-1))}}
+  catch(e){console.error(e);res=false}
+  clearInterval(st.iv);st.iv=0;if(my!==token)return;
+  bc({t:"st",u:[...P,b].map(snapU)});bc({t:"end",win:!!res});await sleep(300);finish(!!res,b,ap,go.ps.find(q=>q.id==="h"))}
+ async function takeTurn(f,b,sup,setTurn){
+  const pl=st.ps.find(p=>p.id===f.pid)||{},extra=[["support","Support: "+sup.c,sup.cd>0?`Ready in ${sup.cd} turns`:supTx(sup.c),sup.cd<=0]],al=acts(f).concat(extra);
+  const t0=Date.now(),left=()=>Math.max(0,Math.ceil((TURN_MS-(Date.now()-t0))/1000));
+  if(f.pid==="h"){
+   let iv=0;const tmo=new Promise(res=>{const tk=()=>{const l=left();setTurn(`▶ ${f.name} · ⏱ ${l}s`);if(l<=0){clearInterval(iv);res("__skip")}};tk();iv=setInterval(tk,250)});
+   const id=await Promise.race([pick(f,{extra}),tmo]);clearInterval(iv);if(id==="__skip"){const a=$("#acts");if(a)a.innerHTML="";try{fragToast("⏱ Time's up: turn skipped")}catch(e){}}return id}
+  const conn=st.conns[f.pid];
+  if(!conn||pl.dc){await sleep(500);let id=aiPick(f,b,true);if(sup.cd<=0&&chance(.15))id="support";return id}
+  const n=++st.turnT;$("#acts").innerHTML=`<p style="color:var(--mu);margin:6px">⏳ Waiting for ${escH(f.name)}…</p>`;
+  sendTo(conn,{t:"turn",n,pid:f.pid,nm:f.name,cls:f.cls,ms:TURN_MS,acts:al.map(a=>[a[0],String(a[1]).slice(0,60),String(a[2]).slice(0,90),!!a[3]])});
+  return new Promise(res=>{let iv=0,done=false;
+   const fin=id=>{if(done)return;done=true;clearInterval(iv);st.pend=null;res(id)};
+   const valid=id=>id==="support"?(sup.cd<=0?id:"__skip"):(acts(f).find(x=>x[0]===id&&x[3])?id:"__skip");
+   const take=()=>{if(pl.dc){fin("__skip");return true}const i=st.inbox.findIndex(m=>m.id===f.pid&&m.n===n);if(i<0)return false;const m=st.inbox.splice(i,1)[0];fin(valid(m.a));return true};
+   iv=setInterval(()=>{const l=Math.max(0,Math.ceil((TURN_MS+1200-(Date.now()-t0))/1000));setTurn(`▶ ${f.name} · ⏱ ${Math.min(6,l)}s`);if(l<=0)fin("__skip");else take()},250);
+   if(!take())st.pend=take})}
+ async function finish(win,b,ap,me){
+  const my=token;st.fight=false;clearInterval(st.iv);restoreHooks();
+  try{if(win){solari(ap?[Math.round(300*cSO()),Math.round(600*cSO())]:[100,150]);fragGain([me.cls],ap?[20,25]:[15,20]);rkEvt(ap?["boss","win","apoc"]:["boss","win"],ap?90:50,{cls:[me.cls]})}}catch(e){}
+  if(win)await ask(`<h2>👑 ${escH(b.name)} falls!</h2><p>Team victory! Rewards earned.</p>`,["Main menu"]);else await ask(`<h2>💀 Defeated</h2><p>${escH(b.name)} wins this time.</p>`,["Main menu"]);
+  menu()}
+
+ /* ---------- guest rendering ---------- */
+ function guestGo(go){
+  token++;st.fight=true;stopTimer();st.phase="fight";RUN={bf:new Set(),all:false,cr:go.cr|0,rv:0};RUNMODE="rush";CK=null;
+  const P=go.ps.slice(0,MAXP).map((q,i)=>{const f=mk(okN(q.cls)||NAMES[0],String(q.name||"Player").slice(0,16),false);f.cv=cvOf(q.cv);f.side=SIDES[i];f.pid=String(q.id).slice(0,6);return f});
+  const b=mkBoss(BOSSES[go.boss]?go.boss:"saber",!!go.ap);b.cr=go.cr|0;b.side="c";st.P=P;st.B=b;music(go.ap?"apoc":"rush");arena(P,b,bossTitle(b,go.ap,P.length));if(go.ap)try{apocSetup(P,b)}catch(e){}
+  st.ap=!!go.ap;st.myCls=(P.find(p=>p.pid===st.me)||{}).cls}
+ function guestSt(m){
+  const U=[...(st.P||[]),st.B].filter(Boolean);m.u.slice(0,U.length).forEach((s,i)=>{if(s&&typeof s==="object"){delete s.side;Object.assign(U[i],s);upd(U[i])}})}
+ function guestTurn(m){
+  const box=$("#acts");if(!box)return;const my=m.pid===st.me;
+  clearInterval(st.turnIv);
+  if(!my){box.innerHTML=`<p style="color:var(--mu);margin:6px">⏳ Waiting for ${escH(m.nm||"player")}…</p>`;return}
+  const wk=CLS[okN(m.cls)||NAMES[0]],wh=$("#who");wh.style.setProperty("--c",wk.c);box.style.setProperty("--c",wk.c);wh.innerHTML=`<span class="pt">${wk.e}</span><b>${escH(m.nm||"")}</b><small style="color:var(--mu)">your move</small>`;box.innerHTML="";
+  (Array.isArray(m.acts)?m.acts:[]).slice(0,14).forEach(([id,l,s,ok])=>{const b=document.createElement("button");b.className="btn k-"+String(id).replace(/\W/g,"")+(id==="stop"?" stop":"");b.disabled=!ok;b.innerHTML=`<span>${ICON[id]||""} ${escH(l)}</span><small>${escH(s)}</small>`;b.onclick=()=>{clearInterval(st.turnIv);box.innerHTML="";sendTo(st.conn,{t:"act",n:m.n,id})};box.appendChild(b)});
+  const t0=Date.now();st.turnIv=setInterval(()=>{const l=Math.max(0,Math.ceil(((+m.ms||TURN_MS)-(Date.now()-t0))/1000)),e=$("#turn");if(e)e.textContent=`▶ Your turn · ⏱ ${l}s`;if(l<=0){clearInterval(st.turnIv);box.innerHTML=""}},250)}
+ async function guestEnd(m){
+  if(!st.fight)return;st.fight=false;clearInterval(st.turnIv);const b=st.B,ap=st.ap,cls=st.myCls;
+  try{if(m.win){solari(ap?[Math.round(300*cSO()),Math.round(600*cSO())]:[100,150]);if(cls)fragGain([cls],ap?[20,25]:[15,20]);rkEvt(ap?["boss","win","apoc"]:["boss","win"],ap?90:50,{cls:[cls]})}}catch(e){}
+  await sleep(1500);if(m.win)await ask(`<h2>👑 ${escH(b.name)} falls!</h2><p>Team victory! Rewards earned.</p>`,["Main menu"]);else await ask(`<h2>💀 Defeated</h2><p>${escH(b.name)} wins this time.</p>`,["Main menu"]);
+  menu()}
+
+ return{
+  st,choose:chooseScreen,open(){st.err="";open(0)},join,setJoin(v){st.join=String(v).toUpperCase()},toSelect,begin,
+  live:()=>st.fight,
+  setDiff(d){if(st.role!=="host"||st.phase!=="room")return;st.diff=d;if(d!=="apoc")st.cr=0;lbSend()},
+  setBoss(k){if(st.role!=="host"||st.phase!=="room")return;st.boss=k==="random"||BOSSES[k]?k:"random";lbSend()},
+  corr(d){if(st.role!=="host"||st.phase!=="room"||!CORR.u)return;st.cr=Math.max(0,Math.min(CORR.l,st.cr+d));lbSend()},
+  setCls(n){mine({cls:n})},setSup(n){mine({sup:n})},ready(){const p=mePl();if(p)mine({ready:!p.ready})},
+  share(){const t=`Join my Arena of Ascension Boss Rush! Room code: ${st.code}`;try{if(navigator.share){navigator.share({text:t}).catch(()=>{});return}}catch(e){}try{navigator.clipboard.writeText(st.code);fragToast("Room code copied")}catch(e){fragToast("Code: "+st.code)}},
+  back(){this.close();rushChoose()},
+  close(){if(st.phase==="idle"&&!st.peer&&!st.conn){st.err="";return}teardown();st.phase="idle";st.err=""}
+ };
+})();
+function rushChoose(){if(svGet("rush")){svPrompt("rush");return}RH.close();RH.choose()}
+{const o=menu;menu=function(){RH.close();return o.apply(this,arguments)}}
+{const o=leave;leave=async function(){if(RH.live()){const i=await ask(`<h2>Leave the Boss Rush?</h2><p>You will leave this fight.</p>`,["Leave","Keep fighting"]);if(i===0)menu();return}return o.apply(this,arguments)}}
 
 menu();
 </script>
