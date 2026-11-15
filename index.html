@@ -3155,10 +3155,12 @@ async function saberStun(b,A){if(!(b.apoc&&b.ph>=3)||!chance(.35))return;const l
 async function devourUlt(b,A,lab){await cutscene("devourer");const h=chance(.5);await coinFlip(h);banner(h?"HEADS!":"TAILS!",h?"#ffd34d":"#8ab4ff");b.en=0;
  if(h){b.imm=5;b.oct=99;L(`🪙 Heads! ${b.name} gains 5-hit immunity!`,"a");await sleep(700)}
  else{b.imm=1;b.oct=99;L(`🪙 Tails! ${b.name} gains 1-hit immunity and the coins rain down!`,"a");try{A.forEach(p=>rain(pos(p)[0],"🪙",9))}catch(e){}shakeArena(500);await sleep(600);await bAoe(b,A,50,90,"Coin Rain")}}
-async function lordPrison(b,A,lab,one){const t=one();try{await bhSkillFx(b)}catch(e){}try{const[x,y]=pos(t);ring(x,y+36,"#7a4dff",270);burst(x,y,"#7a4dff",16,80,"🌑")}catch(e){}await bHit(b,t,R(18,26),lab);if(t.hp>0){t.stun=Math.max(t.stun||0,2);L(`🌑 ${t.name} is imprisoned in a black hole: stunned for 2 turns.`,"r")}b.cd.prison=5;await sleep(500)}
+async function lordPrison(b,A,lab,one){const ts=pick2(b,A);try{await bhSkillFx(b)}catch(e){}for(const t of ts){try{const[x,y]=pos(t);ring(x,y+36,"#7a4dff",270);burst(x,y,"#7a4dff",16,80,"🌑")}catch(e){}await bHit(b,t,R(18,26),lab);if(t.hp>0){t.stun=Math.max(t.stun||0,2);L(`🌑 ${t.name} is imprisoned in a black hole: stunned for 2 turns.`,"r")}}b.cd.prison=5;await sleep(500)}
 function addMark(b,p){if(!p||p.hp<=0)return;p.mk=Math.min(2,(p.mk||0)+1);L(`🎯 ${p.name} is marked (${p.mk}/2).${p.mk>=2?" The Deep has their scent: a Crushing Bite is coming!":""}`,"r");try{const[x,y]=pos(p);ring(x,y+36,p.mk>=2?"#ff3d71":"#19d3c5",170);burst(x,y-30,"#19d3c5",6,46,"◎")}catch(e){}upd(p)}
 function auraOn(b){const a=$(".arena");if(!a||a.querySelector(".dka"))return;let h="";for(let i=0;i<16;i++)h+=`<i style="left:${R(0,100)}%;top:${R(0,100)}%;animation-delay:-${R(0,40)/10}s;--s:${R(60,170)}px"></i>`;const d=document.createElement("div");d.className="dka";d.innerHTML=h;a.appendChild(d);const u=$("#u"+b.side);if(u)u.classList.add("lvdk")}
 function auraOff(b){document.querySelectorAll(".dka").forEach(e=>e.remove());const u=b&&$("#u"+b.side);if(u)u.classList.remove("lvdk")}
+/* 4-player rooms: single-target boss moves hit 2 different players */
+function pick2(b,A){const l=(A||[]).filter(p=>p.hp>0),n=(b&&b.PL&&b.PL.length>=4)?2:1;return [...l].sort(()=>Math.random()-.5).slice(0,n)}
 async function bossTurn(b,P){
  if(b.key==="below"){if(b.auraNew)b.auraNew=0;else if(b.aura>0){b.aura--;if(b.aura<=0){auraOff(b);L("🌫️ The dark aura fades.","g")}}}
  if(b.key==="magma"&&b.dom>0){b.dom--;if(b.dom<=0)L("🌋 The magma domain fades away.","g");mgSync(b)}
@@ -3175,16 +3177,16 @@ async function bossTurn(b,P){
  b.fxk=id;L(`👹 ${b.name}: ${lab}`,"a");fx(b,"atk");if(id==="ultimate")sfx("ult");await sleep(300);
  if(k==="seam"){
   if(id==="attack")await bAoe(b,A,13,18,lab);
-  else if(id==="skill"){const both=b.apoc&&b.ph>=3&&A.length>1&&chance(.3),ts=both?A:[one()];if(both){banner("DOUBLE PIN!","#ffd36b");L(`📍 ${b.name} throws a needle at each of you!`,"a")}for(const t of ts){await bHit(b,t,R(24,32),lab);if(t.hp>0){t.stun=2;t.red=2;L(`📍 ${t.name} is pinned: stunned for 2 turns, but takes 40% less damage.`,"r")}}b.cd.skill=6}
-  else if(id==="heal"){const t=one();await bHit(b,t,R(16,24),lab);const n=Math.min(b.stnd?150:90,Math.max(25,Math.floor((b.dt||0)*.5*(b.stnd?1.6:1))));healF(b,n);try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",14,70,"✚");ring(sx,sy+36,"#7dffb0",200)}catch(e){}L(`🪡 ${b.name} mends herself for ${n}${b.stnd?" (stunned bonus)":""}.`,"g");b.dt=0;b.stnd=0;b.cd.heal=2;await sleep(500)}
+  else if(id==="skill"){const both=b.apoc&&b.ph>=3&&A.length>1&&chance(.3),ts=both?A:pick2(b,A);if(both){banner("DOUBLE PIN!","#ffd36b");L(`📍 ${b.name} throws a needle at each of you!`,"a")}for(const t of ts){await bHit(b,t,R(24,32),lab);if(t.hp>0){t.stun=2;t.red=2;L(`📍 ${t.name} is pinned: stunned for 2 turns, but takes 40% less damage.`,"r")}}b.cd.skill=6}
+  else if(id==="heal"){for(const t of pick2(b,A))await bHit(b,t,R(16,24),lab);const n=Math.min(b.stnd?150:90,Math.max(25,Math.floor((b.dt||0)*.5*(b.stnd?1.6:1))));healF(b,n);try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",14,70,"✚");ring(sx,sy+36,"#7dffb0",200)}catch(e){}L(`🪡 ${b.name} mends herself for ${n}${b.stnd?" (stunned bonus)":""}.`,"g");b.dt=0;b.stnd=0;b.cd.heal=2;await sleep(500)}
   else{await cutscene("seam");A.forEach(p=>{p.hp=1;fx(p,"hit",0)});banner("SUTURED!","#ffd36b");const ap34=b.apoc&&b.ph>=3;if(ap34){healF(b,b.ph>=4?260:200);b.boomPct=.28;L(`🧵 Apocalypse threads: ${b.name} mends ${b.ph>=4?260:200} HP, is stunned for 6 turns, and the blast will deal only 28% of her remaining HP.`,"a")}b.stun=ap34?6:4;b.red=4;b.ls=4;b.lsr=b.apoc?.9:.7;b.boom=1;b.en=0;L(`🧵 ${b.name} stitches everyone down to 1 HP! She is stunned, takes less damage for 4 turns, and players heal ${Math.round((b.apoc?.9:.7)*100)}% of the damage they deal. When the stun ends, she explodes!`,"a");await sleep(700)}}
  else if(k==="saber"){
-  if(id==="attack"){if(chance(.5))await bHit(b,one(),R(24,32),lab);else await bAoe(b,A,15,20,lab);await saberStun(b,A)}
+  if(id==="attack"){if(chance(.5)){for(const t of pick2(b,A))await bHit(b,t,R(24,32),lab)}else await bAoe(b,A,15,20,lab);await saberStun(b,A)}
   else if(id==="skill"){await bAoe(b,A,12,18,lab,p=>{p.bld=3;p.bldD=(b.apoc&&b.ph>=4)?16:10;L(`🩸 ${p.name} is bleeding (3 turns).`,"r")});b.cd.skill=5;await saberStun(b,A)}
   else if(id==="heal"){healF(b,55);b.cd.heal=2;await sleep(600)}
   else{await cutscene("saber");await bAoe(b,A,70,90,lab);b.en=0}}
  else if(k==="devourer"){
-  if(id==="attack"){if(b.apoc&&b.ph>=3)await bAoe(b,A,26,36,lab);else await bHit(b,one(),R(26,36),lab)}
+  if(id==="attack"){if(b.apoc&&b.ph>=3)await bAoe(b,A,26,36,lab);else for(const t of pick2(b,A))await bHit(b,t,R(26,36),lab)}
   else if(id==="skill"){const h=chance(.5);await coinFlip(h);banner(h?"HEADS!":"TAILS!",h?"#ffd34d":"#8ab4ff");L(h?"🪙 Heads! Big damage.":"🪙 Tails! Small damage, and it hurts itself.","a");await sleep(500);
    if(h)await bAoe(b,A,34,44,lab);else{await bAoe(b,A,8,12,lab);b.hp=Math.max(1,b.hp-40);fx(b,"hit",40);L(`💥 ${b.name} hurts itself for 40!`,"g")}b.cd.skill=4}
   else if(id==="heal"){healF(b,80);b.cd.heal=2;await sleep(600)}
@@ -3193,10 +3195,10 @@ async function bossTurn(b,P){
  else if(k==="below"){
    const bd=b.apoc?9:6,bleed=(p,n)=>{p.bld=(p.bld||0)+n;p.bldD=bd;L(`🩸 ${p.name} bleeds for ${n} turn${n>1?"s":""} (${bd} damage per turn).`,"r");upd(p)};
    if(id==="attack")await bAoe(b,A,10,15,lab);
-   else if(id==="skill"){await bAoe(b,A,10,23,lab);const live=A.filter(p=>p.hp>0);if(live.length){if(b.apoc&&b.ph>=3&&live.length>1&&chance(.3)){banner("DOUBLE MARK!","#19d3c5");live.forEach(p=>addMark(b,p))}else addMark(b,live[R(0,live.length-1)])}b.cd.skill=2;await sleep(400)}
+   else if(id==="skill"){await bAoe(b,A,10,23,lab);const live=A.filter(p=>p.hp>0);if(live.length){if(b.apoc&&b.ph>=3&&live.length>1&&chance(.3)){banner("DOUBLE MARK!","#19d3c5");live.forEach(p=>addMark(b,p))}else pick2(b,live).forEach(p=>addMark(b,p))}b.cd.skill=2;await sleep(400)}
    else if(id==="enh"){const forced=b.forceEnh>0;let t;if(forced){const o=A.filter(p=>p.hp>0&&p!==b.lastT),pl=o.length?o:A.filter(p=>p.hp>0);t=pl[R(0,pl.length-1)];b.forceEnh--}else t=A.find(p=>p.mk>=2);
-    if(t){banner("CRUSHING BITE","#ff3d71");const ne=b.noEn;if(forced)b.noEn=1;try{await bHit(b,t,R(30,50),lab)}finally{b.noEn=ne}t.mk=0;if(t.hp>0)bleed(t,2);upd(t);b.lastT=t}if(!forced&&b.forceEnh<=0)b.forceEnh=0;await sleep(400)}
-   else if(id==="heal"){const t=one();await bFx(b,t,lab);bleed(t,1);const n=healF(b,70);L(`🌊 ${b.name} feeds on the wound and heals ${n}.`,"g");try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",12,64,"✚");ring(sx,sy+36,"#19d3c5",200)}catch(e){}
+    if(t){const tt=[t];if(b.PL&&b.PL.length>=4){const o=A.filter(p=>p.hp>0&&p!==t);if(o.length)tt.push(o[R(0,o.length-1)])}banner("CRUSHING BITE","#ff3d71");const ne=b.noEn;if(forced)b.noEn=1;try{for(const x of tt)await bHit(b,x,R(30,50),lab)}finally{b.noEn=ne}tt.forEach(x=>{x.mk=0;if(x.hp>0)bleed(x,2);upd(x)});b.lastT=t}if(!forced&&b.forceEnh<=0)b.forceEnh=0;await sleep(400)}
+   else if(id==="heal"){const ts=pick2(b,A),t=ts[0];await bFx(b,t,lab);ts.forEach(x=>bleed(x,1));const n=healF(b,70);L(`🌊 ${b.name} feeds on the wound and heals ${n}.`,"g");try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",12,64,"✚");ring(sx,sy+36,"#19d3c5",200)}catch(e){}
     if(b.apoc){const bl=A.filter(p=>p.hp>0&&p.bld>0);if(bl.length&&chance(.3))addMark(b,bl[R(0,bl.length-1)])}else if(chance(.15))addMark(b,t);
     b.cd.heal=3;await sleep(500)}
    else{await cutscene("below");A.forEach(p=>{p.stun=Math.max(p.stun||0,3)});banner("PARALYZED!","#19d3c5");L(`🌊 ${b.name}'s roar stuns every player for 3 turns! Its next 2 skills are forced Crushing Bites with no cooldown, and the dark aura lasts 3 turns.`,"a");b.forceEnh=2;b.en=0;b.aura=4;b.auraNew=1;auraOn(b);try{A.forEach(p=>{const[x,y]=pos(p);ring(x,y+36,"#19d3c5",230)})}catch(e){}shakeArena(650);for(const p of P)upd(p);await sleep(800)}}
@@ -4061,7 +4063,7 @@ gBoss.death={moves:[
 "<b>Piercing Gaze</b> (skill, AOE, cooldown 3): 20–34 to everyone and gives the boss 1–2 <b>Gaze</b>.",
 "<b>Follow-up Attack</b> (AOE): the moment Gaze reaches 5 it strikes again at once for 34–58 to everyone, and Gaze drops by 5.",
 "<b>Terminal Eclipse</b> (heal, phase 2+, below 70% HP, cooldown 6): heals the boss and opens all 6 eyes. Every hit it takes turns 2 eyes red. When all 6 are red, the <b>last player who hit it</b> is ambushed and killed instantly, and the boss is stunned for 1 turn.",
-"<b>Ghost shield</b>: the dead player becomes a ghost that takes every hit meant for the boss. Its hit-bar has as many hits as the current phase (1 in phase 1, up to 4). Clear it and the player returns with half HP, full energy and Charge, and +1 coin. Combo hits and bleed ticks each count as a hit. While a ghost is alive, every boss attack heals the boss for 35.",
+"<b>Ghost shield</b>: the dead player becomes a ghost that takes every hit meant for the boss. Its hit-bar has as many hits as the current phase (1 in phase 1, up to 4), plus 1 for every player beyond 2 in Boss Rush co-op (4 players: phase 2-3-4 = 4-5-6 hits). Clear it and the player returns with half HP, full energy and Charge, and +1 coin. Combo hits and bleed ticks each count as a hit. While a ghost is alive, every boss attack heals the boss for 35.",
 "<b>Fatal Ambush</b> (ultimate, phase 3+, AOE): ambushes both players and applies a <b>blood blockade</b> of 50% of their max HP.",
 "<b>Blood blockade</b>: a black-and-red bar grows from the right of your HP bar. You cannot heal above it. Dealing damage to the boss (or its ghost) removes blockade equal to 50% of the damage dealt."],
 tips:["Count your hits during Terminal Eclipse. Three hits turn all six eyes red, and the third attacker dies. Let your partner take it, or finish the boss before then.","A fallen player is not gone: the survivor only needs to land as many hits as the phase number on the ghost.","Combos help: every hit of a multi-hit attack, and every bleed tick, chips the ghost's hit-bar.","Deal damage to burn the blood blockade away, since healing cannot pass it."]};
@@ -4112,14 +4114,14 @@ async function dwAfter(f,b){if(!b.amb)return;b.amb=0;const P=b.PL,v=P&&P[b.lastI
   await sleep(380);flash("#fff");slash(x,y,260,"#fff","#ff1744",-80);slash(x,y,200,"#ffd0d4","#b04cff",70);burst(x,y,"#ff1744",22,120);drips(x,y,12);ring(x,y+36,"#ff1744",300);shakeArena(700)}catch(e){}
  await sleep(220);v.hp=0;v.dead=true;v.stun=0;fx(v,"hit",v.maxHp);try{sfx("crit")}catch(e){}
  L(`🩸 All six eyes turn red! ${v.name} is ambushed and killed instantly. ${b.name} is stunned for 1 turn.`,"r");
- b.stun=Math.max(b.stun,1);b.ghost={i:P.indexOf(v),left:b.ph,max:b.ph};L(`👻 ${v.name} becomes a ghost that shields the boss. Break its hit-bar (${b.ph} hit${b.ph>1?"s":""}) to bring them back.`,"a");upd(v);upd(b);await sleep(500);
+ b.stun=Math.max(b.stun,1);const gm=b.ph+Math.max(0,P.length-2);b.ghost={i:P.indexOf(v),left:gm,max:gm};L(`👻 ${v.name} becomes a ghost that shields the boss. Break its hit-bar (${gm} hit${gm>1?"s":""}) to bring them back.`,"a");upd(v);upd(b);await sleep(500);
  if(dk){dk.classList.remove("in");setTimeout(()=>dk.remove(),1000)}await sleep(700)}
 async function dwTurn(b,P){
  const A=livP(P);if(!A.length)return;const hf=b.hp/b.maxHp,av=k=>!(b.cd[k]>0),one=()=>A[R(0,A.length-1)];let id="attack";
  if(b.ph>=3&&b.en>=b.emax)id="ultimate";else if(b.ph>=2&&av("heal")&&hf<.7&&!b.te&&!b.ghost&&chance(.7))id="heal";else if(av("skill")&&chance(.6))id="skill";
  const lab={attack:"Attack",skill:"Piercing Gaze",heal:"Terminal Eclipse",ultimate:"Fatal Ambush"}[id];
  b.fxk=id==="heal"?"heal":id;L(`👹 ${b.name}: ${lab}`,"a");fx(b,"atk");if(id==="ultimate")sfx("ult");await sleep(300);
- if(id==="attack")await bHit(b,one(),R(20,30),lab);
+ if(id==="attack"){for(const t of pick2(b,A))await bHit(b,t,R(20,30),lab)}
  else if(id==="skill"){await bAoe(b,A,13,22,lab);const g=R(1,2);b.gaze=(b.gaze||0)+g;L(`👁️ ${b.name} gains ${g} Gaze (${b.gaze}/5).`,"a");b.cd.skill=(b.apoc&&b.ph>=3)?2:3;upd(b);
   if(b.gaze>=5){b.gaze-=5;await sleep(300);banner("FOLLOW-UP!","#ff2a4d");L(`👁️ Gaze is full: ${b.name} strikes again!`,"a");b.fxk="fua";await dwEyesOpen(b,650);await bAoe(b,livP(P),22,38,"Follow-up Attack");if(b.apoc&&b.ph>=4&&chance(.2)){const lv=livP(P);if(lv.length){const tg=[...lv].sort(()=>Math.random()-.5).slice(0,R(1,2));tg.forEach(t=>{t.stun=Math.max(t.stun||0,1);upd(t)});banner("STUNNED!","#b04cff");L(`👁️ The Follow-up Attack paralyzes ${tg.map(t=>t.name).join(" and ")} for 1 turn!`,"r");try{tg.forEach(t=>{const[x,y]=pos(t);ring(x,y+36,"#b04cff",210)})}catch(e){}sfx("crit");await sleep(500)}}b.fxk="skill";upd(b)}}
  else if(id==="heal"){const n=healF(b,80);b.te=1;b.eyes=0;b.cd.heal=6;banner("TERMINAL ECLIPSE","#b04cff");flash("#6b1fb8");upd(b);try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",12,64,"✚");[0,220,440,660].forEach((t,i)=>setTimeout(()=>{ring(sx,sy+10,i%2?"#ff5aa8":"#9b5cff",300+i*70);burst(sx,sy,"#c07bff",10,110+i*20,"✦")},t));shakeArena(500)}catch(e){}
@@ -4205,7 +4207,7 @@ async function magmaTurn(b,P){const A=livP(P);if(!A.length)return;const one=()=>
  const lab={attack:"Obsidian Crush",skill:"Magma Stalagmites",ultimate:"Eruption"}[id];b.fxk=id;
  if(id==="ultimate"){fx(b,"atk");await mgUlt(b,A);return}
  L(`👹 ${b.name}: ${lab}`,"a");fx(b,"atk");await sleep(300);
- if(id==="attack"){if(b.apoc&&b.ph>=3)await bAoe(b,A,13,18,lab);else await bHit(b,one(),R(13,18),lab);return}
+ if(id==="attack"){if(b.apoc&&b.ph>=3)await bAoe(b,A,13,18,lab);else for(const t of pick2(b,A))await bHit(b,t,R(13,18),lab);return}
  await bAoe(b,A,21,33,lab);b.cd.skill=1;
  if(b.apoc&&b.ph>=3&&chance(.3)){const lv=A.filter(p=>p.hp>0).sort(()=>Math.random()-.5).slice(0,b.ph>=4?2:1);if(lv.length){lv.forEach(t=>{t.stun=Math.max(t.stun||0,1);upd(t)});banner("STUNNED!","#ff5a1f");L(`🌋 The stalagmites stun ${lv.map(t=>t.name).join(" and ")} for 1 turn!`,"r");try{lv.forEach(t=>{const[x,y]=pos(t);ring(x,y+36,"#ff5a1f",210)})}catch(e){}sfx("crit");await sleep(500)}}
  if(b.sh>0){b.sh--;L(`🐚 A magma shell cracks off! Shells: ${b.sh}/${b.shM} (${Math.round(mgRes(b)*100)}% resistance).`,"a");mgSync(b);
