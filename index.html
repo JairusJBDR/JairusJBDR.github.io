@@ -921,6 +921,81 @@ html.lowd .lun{display:none}
 .oltm{font:400 18px "Alfa Slab One",serif;color:var(--ac);min-width:46px;text-align:right}
 .olerr{color:#ff8a8a;margin:8px 0 0}.olst{font-size:15px;margin:2px 0 0}
 .olvs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;text-align:center}.olvs .art{width:100%;max-width:150px;height:auto}
+
+/* ===== home: always fits the screen; the ten fighters form two squads facing off ===== */
+#app:has(.lineup){display:flex;flex-direction:column;height:100vh;height:100dvh;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;scrollbar-width:none;padding:clamp(40px,6vh,54px) 14px calc(24px + env(safe-area-inset-bottom,0px))!important}
+#app:has(.lineup)::-webkit-scrollbar{display:none}
+#app:has(.lineup)>*{flex:none}
+#app:has(.lineup) .hero{padding:0}
+#app:has(.lineup) .hero .emb{width:clamp(44px,8vh,84px);height:clamp(44px,8vh,84px);margin:0 auto clamp(4px,1.2vh,14px);border-radius:clamp(14px,2.6vh,26px);font-size:clamp(24px,4.4vh,44px);overflow:hidden}
+#app:has(.lineup) .hero h1{font-size:clamp(26px,5.6vh,56px);font-family:"Alfa Slab One","Rockwell Extra Bold","Arial Black",Impact,Georgia,serif;letter-spacing:.5px;filter:drop-shadow(0 .05em 0 rgba(0,0,0,.35));padding-bottom:.06em}
+#app:has(.lineup) .hero .tag{margin:clamp(3px,.8vh,10px) 0 0}
+#app:has(.lineup) .hero .pills{margin-top:clamp(4px,1vh,12px)}
+#app:has(.lineup) .hero .rkpill{margin-top:clamp(6px,1.4vh,14px);padding:5px 18px;gap:3px}
+#app:has(.lineup) .menu.mm{margin:clamp(8px,1.8vh,20px) auto 0;gap:clamp(6px,1.2vh,12px);width:100%}
+#app:has(.lineup) .mm .btn{padding-top:clamp(6px,1.2vh,12px);padding-bottom:clamp(6px,1.2vh,12px)}
+#app:has(.lineup) .mm .btn.pri{padding-top:clamp(8px,1.8vh,20px);padding-bottom:clamp(8px,1.8vh,20px)}
+#app:has(.lineup) .mm .btn.pri .mi{width:clamp(38px,6vh,56px);height:clamp(38px,6vh,56px)}
+#app:has(.lineup) .mm .btn.ev .mi{width:clamp(32px,5vh,46px)!important;height:clamp(40px,6vh,56px)!important}
+#app:has(.lineup) .mm .btn.ev .mi svg{width:100%;height:100%}
+#app:has(.lineup) .mm .btn.ev small{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-height:780px){#app:has(.lineup) .hero .pills{display:none}}
+@media(max-height:680px){#app:has(.lineup) .hero .tag .tt,#app:has(.lineup) .mm .btn small{display:none}#app:has(.lineup) .lineup{min-height:96px!important}}
+@media(max-height:640px){#app:has(.lineup){padding-top:38px!important}}
+@media(max-height:640px) and (min-width:641px){#app:has(.lineup) .hero{display:block;text-align:center}#app:has(.lineup) .hero .emb{display:inline-grid;vertical-align:middle;width:44px;height:44px;margin:0 12px 0 0;font-size:24px;border-radius:14px}#app:has(.lineup) .hero h1{display:inline-block;vertical-align:middle}#app:has(.lineup) .hero .tag{display:inline-block;margin:0 0 0 10px;vertical-align:middle}#app:has(.lineup) .hero .rkpill{width:240px;margin:6px auto 0}}
+@media(max-height:640px) and (max-width:640px){#app:has(.lineup) .hero{grid-template-columns:46px 1fr}#app:has(.lineup) .hero .emb{width:46px;height:46px;font-size:24px;border-radius:15px}}
+@media(max-width:640px){
+#app:has(.lineup){padding-left:12px!important;padding-right:12px!important}
+#app:has(.lineup) .hero{display:grid;grid-template-columns:56px 1fr;column-gap:12px;align-items:center;text-align:left;padding:0 2px}
+#app:has(.lineup) .hero .emb{grid-row:1/3;width:56px;height:56px;margin:0;border-radius:18px;font-size:28px}
+#app:has(.lineup) .hero h1{font-size:clamp(19px,6vw,28px);align-self:end;padding-bottom:5px;line-height:1.1;white-space:nowrap}
+#app:has(.lineup) .hero h1 br{display:none}
+#app:has(.lineup) .hero .tag{font-size:10px;letter-spacing:2px;margin:2px 0 0;align-self:start}
+#app:has(.lineup) .hero .pills{display:none}
+#app:has(.lineup) .hero .rkpill{grid-column:1/-1;margin:8px 0 0;min-width:0;width:100%;font-size:12px}
+#app:has(.lineup) .menu.mm{grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 0;max-width:none}
+#app:has(.lineup) .mm .btn{padding:8px 10px;border-radius:14px}
+#app:has(.lineup) .mm .btn.pri,#app:has(.lineup) .mm .btn.ev{grid-column:1/-1}
+#app:has(.lineup) .mm .btn.pri{padding:10px 16px}
+#app:has(.lineup) .mm .btn.pri .mi{width:42px;height:42px;font-size:22px}
+#app:has(.lineup) .mm .btn.pri .mtx b{font-size:19px}
+#app:has(.lineup) .mm .btn:not(.pri):not(.ev){flex-direction:column;gap:3px;padding:7px 4px;text-align:center;justify-content:center}
+#app:has(.lineup) .mm .btn:not(.pri):not(.ev) .mi{width:32px;height:32px;font-size:18px;border-radius:10px}
+#app:has(.lineup) .mm .btn:not(.pri):not(.ev) .mtx{flex:none;width:100%}
+#app:has(.lineup) .mm .btn:not(.pri):not(.ev) .mtx b{font-size:13px;white-space:nowrap}
+#app:has(.lineup) .mm .btn:not(.pri):not(.ev) small{display:none}
+}
+.vtag{display:none;margin-left:8px;padding:1px 9px;border-radius:99px;border:1px solid var(--ac);color:var(--ac);font:700 10px/1.5 Nunito,system-ui,sans-serif;letter-spacing:.5px;text-transform:none;vertical-align:middle}
+@media(max-height:780px),(max-width:640px){#app:has(.lineup) .vtag{display:inline-block}}
+@media(max-height:680px){#app:has(.lineup) .hero .tag{margin-top:2px}#app:has(.lineup) .vtag{margin-left:0}}
+/* desktop: menu on the left, the two squads get the whole right side so the fighters can be big */
+@media(min-width:900px) and (min-height:560px) and (min-aspect-ratio:3/2){
+#app:has(.lineup){max-width:1260px;display:grid;grid-template-columns:minmax(380px,500px) 1fr;grid-template-rows:auto 1fr;column-gap:28px;align-content:stretch}
+#app:has(.lineup) .hero{grid-column:1;grid-row:1}
+#app:has(.lineup) .menu.mm{grid-column:1;grid-row:2;align-self:start;grid-template-columns:repeat(2,1fr);max-width:none}
+#app:has(.lineup) .mm .btn.pri,#app:has(.lineup) .mm .btn.ev{grid-column:1/-1}
+#app:has(.lineup) .lineup{grid-column:2;grid-row:1/3;margin:0;min-height:0}
+#app:has(.lineup) .lineup::before{display:none}
+}
+/* the two squads */
+#app:has(.lineup) .lineup{flex:1 1 0;min-height:130px;position:relative;margin:4px 0 0;padding:0;display:block;overflow:visible}
+#app:has(.lineup) .lineup .stage{position:absolute;margin:0;width:120px;height:150px;transform-origin:50% 100%;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:hbob var(--fd,4s) ease-in-out var(--fl,0s) infinite}
+@keyframes hbob{50%{translate:0 calc(var(--fa,5)*-1px)}}
+#app:has(.lineup) .lineup .stage .hg{position:absolute;left:50%;bottom:-8px;width:104px;height:28px;margin-left:-52px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c,#f4b942) 75%,transparent),transparent);opacity:.8;animation:hgp 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes hgp{50%{opacity:.35;transform:scale(.78)}}
+#app:has(.lineup) .lineup .stage.hfl .art{transform:scaleX(-1)}
+.hsp,.hsr{position:absolute;pointer-events:none;z-index:60;border-radius:50%;translate:-50% 50%}
+.hsp{width:14px;height:14px;background:radial-gradient(circle,#fff,var(--c,#ffd36b) 45%,transparent 72%);animation:hsp .6s ease-out forwards}
+.hsr{width:16px;height:16px;border:2px solid var(--c,#ffd36b);animation:hsr .7s ease-out forwards}
+@keyframes hsp{from{transform:scale(.4);opacity:1}to{transform:scale(5);opacity:0}}
+@keyframes hsr{from{transform:scale(.5);opacity:.9}to{transform:scale(7);opacity:0}}
+.hn{position:absolute;z-index:70;translate:-50% 0;padding:2px 10px;border-radius:99px;font:700 12px/1.4 Nunito,system-ui,sans-serif;white-space:nowrap;color:#fff;background:var(--c,#444);box-shadow:0 2px 8px #0005;pointer-events:none;animation:hnf 1.6s ease forwards}
+@keyframes hnf{0%{opacity:0;margin-top:6px}12%,75%{opacity:1;margin-top:0}100%{opacity:0;margin-top:-6px}}
+#app:has(.lineup) .lineup .hpad{position:absolute;height:44px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pc) 55%,transparent),transparent);opacity:.55;pointer-events:none;animation:hpd 4s ease-in-out infinite}
+@keyframes hpd{50%{opacity:.85}}
+#app:has(.lineup) .lineup .hvs{position:absolute;z-index:5;translate:-50% 0;font:400 clamp(18px,3.2vh,30px)/1 "Alfa Slab One","Arial Black",Impact,sans-serif;background:linear-gradient(#fff,#ffd36b 55%,#ff8a3d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px #ff9d3d);opacity:.8;pointer-events:none;animation:hvs 2.2s ease-in-out infinite}
+@keyframes hvs{50%{transform:scale(1.18);opacity:1}}
+@media(prefers-reduced-motion:reduce){#app:has(.lineup) .lineup .stage,.hg,.hpad,.hvs{animation:none!important}}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
@@ -3564,10 +3639,40 @@ async function dcRush(d){const m=d.mod,bd=BOSSES[d.boss];B={dmg:1,heal:1,hp:1};E
 {const st=document.createElement("style");st.textContent=`.dcwrap{max-width:560px}.dcmain{display:grid;gap:10px}.dcrow{display:flex;gap:12px;align-items:center}.dcrow>span{font-size:26px;width:36px;text-align:center}.dcrow b{display:block;font-size:14px}.dcrow small{color:var(--mu)}
 @media(min-width:820px){.dcwrap{max-width:900px;grid-template-columns:1fr 1fr!important;align-items:start}.dcwrap>*{grid-column:auto!important;grid-row:auto!important}}`;document.head.appendChild(st)}
 function menu(){RUNMODE=null;CK=null;token++;document.querySelectorAll(".modal").forEach(m=>m.remove());music("menu");
- $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of <br>Ascension</h1><p class="tag">Turn-based battle game</p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
+ $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of <br>Ascension</h1><p class="tag"><span class="tt">Turn-based battle game</span><b class="vtag">v2.0</b></p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
  <div class="menu mm mmain">${MB2("pri","▶","Play","PVP, Campaign, Boss Rush","playMenu()")}${riftBtn()}${MB2("","🔮","Remnant","Fragments for each fighter","remnant()")}${MB2("","🛒","Shop","Skins and auras","shop()")}${MB2("","📖","Lore book","The story of the Arena","story()")}${MB2("","📚","Guides","Fighters, bosses and tips","guide()")}${MB2("","🧠","Rules &amp; Bot","How it all works","howto()")}${MB2("","⚙️","Settings","Audio and more","settingsMenu()")}</div>
  <div class="lineup">${NAMES.map(n=>charHTML(n)).join("")}</div>
- <div class="credit">Created by JairusJBDR</div>`}
+ <div class="credit">Created by JairusJBDR</div>`;requestAnimationFrame(()=>{homeSetup();fitHome()});setTimeout(fitHome,350)}
+/* ===== home: two squads of five face off; each fighter bobs on its own rhythm, taps and random duels trigger real attack animations ===== */
+var HOME_T=null;
+function homeSetup(){const l=document.querySelector("#app .lineup");if(!l)return;
+ const st=[...l.querySelectorAll(".stage")];
+ st.forEach((s,i)=>{s.dataset.i=i;s.classList.toggle("hfl",i>=5);
+  s.style.setProperty("--fa",3+(i*37)%5);s.style.setProperty("--fd",(3.1+(i*53)%19/10).toFixed(1)+"s");s.style.setProperty("--fl",(-i*.83).toFixed(2)+"s");
+  const g=document.createElement("i");g.className="hg";s.prepend(g)});
+ for(const c of["#f4b942","#6ea8ff"]){const p=document.createElement("i");p.className="hpad";p.style.setProperty("--pc",c);l.prepend(p)}
+ const v=document.createElement("b");v.className="hvs";v.textContent="VS";l.appendChild(v);
+ l.onclick=e=>{const s=e.target.closest(".stage");if(s){homeAct(+s.dataset.i);homeTag(+s.dataset.i)}};
+ clearInterval(HOME_T);if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches))HOME_T=setInterval(homeDuel,2300)}
+function fitHome(){const l=document.querySelector("#app .lineup");if(!l)return;const H=l.clientHeight,W=l.clientWidth;if(!H||!W)return;
+ /* two squads facing off. Wide screens: 2 depth rows per squad. Phones/tall: 3 rows, so fighters stay big and don't hide each other */
+ const wide=W/H>2.4,RS=wide?[1,.88]:[1,.9,.8],RL=wide?[0,.55]:[0,.55,1.1],topU=Math.max(...RS.map((x,r)=>x+RL[r])),
+  sf=Math.max(.2,Math.min(wide?.95:1.1,(H-14)/(150*topU),W/(wide?630:570))),step=120*sf*(wide?1.02:.82),gap=wide?Math.min(W*.16,300):120*sf*1.1,off=Math.max(0,H-14-150*sf*topU)*.5,
+  SL=wide?[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,2,0]]:[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,1,2]],lay=[];
+ l.querySelectorAll(".stage").forEach((s,i)=>{const side=i<5?-1:1,q=SL.find(x=>x[0]===(i<5?i:9-i)),row=q[2],sc=sf*RS[row],cx=W/2+side*(gap/2+q[1]*step),bt=off+10+RL[row]*150*sf;
+  s.style.left=(cx-60)+"px";s.style.bottom=bt+"px";s.style.transform="scale("+sc.toFixed(3)+")";s.style.zIndex=30-row*10+Math.round(4-q[1]*2);s.style.filter=row?"brightness("+(1-row*.045)+")":"";
+  lay[i]={cx,bt,h:150*sc,c:s.style.getPropertyValue("--c")||"#ffd36b"}});
+ const pw=2*step*(wide?1.4:1.2)+130*sf;l.querySelectorAll(".hpad").forEach((p,k)=>{const sd=k?1:-1;p.style.width=pw+"px";p.style.left=(W/2+sd*(gap/2+(wide?1:.75)*step)-pw/2)+"px";p.style.bottom=(off-6)+"px"});
+ const mid={x:W/2,y:off+10+150*sf*.55};l._lay=lay;l._mid=mid;const v=l.querySelector(".hvs");if(v){v.style.left=mid.x+"px";v.style.bottom=(mid.y-8)+"px"}}
+function homeAct(i){const l=document.querySelector("#app .lineup");if(!l)return;const s=l.querySelectorAll(".stage")[i],ch=s&&s.querySelector(".ch");if(!ch)return;
+ const a=(typeof ARCH!=="undefined"&&ARCH[NAMES[i]])||"lunge";["lunge","leap","spin","cast","slash"].forEach(x=>ch.classList.remove("wa-"+x));ch.style.setProperty("--dir",i<5?1:-1);void ch.offsetWidth;ch.classList.add("wa-"+a);setTimeout(()=>ch.classList.remove("wa-"+a),1000)}
+function homeTag(i){const l=document.querySelector("#app .lineup"),m=l&&l._lay&&l._lay[i];if(!m)return;l.querySelectorAll(".hn").forEach(x=>x.remove());const e=document.createElement("b");e.className="hn";e.textContent=NAMES[i];e.style.cssText=`left:${m.cx}px;bottom:${m.bt+m.h+4}px;--c:${m.c}`;l.appendChild(e);setTimeout(()=>e.remove(),1700)}
+function homeSpark(l,x,y,c){for(const k of["hsp","hsr"]){const e=document.createElement("i");e.className=k;e.style.cssText=`left:${x}px;bottom:${y}px;--c:${c}`;l.appendChild(e);setTimeout(()=>e.remove(),800)}}
+function homeDuel(){const l=document.querySelector("#app .lineup");if(!l){clearInterval(HOME_T);return}if(document.hidden||!l.offsetParent||!l._lay)return;
+ const A=[4,4,3,2,1,0],B=[5,5,6,7,8,9],go=(a,b,dl)=>{setTimeout(()=>{if(!document.body.contains(l))return;homeAct(a);homeAct(b);setTimeout(()=>{if(!document.body.contains(l))return;const m=l._lay[a],n=l._lay[b];if(m&&n)homeSpark(l,(m.cx+n.cx)/2,(m.bt+m.h*.5+n.bt+n.h*.5)/2,m.c)},330)},dl)};
+ const a=A[R(0,A.length-1)],b=B[R(0,B.length-1)];go(a,b,0);
+ if(chance(.45)){let a2=A[R(0,A.length-1)],b2=B[R(0,B.length-1)];if(a2!==a&&b2!==b)go(a2,b2,420)}}
+addEventListener("resize",()=>fitHome());addEventListener("orientationchange",()=>setTimeout(fitHome,200));
 var FR={};try{FR=JSON.parse(localStorage.getItem("aoa_frag"))||{}}catch(e){}
 function fragGet(n){const f=FR[n]||(FR[n]={p:0,m:100,u:false});if(f.a==null)f.a=0;if(!f.r)f.r=[null,null];if(!f.c)f.c=[null,null];return f}
 function fragSave(){try{localStorage.setItem("aoa_frag",JSON.stringify(FR))}catch(e){}}
