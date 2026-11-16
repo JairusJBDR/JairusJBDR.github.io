@@ -2562,8 +2562,8 @@ function lvD(n){return[0,20,130,350,500,730,999][Math.min(6,n)]}
 function acts(f){const c=f.cls,A=[],a=(i,l,s,ok=true)=>A.push([i,l,s,ok]);
  if(c==="Titankin"){const e=f.enh;
   a("attack",e?"Enhanced Attack":"Attack",e?"×2 dmg · heal 22":"17–29 · +15 en");
-  a("skill",e?"Enhanced Skill":"Skill",f.sk?`cooldown ${f.sk}`:e?"~95 dmg · −20 HP":"44–60 · +30 en",!f.sk);
-  a("heal",e?"Enhanced Heal":"Heal",f.hc?`cooldown ${f.hc}`:"big heal",!f.hc);
+  a("skill",e?"Enhanced Skill":"Skill",f.sk?`cooldown ${f.sk}`:e?"~125 dmg · stun · −40% dmg taken · −20 HP":"44–60 · +30 en",!f.sk);
+  a("heal",e?"Enhanced Heal":"Heal",f.hc?`cooldown ${f.hc}`:e?"huge heal · cleanses bleed":"big heal",!f.hc);
   if(!e)a("ultimate","Titan Overdrive","100 en · enhanced move",f.en>=100)}
  else if(c==="Emanator"){const z=f.bz;
   a("attack",z?"Berserk Strike":"Attack",z?"40–60 · +15 HP · +2 SP":"5–20");
@@ -2602,8 +2602,8 @@ function acts(f){const c=f.cls,A=[],a=(i,l,s,ok=true)=>A.push([i,l,s,ok]);
 function DO(f,t,id){const c=f.cls,m=dm(f),h=hm(f),heal=n=>healF(f,n),H=(n,o)=>hit(f,t,n,o),cap=(k,mx)=>f[k]=cl(f[k],0,mx);
  if(c==="Titankin"){const e=f.enh;
   if(id==="attack"){let b=R(17,29)*m;if(e){b*=2;heal(15);f.enh=false}else f.en=cl(f.en+15,0,100);H(b,{res:1})}
-  else if(id==="skill"){if(e){H(R(60,70)*1.5*m,{res:1});f.hp=Math.max(1,f.hp-20);f.enh=false}else{H(R(44,60)*m,{res:1});f.sk=5;f.en=cl(f.en+30,0,100)}}
-  else if(id==="heal"){const n=heal(R(40,60)*h*1.1);L(`${f.name} heals ${n}`,"g");if(e)f.enh=false;else{f.hc=2;f.en=cl(f.en+15,0,100)}}
+  else if(id==="skill"){if(e){H(R(70,90)*1.6*m,{res:1});f.hp=Math.max(1,f.hp-20);f.sk=5;f.red=Math.max(f.red||0,2);if(t&&t.boss&&t.hp>0){t.stun=Math.max(t.stun||0,1);L(`💫 ${t.name} is staggered by the Titan Smash and loses its next turn.`,"a")}f.enh=false}else{H(R(44,60)*m,{res:1});f.sk=5;f.en=cl(f.en+30,0,100)}}
+  else if(id==="heal"){const n=heal(e?R(95,125)*h*1.1:R(40,60)*h*1.1);L(`${f.name} heals ${n}`,"g");if(e){f.bld=0;f.bldD=0;f.hc=2;f.enh=false}else{f.hc=2;f.en=cl(f.en+15,0,100)}}
   else if(id==="ultimate"){f.en=0;f.enh=true;L("💥 Titan Overdrive! Choose an enhanced move.","a");return true}}
  else if(c==="Emanator"){const z=f.bz;
   if(id==="attack"){if(z){heal(10);f.sp=cl(f.sp+2,0,7);H(R(40,60)*m,{res:1})}else H(R(5,20)*m,{res:1})}
@@ -2763,6 +2763,7 @@ function vfx(f,t,id,tier,lab){const [sx,sy]=pos(f),[tx,ty]=pos(t),k=f.simple?f.c
   if(id==="heal"){fly([tx,ty],[sx,sy],"🩸",10);go(()=>{sfx("heal");ring(sx,sy+40,"#ff3b5c",170);ring(sx,sy+40,"#fff",110);burst(sx,sy,"#ff3b5c",12,70,"✚");el("tx",sx,sy-80,"TRANSFUSION","--c:#ff5b78")},520);return 560}
   if(id==="ultimate"){go(()=>{el("ecs",(ar.clientWidth||600)/2,(ar.clientHeight||340)*.42,"");rain(tx,"🩸",12,ty-170);rain(sx,"🩸",8,sy-170)},Math.max(0,d-380));
    go(()=>{for(let i=0;i<10;i++){const an=Math.PI*2*i/10;beam([tx+Math.cos(an)*140,ty+Math.sin(an)*140],[tx,ty],"#ff3b5c",6)}ring(tx,ty+36,"#ff3b5c",460);ring(tx,ty+30,"#fff",260);burst(tx,ty,"#ff2a4d",44,190);drips(tx,ty,22);flash("#c4143c")},d+520);return d+560}}
+ if(c==="Titankin"&&id==="skill"&&f.enh){const lo=typeof LOWD!=="undefined"&&LOWD>0,ko="#ffb15a";go(()=>{ring(sx,sy+40,k,220);ring(sx,sy+40,ko,140);burst(sx,sy,ko,lo?6:14,80,"⬆");el("tx",sx,sy-80,"TITAN SMASH","--c:"+ko);ar.classList.add("shake");go(()=>ar.classList.remove("shake"),250)},0);go(()=>{const hm=el("fy",tx-30,-90,"🔨","font-size:84px;filter:drop-shadow(0 0 14px "+ko+");transition:transform .3s cubic-bezier(.6,0,1,.7)");requestAnimationFrame(()=>requestAnimationFrame(()=>{hm.style.transform=`translateY(${ty+110}px) rotate(-18deg) scale(1.25)`}));setTimeout(()=>hm.remove(),340)},260);go(()=>{slash(tx,ty+20,300,"#fff",ko,0);slash(tx,ty+20,240,"#fff",k,-28);slash(tx,ty+20,240,"#fff",k,28);ring(tx,ty+36,ko,420);ring(tx,ty+34,"#fff",250);ring(tx,ty+36,k,560);burst(tx,ty,ko,lo?14:36,170);burst(tx,ty+20,"#8a6a4a",lo?6:16,130,"🪨");flash(ko);ar.classList.add("shake");go(()=>ar.classList.remove("shake"),700);if(!lo)rain(tx,"🪨",7,ty-150)},590);return 640}
  if(id==="heal"||(tier&&c==="Demigod"&&id==="ultimate")||(c==="Titankin"&&id==="ultimate")){const g=id==="heal"?"#66e08a":k;
   go(()=>{ring(sx,sy+40,g,tier?230:150);burst(sx,sy,g,tier?18:9,tier?95:60,id==="heal"?"✚":"✦");rain(sx,id==="heal"?"✨":"⚡",tier?9:4,sy-110);if(tier)ring(sx,sy+40,g,340)},d);return d+150}
  if(c==="Gamer"){
@@ -3115,7 +3116,7 @@ async function supVfx(c,src,P,b){const live=livP(P),pp=live.map(p=>pos(p)),bp=po
 /* ===== Guides ===== */
 let GT="basics";
 const gTips={
-Titankin:["Parry (30%) and a big heal make it the most durable fighter. Use Heal every time its cooldown is ready.","Hit Skill when it is off cooldown, since +30 energy gets you to Titan Overdrive fast.","Overdrive's Enhanced Attack doubles damage and heals 15. Enhanced Skill costs 20 HP, so use it when you are healthy."],
+Titankin:["Parry (30%) and a big heal make it the most durable fighter. Use Heal every time its cooldown is ready.","Hit Skill when it is off cooldown, since +30 energy gets you to Titan Overdrive fast.","Overdrive's Enhanced Attack doubles damage and heals 15. Enhanced Skill hits for about 125, staggers a boss for 1 turn and cuts damage taken by 40% for 2 turns, but costs 20 HP. Enhanced Heal is more than double a normal heal. Enhanced Skill and Heal still need their cooldown to be ready and start it again, so plan which one you want to spend Overdrive on."],
 Emanator:["Normal state is weak on purpose. Let enemies hit you: every hit gives +1 Core, and a 15% parry blocks the hit, heals 10–20 and still gives +1 Core.","Normal Skill costs 35 HP but gives +3 Core, so use it to reach 10 Core sooner when your HP allows.","Berserk lasts 7 turns and heals on entry. Spend it attacking: Strikes heal, and the Skill costs 4 SP."],
 Genius:["Attack builds SP, so alternate Attack with Skill and Heal.","Skills add DM stacks (max 6). Ultimate unlocks an Enhanced Skill that scales ×(1 + 0.3 per DM), so stack first, then fire it.","Crit chance is 20% (×1.2), so it is steady rather than explosive."],
 Demigod:["You only have Sacrifice at first. It halves your HP into Charge, so you ascend in about 2 turns. Do not stall: you are fragile before the crown.","As the Undying King the Skill drains HP into Charge and its damage stacks each use.","Ultimate heals and resets the stacks, so use it when low. Conquer needs full Charge and is a huge hit plus heal."],
@@ -5008,9 +5009,9 @@ ${host?`<div class="row"><button class="btn pri" onclick="RH.toSelect()">▶ Sta
      let again;do{again=false;const wk=CLS[f.cls],wh=$("#who");wh.style.setProperty("--c",wk.c);$("#acts").style.setProperty("--c",wk.c);wh.innerHTML=`<span class="pt">${wk.e}</span><b>${escH(f.name)}</b><small style="color:var(--mu)">${f.cls}</small>`;
       const id=await takeTurn(f,b,sup,setTurn);if(my!==token)return;
       if(id==="__skip"){L(`⏱ ${f.name} ran out of time.`,"r");post(f);rcd(f);upd(f);break}
-      if(id==="support"){await doSupport(sup.c,f,[f],b);sup.cd=10;if(bossDead(b))break;again=true;continue}
+      if(id==="support"){await doSupport(sup.c,f,[f],b);sup.cd=10;if(b.key==="death")await dwAfter(f,b);if(bossDead(b))break;again=true;continue}
       L(`▶ ${f.name}: ${(acts(f).find(x=>x[0]===id)||[0,id])[1]}`,"a");fx(f,"atk");if(id==="ultimate")sfx("ult");
-      await sleep(Math.max(220,vfx(f,b,id,id==="ultimate"?"ult":0,id.toUpperCase())));f.am=rbAm(f,id);again=DO(f,b,id);f.am=1;if(b.key==="magma")await mgAfter(f,b,id);bossChk(b);[f,b].forEach(upd);await sleep(600);
+      await sleep(Math.max(220,vfx(f,b,id,id==="ultimate"?"ult":0,id.toUpperCase())));f.am=rbAm(f,id);again=DO(f,b,id);f.am=1;if(b.key==="magma")await mgAfter(f,b,id);if(b.key==="death")await dwAfter(f,b);bossChk(b);[f,b].forEach(upd);await sleep(600);
       if(bossDead(b))break;post(f);rcd(f);upd(f);if(f.cls==="Archer"&&f.lock)again=true}while(again&&f.hp>0)}
     if(bossDead(b)){sfx("win");L(`🏆 ${b.name} is defeated!`,"a");upd(b);await sleep(2000);res=true;break outer}
     if(allDown(P)){sfx("lose");P.forEach(upd);await sleep(1700);res=false;break outer}}
