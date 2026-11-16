@@ -1,8 +1,23 @@
 {
-  "enabled": true,
-  "id": "2026-11-15-update-1",
-  "title": "Huge update!",
-  "body": "Online battles are here: host a room, share the code and fight a friend or team up against hard bosses.\nYou can now see your opponent's skin and aura.\nNew in Settings: screen shake and a two-level low detail mode. \nNew in Audio: you can now import your own music as background music. \nNew attack animations/effects in character's skins",
-  "button": "Got it",
-  "expires": "2026-12-31"
+  "announcements": [
+    {
+      "id": "2026-11-16-titankin",
+      "date": "2026-11-16",
+      "title": "Titankin & Boss Rush update",
+      "body": "Titankin's Overdrive moves are stronger: the Enhanced Heal heals more than double, and the Enhanced Skill staggers the boss. They still follow cooldowns, so plan your turns.\nFixed: Who Towards Death now ambushes the last attacker in online Boss Rush.",
+      "button": "Got it"
+    },
+    {
+      "id": "2026-11-15-update-1",
+      "date": "2026-11-15",
+      "title": "Huge update!",
+      "body": "Online battles are here: host a room, share the code and fight a friend or team up against hard bosses.\nYou can now see your opponent's skin and aura.\nNew in Settings: screen shake and a two-level low detail mode. \nNew in Audio: you can now import your own music as background music. \nNew attack animations/effects in character's skins"
+    }
+    {
+      "id": "2026-11-01-welcome",
+      "date": "2026-11-01",
+      "title": "Welcome to the Arena",
+      "body": "Thanks for playing! Announcements will show up here."
+    }
+  ]
 }
