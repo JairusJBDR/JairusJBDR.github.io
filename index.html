@@ -64,6 +64,11 @@ input[type=text]{width:100%;background:var(--bg);border:2px solid var(--ln);bord
 .mini{width:70px;height:88px}.mini .art{height:100%}.dice{display:grid;place-items:center;height:88px;font-size:40px}
 .bd{position:absolute;top:-10px;right:-6px;font-style:normal;background:var(--ac);color:#1a1424;border-radius:10px;padding:0 8px;font-size:12px}
 .lore{color:var(--mu);font-weight:500;margin:10px 0 0}.q{font-style:italic;margin:6px 0 0}
+.annbell{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:5;width:42px;height:42px;border-radius:50%;border:2px solid var(--ln);background:var(--pn);font-size:20px;display:grid;place-items:center;cursor:pointer;padding:0;color:inherit}
+.annb{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;background:#ff3b5c;color:#fff;font:800 11px/18px Nunito,sans-serif;font-style:normal;text-align:center;padding:0 4px;display:none}
+.annh{text-align:left!important;max-height:82vh;display:flex;flex-direction:column}.annh h2{text-align:center;margin:0 0 8px}.annlist{overflow:auto;flex:1}
+.annit{border:1px solid var(--ln);border-radius:10px;padding:8px 10px;margin:6px 0;background:#0003}.annit summary{cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.annit summary small{margin-left:auto;color:var(--mu)}.annit p{margin:8px 0 0;line-height:1.5}
+.annnew{background:#ff3b5c;color:#fff;border-radius:6px;font-size:10px;font-style:normal;padding:1px 6px;font-weight:800}
 .who{display:flex;gap:8px;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:3px solid var(--c)}.who .pt{font-size:22px}
 #acts .btn{border-left:6px solid var(--c,var(--ln))}#acts .btn.stop{border-style:dashed;border-left-style:solid;opacity:.85}
 .mute{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:12px;z-index:20;padding:6px 10px}
@@ -4560,14 +4565,30 @@ function cmPanel(){const app=$("#app");if(!app)return;cmPreStop();
 {const _a=audioSet;audioSet=function(){_a();try{cmPanel()}catch(e){console.warn("music panel:",e)}}}
 (async function cmLoad(){try{const db=await cmDB();await new Promise(res=>{const st=db.transaction("t","readonly").objectStore("t"),rq=st.openCursor();rq.onsuccess=()=>{const c=rq.result;if(c){const v=c.value;if(v&&v.blob&&CMKINDS.some(x=>x[0]===c.key))cmSet(c.key,v.name||"track",v.blob);c.continue()}else res()};rq.onerror=()=>res()});if(Object.keys(CMT).length&&mMode)cmRefresh()}catch(e){}})();
 
-/* ===== announcements: reads announcement.json next to this file; shows once per id after TAP TO PLAY ===== */
+/* ===== announcements: reads announcement.json next to this file; popup shows the newest unread one after TAP TO PLAY; every announcement is saved so the bell on the main menu can show the history =====
+   announcement.json can be ONE announcement {id,title,body,button,date,expires,enabled}, or a list: {"announcements":[ {...newest...}, {...older...} ]} (newest first). */
 const ANN=(()=>{try{return fetch("announcement.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)}catch(e){return Promise.resolve(null)}})();
-async function showAnnouncement(){const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),a=await ANN;if(!a||typeof a!=="object"||a.enabled===false||!a.id||!a.body)return;
- const id=String(a.id).slice(0,60);if(a.expires&&new Date()>new Date(a.expires+"T23:59:59"))return;
- let seen=null;try{seen=localStorage.getItem("aoa_ann")}catch(e){}if(seen===id)return;
- try{localStorage.setItem("aoa_ann",id)}catch(e){}
- const t=esc(String(a.title||"Announcement").slice(0,80)),paras=String(a.body).slice(0,1500).split(/\n+/).map(x=>`<p class="q">${esc(x)}</p>`).join("");
- await ask(`<h2>📢 ${t}</h2>${paras}`,[esc(String(a.button||"Got it").slice(0,24))])}
+const annEsc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const annLS=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const annSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const annExp=x=>!!(x.exp&&new Date()>new Date(x.exp+"T23:59:59"));
+let ANNL=null;
+async function annLoad(){if(ANNL)return ANNL;const raw=await ANN;let arr=[];if(Array.isArray(raw))arr=raw;else if(raw&&Array.isArray(raw.announcements))arr=raw.announcements;else if(raw&&typeof raw==="object")arr=[raw];
+ const now=Date.now(),map=new Map(annLS("aoa_annh",[]).filter(h=>h&&h.id).map(h=>[h.id,h])),live=[];
+ arr.forEach((a,i)=>{if(!a||typeof a!=="object"||a.enabled===false||!a.id||!a.body)return;const id=String(a.id).slice(0,60),old=map.get(id),dt=a.date&&!isNaN(new Date(a.date))?new Date(a.date).getTime():null;
+  const e={id,title:String(a.title||"Announcement").slice(0,80),body:String(a.body).slice(0,1500),button:String(a.button||"Got it").slice(0,24),date:a.date?String(a.date).slice(0,20):(old&&old.date)||new Date(now).toISOString().slice(0,10),t:dt||(old&&old.t)||now-i,exp:a.expires?String(a.expires):""};map.set(id,e);live.push(e)});
+ const all=[...map.values()].sort((x,y)=>y.t-x.t).slice(0,50);annSet("aoa_annh",all);ANNL={all,live};return ANNL}
+function annRead(){const r=new Set(annLS("aoa_annr",[]));try{const o=localStorage.getItem("aoa_ann");if(o)r.add(o)}catch(e){}return r}
+function annMark(ids){const r=[...new Set([...annLS("aoa_annr",[]),...ids])].slice(-100);annSet("aoa_annr",r);try{if(ids.length)localStorage.setItem("aoa_ann",ids[ids.length-1])}catch(e){}}
+async function showAnnouncement(){const{live}=await annLoad(),rd=annRead(),a=live.find(x=>!annExp(x)&&!rd.has(x.id));if(!a)return;annMark([a.id]);annBadge();
+ await ask(`<h2>📢 ${annEsc(a.title)}</h2>${a.body.split(/\n+/).map(x=>`<p class="q">${annEsc(x)}</p>`).join("")}`,[annEsc(a.button)])}
+async function annBadge(){try{const{live}=await annLoad(),rd=annRead(),n=live.filter(x=>!rd.has(x.id)&&!annExp(x)).length;document.querySelectorAll(".annbell .annb").forEach(i=>{i.textContent=n>9?"9+":n;i.style.display=n?"block":"none"})}catch(e){}}
+async function annHistory(){const{all}=await annLoad(),rd=annRead(),m=document.createElement("div");m.className="modal";
+ const items=all.length?all.map((a,i)=>`<details class="annit"${i===0?" open":""}><summary><b>${annEsc(a.title)}</b>${rd.has(a.id)?"":'<em class="annnew">NEW</em>'}<small>${annEsc(a.date)}</small></summary>${a.body.split(/\n+/).map(x=>`<p>${annEsc(x)}</p>`).join("")}</details>`).join(""):'<p class="q">No announcements yet.</p>';
+ m.innerHTML=`<div class="card annh" style="--c:var(--ac)"><h2>🔔 Announcements</h2><div class="annlist">${items}</div><div class="opts"><button class="btn pri">Close</button></div></div>`;
+ m.onclick=e=>{if(e.target===m||e.target.closest(".opts button"))m.remove()};document.body.appendChild(m);annMark(all.map(a=>a.id));annBadge()}
+function annBell(){const app=document.getElementById("app");if(!app||app.querySelector(".annbell")||!app.querySelector(".hero"))return;const b=document.createElement("button");b.className="annbell";b.setAttribute("aria-label","Announcements");b.innerHTML='🔔<i class="annb"></i>';b.onclick=annHistory;app.appendChild(b);annBadge()}
+{const _m=menu;menu=function(){const r=_m.apply(this,arguments);try{annBell()}catch(e){}return r};try{annBell()}catch(e){}}
 
 /* ===== loading screen ===== */
 (function(){const L=[["TIP", "Energy reaches 100? Time to unleash your Ultimate."], ["TIP", "Greyed-out action? It's on cooldown or you're short on SP."], ["TIP", "In Boss Rush, the boss is stunned at 50% HP. Burst it down then!"], ["TIP", "Boss Rush Support is shared between both fighters, so time it well."], ["TIP", "Fill a character's Remnant fragment bar to unlock its permanent bonuses."], ["TIP", "Campaign buffs last the whole run. Pick what fits your fighter."], ["TIP", "Colored tags under a name show active effects. Keep an eye on them."], ["TIP", "Heal before you're in danger, not after."], ["TIP", "Bosses get an ultimate in phase 3. Save your defenses."], ["TIP", "Check Guides in the main menu for every fighter's moves."], ["TIP", "Rerolling a Remnant bonus costs Solari, so save up first."], ["TIP", "Ascend a Remnant at 500 fragments for an extra class bonus."], ["TIP", "Matching class Remnants can unlock a 2-Pair effect."], ["TIP", "Apocalyptic is the hard mode. Clearing it unlocks Corruption."], ["PUN", "Why did the knight bring a ladder? To reach the next floor."], ["PUN", "I'd tell you a boss joke, but it's a bit of a phase."], ["PUN", "Healers never die, they just lose their HP-itude."], ["PUN", "Why was the archer a bad friend? Always taking shots."], ["PUN", "What do you call a sleepy Titankin? A Titan-yawn."], ["PUN", "The Trickster told me a joke, but I think I fell for it."], ["PUN", "Don't trust stairs in dungeons. They're always up to something."], ["PUN", "I'm reading a book about Energy. It's quite charging."], ["PUN", "Why don't bosses play hide and seek? They always get found at 50%."], ["PUN", "My PVP skills are un-bot-lievable."], ["PUN", "Taking a nap? That's just an AFK-ward moment."], ["PUN", "Need a sword pun? I'll be blade to help."], ["PUN", "What's a mage's favorite snack? Spell-ed beans."], ["PUN", "Lag is just the game taking a dramatic pause."], ["QUOTE", "I played this game before"], ["QUOTE", "Hi"], ["QUOTE", "Luh"], ["QUOTE", "I don't nkow what to say"], ["QUOTE", "I think i made a typo on the some qoutes"], ["QUOTE", "Hmmm... Babana bread"], ["QUOTE", "I win"], ["QUOTE", "I'm craving for yakult"], ["QUOTE", "I lose"], ["QUOTE", "Jairus was here"], ["QUOTE", "Who padlock my glasses?"], ["QUOTE", "Never gonna give you up"], ["QUOTE", "Im the storm"], ["QUOTE", "Death note? Ehh??"], ["QUOTE", "AAAAAAAAAAAAAAAAAAAAAA"], ["QUOTE", "Shush"], ["QUOTE", "Iwheuehdjdiwnsiwwjwwuwhwj"], ["QUOTE", "Shhhhhhhhh"], ["QUOTE", "Oi"]];const o=document.getElementById("ldscr");if(!o)return;
