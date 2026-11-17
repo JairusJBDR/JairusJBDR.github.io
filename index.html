@@ -3639,7 +3639,8 @@ var RNK=rkClean((function(){try{return JSON.parse(localStorage.getItem("aoa_rank
 function rkSave(){try{localStorage.setItem("aoa_rank",JSON.stringify(RNK))}catch(e){}}
 function rkReal(){const d=new Date(),p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())}
 function rkToday(){const r=rkReal();if(r>RNK.max){RNK.max=r;rkSave()}return RNK.max}
-function rkPick(day){let h=0;for(const c of day)h=(h*31+c.charCodeAt(0))>>>0;const a=[...DQ],r=()=>{h=(h*1664525+1013904223)>>>0;return h/4294967296};for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,3)}
+function dayRng(day,salt){let h=2166136261;for(const c of String(day)+"|"+salt){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}return()=>{h=(h+0x6D2B79F5)>>>0;let x=h;x=Math.imul(x^x>>>15,x|1);x^=x+Math.imul(x^x>>>7,x|61);return((x^x>>>14)>>>0)/4294967296}}
+function rkPick(day){const a=[...DQ],r=dayRng(day,"quests");for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,3)}
 function rkDay(){const t=rkToday();if(RNK.day!==t||RNK.dq.length!==3){RNK.day=t;RNK.dq=rkPick(t).map(q=>({id:q.id,p:0,c:0,u:[]}));rkSave()}}
 function rkLevel(){let x=RNK.xp,l=1;while(l<RK_MAX&&x>=rkNeed(l)){x-=rkNeed(l);l++}return l>=RK_MAX?{l,cur:1,need:1}:{l,cur:x,need:rkNeed(l)}}
 function rkTier(l){let i=0;RK_TITLES.forEach((t,k)=>{if(l>=t[0])i=k});return i}
@@ -3781,7 +3782,7 @@ const DC_MODS=[
  {id:"fren",i:"🔥",n:"Frenzy",d:"Everyone deals +30% damage.",B:{dmg:1.3},E:{dmg:1.3}},
  {id:"mara",i:"⏳",n:"Marathon",d:"Everyone has +60% HP.",B:{hp:1.6},E:{hp:1.6}},
  {id:"brit",i:"🎯",n:"Brittle Foes",d:"Enemies have −30% HP but hit +25% harder.",E:{hp:.7,dmg:1.25}}];
-function dcToday(){rkDay();const day=rkToday();let h=0;for(const c of day)h=(h*31+c.charCodeAt(0)+7)>>>0;const r=()=>{h=(h*1664525+1013904223)>>>0;return h/4294967296};
+function dcToday(){rkDay();const day=rkToday(),r=dayRng(day,"challenge");
  const cls=NAMES[Math.floor(r()*NAMES.length)];let bc=NAMES[Math.floor(r()*NAMES.length)];if(bc===cls)bc=NAMES[(NAMES.indexOf(bc)+1)%NAMES.length];const mod=DC_MODS[Math.floor(r()*DC_MODS.length)],rush=r()<.3,pool=[...NAMES];for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}const bk=Object.keys(BOSSES).filter(k=>k!=="below"),boss=bk[Math.floor(r()*bk.length)];return{day,cls,bc,mod,rush,tm:pool.slice(0,3),boss}}
 function dcLeft(){const d=new Date(),e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),ms=Math.max(0,e-d);return Math.floor(ms/36e5)+"h "+Math.floor(ms%36e5/6e4)+"m"}
 function dcSub(){return RIFT.dc===dcToday().day?"✅ Done today · quests below":"Win today's gauntlet · +"+RF_DAILY+" 🔷 shards"}
