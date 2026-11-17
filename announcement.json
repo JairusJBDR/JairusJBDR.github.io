@@ -1,11 +1,17 @@
 {
   "announcements": [
     {
+      "id": "2026-11-18-titankin",
+      "date": "2026-11-18",
+      "title": "bug fixes & updates",
+      "body": "fixed the Boss Rush host when bosses loses energy each attack or dodge. \n added features: added a new 'Learn Playstyle' in character's guides.",
+      "button": "Got it"
+    },
+    {
       "id": "2026-11-16-titankin",
       "date": "2026-11-16",
       "title": "Titankin & Boss Rush update",
       "body": "Titankin's Overdrive moves are stronger: the Enhanced Heal heals more than double, and the Enhanced Skill staggers the boss. They still follow cooldowns, so plan your turns.\nFixed: Who Towards Death now ambushes the last attacker in online Boss Rush.",
-      "button": "Got it"
     },
     {
       "id": "2026-11-15-update-1",
