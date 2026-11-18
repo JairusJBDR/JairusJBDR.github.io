@@ -4720,14 +4720,15 @@ Object.assign(SKA,{
 Object.assign(SKMAP3,{"Phoenix Ascendant|bzs":["phoenixPlanet","🔥"],"Magma Colossus|tenhattack":["magmaStalagmites","🔥"],"Magma Colossus|tenhskill":["magmaVolcano","🔥"]});
 function skinFx(f,t,id,lab){if(!f||f.simple||f.boss||f.elite||!SKMAP[f.cls]||(id!=="attack"&&id!=="skill"&&id!=="enhatk"))return null;
  if(!(f.cv?f.cv.s:cosOn(f.cls,"s")))return null;
- const nm=SKINS[f.cls]&&SKINS[f.cls].n;let m=(f.cls==="Titankin"&&f.enh&&(id==="attack"||id==="skill"))?SKMAP3[nm+"|tenh"+id]:(id==="skill"&&f.cls==="Emanator"&&f.bz)?SKMAP3[nm+"|bzs"]:id==="enhatk"?SKMAP3[nm+"|enh"]:(id==="attack"&&f.cls==="Champion"&&f.mh)?SKMAP3[nm+"|hunt"]:(id==="attack"&&f.cls==="Emanator"&&f.bz)?SKMAP3[nm+"|bz"]:null;if(!m&&id!=="enhatk"){const MM=SKMAP2[nm]||SKMAP[f.cls];m=MM[id==="attack"?"a":"s"]}if(!m)return null;const fn=SKA[m[0]];if(!fn)return null;
+ const nm=SKINS[f.cls]&&SKINS[f.cls].n;let m=(f.cls==="Titankin"&&f.enh&&(id==="attack"||id==="skill"))?SKMAP3[nm+"|tenh"+id]:(id==="skill"&&f.cls==="Emanator"&&f.bz)?SKMAP3[nm+"|bzs"]:id==="enhatk"?SKMAP3[nm+"|enh"]:(id==="attack"&&f.cls==="Champion"&&f.mh)?SKMAP3[nm+"|hunt"]:(id==="attack"&&f.cls==="Emanator"&&f.bz)?SKMAP3[nm+"|bz"]:null;const spec=(f.cls==="Titankin"&&f.enh&&(id==="attack"||id==="skill"))||(f.cls==="Emanator"&&f.bz&&id==="skill");if(!m&&!spec&&id!=="enhatk"){const MM=SKMAP2[nm]||SKMAP[f.cls];m=MM[id==="attack"?"a":"s"]}if(!m)return null;const fn=SKA[m[0]];if(!fn)return null;
  const[sx,sy]=pos(f),[tx,ty]=pos(t),k=(SKINS[f.cls]&&SKINS[f.cls].c)||CLS[f.cls].c,U=LOWD>1,sc=n=>U?0:LOWD?Math.max(1,Math.ceil(n/2)):n,s1=n=>Math.max(1,sc(n)),
   x=Object.assign({f,t,lab,sx,sy,tx,ty,k,g:m[1],U,sc,s1,T:setTimeout,c2:"#fff",g2:m[1]},m[2]||{});
  x.hit=big=>{if(U){ring(tx,ty+36,k,190);burst(tx,ty+10,k,6,60,x.g);shakeArena(180)}else imp(tx,ty,k,big)};
  return fn(x)}
 
 {const _vfx=vfx;vfx=function(f,t,id,tier,lab){let r=null;
- if((!tier&&(id==="attack"||id==="skill"))||id==="enhatk"){try{r=skinFx(f,t,id,lab)}catch(e){r=null}if(r==null&&id!=="enhatk"){try{r=cust(f,t,id)}catch(e){r=null}}}
+ const spE=tier==="enh"&&((f.cls==="Titankin"&&f.enh&&(id==="attack"||id==="skill"))||(f.cls==="Emanator"&&f.bz&&id==="skill"));
+  if(((!tier||spE)&&(id==="attack"||id==="skill"))||id==="enhatk"){try{r=skinFx(f,t,id,lab)}catch(e){r=null}if(r==null&&id!=="enhatk"&&!tier){try{r=cust(f,t,id)}catch(e){r=null}}}
  if(r!=null)return r;
  try{if((id==="attack"||id==="skill"||id==="enhatk")&&!(f.cls==="Gamer"&&id==="skill")){wind(f,t);const k=f.simple?f.col:CLS[f.cls].c;setTimeout(()=>{try{gnd(f,k,150)}catch(e){}},280)}}catch(e){}
  return _vfx(f,t,id,tier,lab)}}
