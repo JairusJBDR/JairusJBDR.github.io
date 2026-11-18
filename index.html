@@ -4657,7 +4657,7 @@ SKMAP2["Dragon Black Knight"].s=["radiantCut","🗡️"];
 SKMAP2["Skyfeather Windcaller"].s=["caladbolg","🪶"];
 const SKMAP3={"Eclipse Swordmaiden|hunt":["moonBarrage","🌙"],"Phoenix Ascendant|bz":["berserkFlurry","🔥"],"Mecha Vanguard|enh":["mechChomp","⬢"]};
 /* build stamp */
-(function(){const b=document.createElement("div");b.id="bldStamp";b.textContent="build fx-4";b.style.cssText="position:fixed;right:6px;bottom:calc(4px + env(safe-area-inset-bottom,0px));font:600 10px system-ui,sans-serif;color:#fff;opacity:.45;z-index:99999;pointer-events:none;text-shadow:0 1px 2px #000";(document.body||document.documentElement).appendChild(b)})();
+(function(){const b=document.createElement("div");b.id="bldStamp";b.textContent="build fx-5";b.style.cssText="position:fixed;right:6px;bottom:calc(4px + env(safe-area-inset-bottom,0px));font:600 10px system-ui,sans-serif;color:#fff;opacity:.45;z-index:99999;pointer-events:none;text-shadow:0 1px 2px #000";(document.body||document.documentElement).appendChild(b)})();
 /* ===== Big finishers: Phoenix berserk-skill planet + Magma Colossus enhanced moves (GPU-friendly: transforms/opacity only, no filters) ===== */
 function fxo(html,css,kf,op){const l=$("#fxl");if(!l)return null;const d=document.createElement("div");d.style.cssText="position:absolute;left:0;top:0;pointer-events:none;"+css;d.innerHTML=html;l.appendChild(d);try{d.animate(kf,Object.assign({fill:"both"},op))}catch(e){}setTimeout(()=>d.remove(),(op.duration||1000)+(op.delay||0)+100);return d}
 const PHX=`<svg viewBox="0 0 140 120" width="100%" height="100%" style="overflow:visible"><defs><linearGradient id="pxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff3b0"/><stop offset=".45" stop-color="#ff9a2b"/><stop offset="1" stop-color="#c1121f"/></linearGradient></defs><g fill="url(#pxg)" stroke="#fff3b0" stroke-width="1.2" stroke-linejoin="round"><path d="M70 70C60 95 52 108 44 118C62 108 68 96 70 88C72 96 78 108 96 118C88 108 80 95 70 70Z"/><path d="M66 54C46 50 22 38 4 6C20 14 30 14 40 12C30 20 28 28 22 34C36 34 44 38 54 42C44 46 40 52 34 58C46 56 58 58 66 66Z"/><path transform="translate(140 0) scale(-1 1)" d="M66 54C46 50 22 38 4 6C20 14 30 14 40 12C30 20 28 28 22 34C36 34 44 38 54 42C44 46 40 52 34 58C46 56 58 58 66 66Z"/><ellipse cx="70" cy="62" rx="10" ry="22"/><circle cx="70" cy="34" r="8"/><path d="M66 28C62 16 64 10 70 4C76 10 78 16 74 28Z"/><path d="M70 22L66 31L74 31Z" fill="#fff3b0" stroke="none"/></g><circle cx="73" cy="33" r="1.8" fill="#3a0a05"/></svg>`;
@@ -4735,6 +4735,86 @@ function skinFx(f,t,id,lab){if(!f||f.simple||f.boss||f.elite||!SKMAP[f.cls]||(id
  if(r!=null)return r;
  try{if((id==="attack"||id==="skill"||id==="enhatk")&&!(f.cls==="Gamer"&&id==="skill")){wind(f,t);const k=f.simple?f.col:CLS[f.cls].c;setTimeout(()=>{try{gnd(f,k,150)}catch(e){}},280)}}catch(e){}
  return _vfx(f,t,id,tier,lab)}}
+/* ===== fx-5: lighter Volcano Burst + Phoenix Meteor, and skin special-move animations =====
+   Lag fix: no whole-arena shake, no drop-shadow/box-shadow layers, no huge blurred gradients. Only small transform/opacity layers; the hit target shakes instead of the arena.
+   New (skin equipped): Demigod Conquer = Thunderfall, Genius Enhanced Skill = Space Shatter, Knight Ultimate = Obsidian Cleave. */
+(function(){
+const rnd=(a,b)=>a+Math.random()*(b-a),snd=n=>{try{sfx(n)}catch(e){}};
+const LR=(x,y,col,s,dur)=>fxo("",`width:${s}px;height:${s*.4}px;margin:${-s*.2}px 0 0 ${-s/2}px;border:4px solid ${col};border-radius:50%`,[{transform:`translate(${x}px,${y}px) scale(.15)`,opacity:1},{transform:`translate(${x}px,${y}px) scale(1.2)`,opacity:0}],{duration:dur||600,easing:"ease-out"});
+const GL=(x,y,s,col,dur)=>fxo("",`width:${s}px;height:${s}px;margin:${-s/2}px 0 0 ${-s/2}px;border-radius:50%;background:radial-gradient(circle,#fff 0,${col} 38%,transparent 70%)`,[{transform:`translate(${x}px,${y}px) scale(.2)`,opacity:.95},{transform:`translate(${x}px,${y}px) scale(1.5)`,opacity:0}],{duration:dur||600,easing:"ease-out"});
+const TN=(col,a,ms)=>fxo("",`inset:0;width:100%;height:100%;background:${col}`,[{opacity:0},{opacity:a,offset:.15},{opacity:0}],{duration:ms||350});
+const SH=(t,a,ms)=>{const s=$("#u"+t.side+" .stage");if(!s||!s.animate)return;try{s.animate([{translate:"0 0"},{translate:`${-a}px ${a/3}px`},{translate:`${a}px ${-a/3}px`},{translate:`${-a/2}px 0`},{translate:"0 0"}],{duration:ms||320})}catch(e){}};
+const SHD=(x,y,n,bg,ms)=>{for(let i=0;i<n;i++){const a=rnd(0,6.28),d=rnd(70,180),w=rnd(10,22);fxo("",`width:${w}px;height:${w}px;margin:${-w/2}px 0 0 ${-w/2}px;background:${bg};clip-path:polygon(50% 0,100% 85%,0 100%);z-index:9`,[{transform:`translate(${x}px,${y}px) rotate(0deg)`,opacity:1},{transform:`translate(${x+Math.cos(a)*d}px,${y+Math.sin(a)*d*.7+50}px) rotate(${rnd(-400,400)}deg)`,opacity:0}],{duration:ms||750,easing:"ease-out"})}};
+const DARK=(col,a,ms)=>fxo("",`inset:0;width:100%;height:100%;background:${col}`,[{opacity:0},{opacity:a,offset:.2},{opacity:a,offset:.8},{opacity:0}],{duration:ms});
+const BOLT=(x1,y1,x2,y2,c1,W,H,th)=>{const n=9;let p=`M${x1} ${y1}`;for(let i=1;i<n;i++){const q=i/n;p+=`L${x1+(x2-x1)*q+rnd(-26,26)} ${y1+(y2-y1)*q}`}p+=`L${x2} ${y2}`;
+ const m=y1+(y2-y1)*.5,bx=x1+(x2-x1)*.5,br=`M${bx} ${m}L${bx+rnd(-70,70)} ${m+rnd(40,80)}L${bx+rnd(-90,90)} ${m+rnd(90,130)}`;
+ fxo(`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="${p}${br}" stroke="${c1}" stroke-width="${th*3}" opacity=".55"/><path d="${p}${br}" stroke="#fff" stroke-width="${th}"/></svg>`,`width:${W}px;height:${H}px;z-index:10`,[{opacity:1},{opacity:.25,offset:.2},{opacity:1,offset:.4},{opacity:.7,offset:.7},{opacity:0}],{duration:380})};
+
+Object.assign(SKA,{
+ /* ---- Phoenix Ascendant · Berserk Skill (lighter) ---- */
+ phoenixPlanet:x=>{const{f,t,sx,sy,tx,ty,U,sc,T}=x,LO=LOWD===1,[W]=aSize();snd("berserk");wind(f,t,"cast");
+  if(U){T(()=>{LR(tx,ty+36,"#ff6a2b",260,500);SH(t,8,250)},340);return 380}
+  fxHeavy(1500);const D=Math.round(Math.max(260,Math.min(W*.7,340))),cx=tx-D/2,yEnd=ty-D*.7,E=970;
+  LR(sx,sy+34,"#ffb347",200,500);
+  T(()=>fxo(`<div style="width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 36% 34%,#fff6c8 0,#ffd36b 9%,#ff8a1f 28%,#d92b0a 56%,#6a0d05 90%)"></div>`,`width:${D}px;height:${D}px;z-index:9;will-change:transform`,[{transform:`translate(${cx}px,${-D*1.3}px)`,opacity:1,easing:"cubic-bezier(.5,0,1,.7)"},{offset:.85,transform:`translate(${cx}px,${yEnd}px)`,opacity:1},{transform:`translate(${cx}px,${yEnd+30}px)`,opacity:0}],{duration:900}),200);
+  T(()=>{snd("crit");GL(tx,ty,380,"#ff6a2b",650);LR(tx,ty+36,"#ffe27a",460,650);if(!LO)T(()=>LR(tx,ty+36,"#ff6a2b",600,650),100);TN("#ff9a3d",.3,300);SH(t,12,420);
+   fxSpikes(tx,ty,LO?3:4,["#3a0a05","#ff7a1f"],"#ff6a2b",110,190,44);lavaChunks(tx,ty-20,sc(5),"#ff7a1f",["🔥","☄️"]);
+   if(!LO)fxo(PHX,"width:200px;height:170px;z-index:10",[{transform:`translate(${tx-100}px,${ty-10}px)`,opacity:0},{offset:.35,transform:`translate(${tx-100}px,${ty-120}px)`,opacity:1},{transform:`translate(${tx-100}px,${ty-220}px)`,opacity:0}],{duration:900,easing:"ease-out"});
+   fxBan("PHOENIX METEOR!","#ffb347")},E);
+  return E+30},
+ /* ---- Magma Colossus · Enhanced Skill: Volcano Burst (lighter) ---- */
+ magmaVolcano:x=>{const{f,t,sx,sy,tx,ty,k,U,sc,T}=x,LO=LOWD===1;wind(f,t,"leap");snd("berserk");
+  if(U){T(()=>{LR(tx,ty+36,k,260,500);SH(t,8,250)},300);return 340}
+  fxHeavy(1700);const VW=200,VH=165,by=ty+80,E=560;
+  const VOL=`<svg viewBox="0 0 260 200" width="100%" height="100%" style="overflow:visible"><polygon points="6,200 92,44 168,44 254,200" fill="#4a1f12" stroke="#ffb347" stroke-width="4"/><polygon points="92,44 130,44 120,200 6,200" fill="#2a0e07" opacity=".6"/><ellipse cx="130" cy="44" rx="40" ry="13" fill="#ff5a1f" stroke="#ffb347" stroke-width="2"/><ellipse cx="130" cy="43" rx="26" ry="8" fill="#ffe27a"/><path d="M110 48C100 84 120 104 98 146L108 150C130 106 114 84 124 50ZM150 48C158 80 146 108 164 150L174 144C156 106 168 78 142 48Z" fill="#ff7a1f"/></svg>`;
+  LR(sx,sy+40,k,200,500);T(()=>{LR(tx,ty+40,k,280,550);SH(t,5,250)},200);
+  T(()=>fxBack(`<div style="width:${VW}px;height:${VH}px">${VOL}</div>`,`width:${VW}px;height:${VH}px`,[{transform:`translate(${tx-VW/2}px,${by+40}px)`,opacity:1,easing:"cubic-bezier(.2,.8,.3,1)"},{offset:.25,transform:`translate(${tx-VW/2}px,${by-VH}px)`,opacity:1},{offset:.9,transform:`translate(${tx-VW/2}px,${by-VH}px)`,opacity:1},{transform:`translate(${tx-VW/2}px,${by-VH+30}px)`,opacity:0}],{duration:1500}),E-300);
+  T(()=>{snd("crit");const cy=by-VH+4;
+   fxo("",`width:120px;height:${ty+120}px;transform-origin:50% 100%;background:linear-gradient(90deg,rgba(255,61,0,0),#ff5a1f 25%,#fff3b0 50%,#ff5a1f 75%,rgba(255,61,0,0))`,[{transform:`translate(${tx-60}px,${cy-ty-60}px) scaleY(0)`,opacity:1},{offset:.3,transform:`translate(${tx-60}px,${cy-ty-60}px) scaleY(1)`,opacity:1},{transform:`translate(${tx-60}px,${cy-ty-60}px) scaleY(1) scaleX(1.6)`,opacity:0}],{duration:900,easing:"ease-out"});
+   GL(tx,cy,300,"#ff6a2b",700);LR(tx,ty+36,"#ffe27a",460,650);if(!LO)T(()=>LR(tx,ty+36,"#ff5a1f",600,650),110);
+   TN("#ff5a1f",.3,320);SH(t,12,500);lavaChunks(tx,cy+10,sc(5),"#ff7a1f",["🪨","🔥"]);fxBan("VOLCANO BURST!","#ffb347")},E);
+  return E+60},
+ /* ---- Demigod · Conquer: Thunderfall (many lightning strikes) ---- */
+ conquerThunder:x=>{const{f,t,tx,ty,U,T}=x,[W,H]=aSize(),LO=LOWD===1,n=U?2:LO?5:8,cols=["#c9a0ff","#ffe27a"];wind(f,t,"cast");
+  if(U){T(()=>{BOLT(tx,-10,tx,ty+36,"#c9a0ff",W,H,5);LR(tx,ty+40,"#ffe27a",260,500);SH(t,8,250)},260);return 340}
+  fxHeavy(1500);DARK("#070b24",.5,n*115+750);
+  const dl=i=>150+i*115;
+  for(let i=0;i<n-1;i++)T(()=>{const bx=tx+rnd(-80,80),c=cols[i%2];BOLT(bx+rnd(-30,30),-10,bx,ty+34,c,W,H,3);LR(bx,ty+40,c,130,450);GL(bx,ty+30,110,c,400);SH(t,5,200);if(i%3===0){snd("crit");TN(c,.22,220)}},dl(i));
+  T(()=>{snd("crit");BOLT(tx,-10,tx,ty+34,"#c9a0ff",W,H,7);BOLT(tx+14,-10,tx-6,ty+34,"#ffe27a",W,H,4);GL(tx,ty+20,320,"#ffe27a",700);LR(tx,ty+40,"#fff",440,650);LR(tx,ty+40,"#c9a0ff",300,650);TN("#fff",.45,300);SH(t,12,450);fxBan("THUNDERFALL!","#c9a0ff")},dl(n-1)+40);
+  return dl(n-1)+100},
+ /* ---- Genius · Enhanced Skill: Space Shatter (space cracks open into rifts) ---- */
+ riftShatter:x=>{const{f,t,tx,ty,k,U,T}=x,LO=LOWD===1;wind(f,t,"cast");
+  if(U){T(()=>{LR(tx,ty+36,k,260,500);SH(t,8,250)},300);return 340}
+  fxHeavy(1700);DARK("#0a0220",.45,1200);LR(tx,ty+36,k,160,500);GL(tx,ty,140,k,500);
+  T(()=>{let web="";for(let i=0;i<7;i++){const a=i*Math.PI*2/7+rnd(-.2,.2);let p=`M180 180`;[45,95,150].forEach(r=>{const b=a+rnd(-.22,.22);p+=`L${180+Math.cos(b)*r} ${180+Math.sin(b)*r}`});web+=`<path d="${p}" stroke="${k}" stroke-width="3.5" opacity=".6"/><path d="${p}" stroke="#fff" stroke-width="1.3"/>`}
+   fxo(`<svg viewBox="0 0 360 360" width="100%" height="100%" fill="none" stroke-linecap="round" stroke-linejoin="round">${web}</svg>`,`width:360px;height:360px;margin:-180px 0 0 -180px;z-index:8`,[{transform:`translate(${tx}px,${ty}px) scale(.2)`,opacity:0},{offset:.2,transform:`translate(${tx}px,${ty}px) scale(1)`,opacity:1},{offset:.8,opacity:1,transform:`translate(${tx}px,${ty}px) scale(1)`},{transform:`translate(${tx}px,${ty}px) scale(1)`,opacity:0}],{duration:1000})},120);
+  const lens=(cx,cy,L,ang,dl)=>fxo(`<svg viewBox="0 0 40 120" width="100%" height="100%" style="overflow:visible"><polygon points="20,0 38,60 20,120 2,60" fill="#05010f" stroke="${k}" stroke-width="2.5"/><polygon points="20,18 30,60 20,102 10,60" fill="#7a3cff" opacity=".55"/><circle cx="17" cy="48" r="1.6" fill="#fff"/><circle cx="24" cy="74" r="1.3" fill="#fff"/></svg>`,`width:${L*.34}px;height:${L}px;margin:${-L/2}px 0 0 ${-L*.17}px;z-index:9`,[{transform:`translate(${cx}px,${cy}px) rotate(${ang}deg) scale(0)`,opacity:1},{offset:.2,transform:`translate(${cx}px,${cy}px) rotate(${ang}deg) scale(1)`,opacity:1},{offset:.8,transform:`translate(${cx}px,${cy}px) rotate(${ang}deg) scale(1)`,opacity:1},{transform:`translate(${cx}px,${cy}px) rotate(${ang}deg) scale(.1)`,opacity:0}],{duration:950,delay:dl,easing:"ease-out"});
+  T(()=>{lens(tx,ty-10,210,12,0);lens(tx-115,ty-40,120,-35,70);if(!LO)lens(tx+115,ty+10,130,40,140)},300);
+  T(()=>{snd("crit");SHD(tx,ty,LO?8:14,"linear-gradient(135deg,rgba(79,209,255,.8),rgba(30,16,80,.85))",900);TN(k,.35,320);GL(tx,ty,320,k,700);LR(tx,ty+36,"#fff",360,650);LR(tx,ty+36,k,480,650);SH(t,10,380);fxBan("SPACE SHATTER!",k)},620);
+  return 680},
+ /* ---- Knight · Ultimate: Obsidian Cleave (boulder dropped, sliced in half in one swing) ---- */
+ obsidianCleave:x=>{const{f,t,tx,ty,k,U,T}=x,LO=LOWD===1,full=f.en>=200,S=full?200:160,cy=ty-14;wind(f,t,"leap");
+  if(U){T(()=>{LR(tx,ty+40,k,260,500);SH(t,8,250)},260);return 300}
+  fxHeavy(1500);
+  const rk=`<svg viewBox="0 0 100 100" width="100%" height="100%"><polygon points="14,38 30,10 62,4 90,24 96,58 76,92 38,96 8,70" fill="#17121f" stroke="${k}" stroke-width="2.5" stroke-linejoin="round"/><polygon points="14,38 30,10 44,44" fill="#2d2646"/><polygon points="30,10 62,4 44,44" fill="#3b3358"/><polygon points="62,4 90,24 96,58 44,44" fill="#221b36"/><polygon points="44,44 96,58 76,92" fill="#0e0a16"/><polygon points="44,44 76,92 38,96" fill="#1c1630"/><polygon points="14,38 44,44 38,96 8,70" fill="#120d1c"/><path d="M32 16L58 12" stroke="#fff" stroke-width="2" opacity=".5"/></svg>`;
+  const hf=(c,sh)=>`<div style="position:absolute;inset:0;clip-path:polygon(${c})">${rk}</div>`;
+  fxo("",`width:${S}px;height:${S*.22}px;margin:${-S*.11}px 0 0 ${-S/2}px;border-radius:50%;background:#000;z-index:4`,[{transform:`translate(${tx}px,${ty+50}px) scale(.3)`,opacity:0},{offset:.5,transform:`translate(${tx}px,${ty+50}px) scale(1)`,opacity:.5},{transform:`translate(${tx}px,${ty+50}px) scale(1)`,opacity:0}],{duration:900});
+  const bd=fxo(hf("0 0,58% 0,42% 100%,0 100%")+hf("58% 0,100% 0,100% 100%,42% 100%"),`width:${S}px;height:${S}px;z-index:9;will-change:transform`,[{transform:`translate(${tx-S/2}px,${-S*1.3}px)`,opacity:1,easing:"cubic-bezier(.5,0,1,.7)"},{offset:.42,transform:`translate(${tx-S/2}px,${cy-S/2}px)`,opacity:1},{transform:`translate(${tx-S/2}px,${cy-S/2}px)`,opacity:1}],{duration:1000});
+  T(()=>{SH(t,6,200);LR(tx,ty+44,k,200,450)},420);
+  T(()=>wind(f,t,"slash"),440);
+  T(()=>{snd("crit");const ln=(w,a)=>fxo("",`width:${w}px;height:${S*1.15}px;margin-left:${-w/2}px;transform-origin:50% 0;background:linear-gradient(#fff,${k} 60%,transparent);z-index:11`,[{transform:`translate(${tx+S*.08}px,${cy-S*.58}px) rotate(9deg) scaleY(0)`,opacity:a},{offset:.3,transform:`translate(${tx+S*.08}px,${cy-S*.58}px) rotate(9deg) scaleY(1)`,opacity:a},{transform:`translate(${tx+S*.08}px,${cy-S*.58}px) rotate(9deg) scaleY(1)`,opacity:0}],{duration:360,easing:"ease-out"});ln(7,1);ln(28,.35);
+   if(bd&&bd.children.length>1){[[0,-1],[1,1]].forEach(([i,d])=>bd.children[i].animate([{transform:"none",opacity:1},{transform:`translate(${d*S*.55}px,${S*.35}px) rotate(${d*24}deg)`,opacity:0}],{duration:420,delay:90,easing:"ease-in",fill:"both"}))}
+   SHD(tx,cy,LO?6:12,"linear-gradient(135deg,#3b3358,#0e0a16)",800);GL(tx,cy,260,k,650);LR(tx,ty+40,k,320,650);LR(tx,ty+40,"#fff",190,500);TN("#fff",.4,260);SH(t,12,420);fxBan("OBSIDIAN CLEAVE!",k)},560);
+  return 640}
+});
+
+/* route the three special moves (only when that fighter's skin is equipped, same rule as other skin effects) */
+const SPK=(f,id)=>f.cls==="Demigod"&&id==="conquer"?"conquerThunder":f.cls==="Genius"&&id==="skill"&&f.ens?"riftShatter":f.cls==="Knight"&&id==="ultimate"?"obsidianCleave":null;
+function special(f,t,id,lab){if(!f||f.simple||f.boss||f.elite)return null;const key=SPK(f,id);if(!key||!(f.cv?f.cv.s:cosOn(f.cls,"s")))return null;
+ const[sx,sy]=pos(f),[tx,ty]=pos(t),k=(SKINS[f.cls]&&SKINS[f.cls].c)||CLS[f.cls].c,U=LOWD>1,sc=n=>U?0:LOWD?Math.max(1,Math.ceil(n/2)):n,s1=n=>Math.max(1,sc(n));
+ return SKA[key]({f,t,lab,sx,sy,tx,ty,k,U,sc,s1,T:setTimeout})}
+{const _v=vfx;vfx=function(f,t,id,tier,lab){try{const r=special(f,t,id,lab);if(r!=null)return r}catch(e){try{console.warn("special fx",e)}catch(_){}}return _v(f,t,id,tier,lab)}}
+})();
 {const _bFx=bFx;bFx=async function(b,t,lab){const id=b.fxk||"attack";
  try{if(b.key!=="magma"&&b.key!=="death"&&(id==="attack"||id==="skill"||id==="enh")){const nw=Date.now();if(!b._wt||nw-b._wt>1300){b._wt=nw;wind(b,t,id==="attack"?ARCH[b.cls]:"leap");await sleep(id==="attack"?300:380);gnd(b,b.col,id==="attack"?170:260);if(id!=="attack")shakeArena(300)}}}catch(e){}
  const r=await _bFx(b,t,lab);
