@@ -485,15 +485,15 @@ body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),r
 @property --pn{syntax:"<color>";inherits:true;initial-value:#1d1a30}
 @property --pn2{syntax:"<color>";inherits:true;initial-value:#2a2644}
 @property --bg{syntax:"<color>";inherits:true;initial-value:#12101c}
-:root{transition:--ac .9s ease,--ln .9s ease,--pn .9s ease,--pn2 .9s ease,--bg .9s ease}
+:root{transition:--ac .3s ease,--ln .3s ease,--pn .3s ease,--pn2 .3s ease,--bg .3s ease}
 :root.apoc-ui{--ac:#ff4b2b;--ln:#6a1a24;--pn:#240e14;--pn2:#3d1319;--bg:#10050a;--tx:#f6e6e0;--mu:#c79a96;color-scheme:dark}
 #app{position:relative;z-index:1}
 body::before,body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity 1.1s ease}
 body::before{background:radial-gradient(900px 520px at 50% -8%,#ff1f3d66,transparent 70%),radial-gradient(800px 500px at 50% 112%,#ff6a1f55,transparent 70%)}
-body::after{box-shadow:inset 0 0 120px 30px #000c,inset 0 0 90px #ff1f3d44}
+body::after{box-shadow:inset 0 0 120px 30px #000c,inset 0 0 110px #ff1f3d88;will-change:opacity}
 .apoc-ui body::before,.apoc-ui body::after{opacity:1}
 .apoc-ui body::after{animation:apBeat 2.2s ease-in-out infinite alternate}
-@keyframes apBeat{from{box-shadow:inset 0 0 120px 30px #000c,inset 0 0 60px #ff1f3d33}to{box-shadow:inset 0 0 120px 30px #000c,inset 0 0 120px #ff1f3d88}}
+@keyframes apBeat{from{opacity:.55}to{opacity:1}}
 h1,h2,h3{transition:color .8s,text-shadow .8s}
 .apoc-ui h2,.apoc-ui h3{color:#ff6a4d;text-shadow:0 0 16px #ff1f3d99}
 .apoc-ui .btn.pri{box-shadow:0 0 18px #ff4b2b88}
