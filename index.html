@@ -1314,6 +1314,10 @@ body #app:has(.lineup) .gplay:active{transform:translateY(2px);box-shadow:0 1px 
 #app:has(>.hud>h2) .pick.cs,#app:has(>.hud>h2) .duo .pick.cs{max-height:252px;padding:8px;gap:8px;border:1px solid var(--ln);border-radius:16px;background:color-mix(in srgb,var(--bg) 55%,var(--pn));grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
 #app:has(>.hud>h2) .pk .mini{width:58px;height:74px}#app:has(>.hud>h2) .pk .dice{height:74px;font-size:34px}
 #app:has(>.hud>h2) .pk small{font-size:10.5px;line-height:1.2;text-align:center}
+/* home never scrolls: body's min-height:100vh is taller than the visible screen on phones (URL bar), so lock the page to the dynamic viewport */
+html:has(#app .lineup),body:has(#app .lineup){height:100%;min-height:0;overflow:hidden;overscroll-behavior:none}
+body:has(#app .lineup){height:100vh;height:100dvh}
+@media(max-width:640px){body #app:has(.lineup){height:100vh;height:100dvh;overflow-y:hidden;overscroll-behavior:none}}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
