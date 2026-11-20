@@ -1318,6 +1318,11 @@ body #app:has(.lineup) .gplay:active{transform:translateY(2px);box-shadow:0 1px 
 html:has(#app .lineup),body:has(#app .lineup){height:100%;min-height:0;overflow:hidden;overscroll-behavior:none}
 body:has(#app .lineup){height:100vh;height:100dvh}
 @media(max-width:640px){body #app:has(.lineup){height:100vh;height:100dvh;overflow-y:hidden;overscroll-behavior:none}}
+/* bell lives inside the home utility row so it lines up with Rules / Settings */
+.gutil .annbell{position:relative;top:auto;right:auto;flex:none;width:40px;height:40px;font-size:18px;z-index:auto;margin:0}
+body #app:has(.lineup) .gutil:has(.annbell){padding-right:0}
+@media(min-width:1000px) and (min-height:560px),(min-width:561px) and (max-height:559px){body #app:has(.lineup) .gutil:has(.annbell){padding-right:0}}
+@media(min-width:561px) and (max-height:559px){.gutil .annbell{width:36px;height:36px}}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
@@ -4182,8 +4187,8 @@ function fitHome(){const l=document.querySelector("#app .lineup");if(!l)return;
  try{const a=document.getElementById("app"),g=a.querySelector(".gbar"),t=a.querySelector(".gtop");if(g&&t){const gt=g.getBoundingClientRect().top,tb=t.getBoundingClientRect().bottom,cw=document.documentElement.clientWidth,st=cw<1000?Math.max(tb,gt-(cw*.8+30)):tb;a.style.setProperty("--st",Math.round(st)+"px");a.style.setProperty("--sb",Math.max(0,Math.round(innerHeight-gt))+"px")}}catch(e){}
  const H=l.clientHeight,W=l.clientWidth;if(!H||!W)return;
  /* two squads facing off. Wide screens: 2 depth rows per squad. Phones/tall: 3 rows, so fighters stay big and don't hide each other */
- const wide=W/H>2.4,RS=wide?[1,.88]:[1,.9,.8],RL=wide?[0,.55]:[0,.55,1.1],topU=Math.max(...RS.map((x,r)=>x+RL[r])),
-  sf=Math.max(.2,Math.min(wide?1.6:1.8,(H-14)/(150*topU),W/(wide?630:570))),step=120*sf*(wide?1.02:.82),gap=wide?Math.min(W*.16,300):120*sf*1.1,off=Math.max(0,H-14-150*sf*topU)*.5,
+ const wide=W/H>1.9,RS=wide?[1,.88]:[1,.9,.8],RL=wide?[0,.55]:[0,.55,1.1],topU=Math.max(...RS.map((x,r)=>x+RL[r])),
+  sf=Math.max(.2,Math.min(W/H>1.6?1.12:1.8,(H-14)/(150*topU),W/(wide?630:570))),step=120*sf*(wide?1.02:.82),gap=wide?Math.min(W*.16,300):120*sf*1.1,off=Math.max(0,H-14-150*sf*topU)*.5,
   SL=wide?[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,2,0]]:[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,1,2]],lay=[];
  l.querySelectorAll(".stage").forEach((s,i)=>{const side=i<5?-1:1,q=SL.find(x=>x[0]===(i<5?i:9-i)),row=q[2],sc=sf*RS[row],cx=W/2+side*(gap/2+q[1]*step),bt=off+10+RL[row]*150*sf;
   s.style.left=(cx-60)+"px";s.style.bottom=bt+"px";s.style.transform="scale("+sc.toFixed(3)+")";s.style.zIndex=30-row*10+Math.round(4-q[1]*2);s.style.filter=row?"brightness("+(1-row*.045)+")":"";
@@ -5433,7 +5438,7 @@ async function annHistory(){const{all}=await annLoad(),rd=annRead(),m=document.c
  const items=all.length?all.map((a,i)=>`<details class="annit"${i===0?" open":""}><summary><b>${annEsc(a.title)}</b>${rd.has(a.id)?"":'<em class="annnew">NEW</em>'}<small>${annEsc(a.date)}</small></summary>${a.body.split(/\n+/).map(x=>`<p>${annEsc(x)}</p>`).join("")}</details>`).join(""):'<p class="q">No announcements yet.</p>';
  m.innerHTML=`<div class="card annh" style="--c:var(--ac)"><h2>🔔 Announcements</h2><div class="annlist">${items}</div><div class="opts"><button class="btn pri">Close</button></div></div>`;
  m.onclick=e=>{if(e.target===m||e.target.closest(".opts button"))m.remove()};document.body.appendChild(m);annMark(all.map(a=>a.id));annBadge()}
-function annBell(){const app=document.getElementById("app");if(!app||app.querySelector(".annbell")||!app.querySelector(".hero"))return;const b=document.createElement("button");b.className="annbell";b.setAttribute("aria-label","Announcements");b.innerHTML='🔔<i class="annb"></i>';b.onclick=annHistory;app.appendChild(b);annBadge()}
+function annBell(){const app=document.getElementById("app");if(!app||app.querySelector(".annbell")||!app.querySelector(".hero"))return;const b=document.createElement("button");b.className="annbell";b.setAttribute("aria-label","Announcements");b.innerHTML='🔔<i class="annb"></i>';b.onclick=annHistory;(app.querySelector(".gutil")||app).appendChild(b);annBadge()}
 {const _m=menu;menu=function(){const r=_m.apply(this,arguments);try{annBell()}catch(e){}return r};try{annBell()}catch(e){}}
 
 /* ===== loading screen ===== */
@@ -5999,17 +6004,46 @@ function rushChoose(){if(svGet("rush")){svPrompt("rush");return}RH.close();RH.ch
 {const o=menu;menu=function(){RH.close();return o.apply(this,arguments)}}
 {const o=leave;leave=async function(){if(RH.live()){const i=await ask(`<h2>Leave the Boss Rush?</h2><p>You will leave this fight.</p>`,["Leave","Keep fighting"]);if(i===0)menu();return}return o.apply(this,arguments)}}
 
-/* system Back = the in-game Back button */
-history.replaceState({aoa:0},"");
-history.pushState({aoa:1},"");
-addEventListener("popstate",()=>{
-  if(document.querySelector(".modal"))            // a popup is open: stay put
-    return history.pushState({aoa:1},"");
-  const back=document.querySelector("#app .hud>.btn"); // ← Back / ☰ Menu
-  if(back){back.click();history.pushState({aoa:1},"")} // go back one screen
-  /* no back button = main menu → let the system exit normally */
-});
- 
+/* ===== system Back / browser Back = in-game Back ===== */
+(function(){
+ if(!window.history||!history.pushState)return;
+ let armed=false,exitT=0,toastEl=null,toastT=0;
+ const toast=t=>{if(!toastEl){toastEl=document.createElement("div");toastEl.style.cssText="position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translateX(-50%);background:var(--pn,#222);color:var(--tx,#fff);border:2px solid var(--ln,#555);border-radius:999px;padding:8px 18px;font:800 13px Nunito,sans-serif;z-index:99;pointer-events:none;transition:opacity .2s";document.body.appendChild(toastEl)}
+  toastEl.textContent=t;toastEl.style.opacity="1";clearTimeout(toastT);toastT=setTimeout(()=>{toastEl.style.opacity="0"},1800)};
+ const push=()=>{try{history.pushState({aoa:1},"")}catch(e){}};
+ const SAFE=/^(\W*)(keep|cancel|close|back|stay|later|got it|ok|okay|no|not now|continue|✕|×|x)\b/i;
+ function inGameBack(){
+  const modals=[...document.querySelectorAll(".modal")];
+  if(modals.length){
+   const m=modals[modals.length-1],bs=[...m.querySelectorAll("button")];
+   const b=bs.find(x=>SAFE.test(x.textContent.trim())||/^[✕×]$/.test(x.textContent.trim()));
+   if(b){b.click();return true}
+   return true; /* a modal with no safe option: swallow Back so nothing is lost by accident */
+  }
+  const vol=document.querySelector(".vol");
+  if(vol&&!vol.hidden){vol.hidden=true;return true}
+  const hud=document.querySelector("#app .hud");
+  const b=hud&&[...hud.querySelectorAll("button")].find(x=>/^\s*[←☰]/.test(x.textContent)&&!x.disabled);
+  if(b){b.click();return true}
+  if(document.querySelector("#app .gbar"))return false; /* main menu */
+  if(typeof menu==="function"){menu();return true}
+  return false;
+ }
+ addEventListener("popstate",()=>{
+  if(!armed)return;
+  if(inGameBack()){push();return}
+  /* main menu: press Back twice to leave */
+  if(exitT){clearTimeout(exitT);exitT=0;history.back();return}
+  toast("Press Back again to exit");
+  push();
+  exitT=setTimeout(()=>{exitT=0},2000);
+ });
+ /* browsers ignore history entries made without a user gesture, so arm on first tap/key */
+ const arm=()=>{if(armed)return;armed=true;push()};
+ addEventListener("pointerdown",arm,{once:true,capture:true});
+ addEventListener("keydown",arm,{once:true,capture:true});
+})();
+
 menu();
 </script>
 <script>if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script></body></html>
