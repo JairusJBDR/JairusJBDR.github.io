@@ -5999,6 +5999,17 @@ function rushChoose(){if(svGet("rush")){svPrompt("rush");return}RH.close();RH.ch
 {const o=menu;menu=function(){RH.close();return o.apply(this,arguments)}}
 {const o=leave;leave=async function(){if(RH.live()){const i=await ask(`<h2>Leave the Boss Rush?</h2><p>You will leave this fight.</p>`,["Leave","Keep fighting"]);if(i===0)menu();return}return o.apply(this,arguments)}}
 
+/* system Back = the in-game Back button */
+history.replaceState({aoa:0},"");
+history.pushState({aoa:1},"");
+addEventListener("popstate",()=>{
+  if(document.querySelector(".modal"))            // a popup is open: stay put
+    return history.pushState({aoa:1},"");
+  const back=document.querySelector("#app .hud>.btn"); // ← Back / ☰ Menu
+  if(back){back.click();history.pushState({aoa:1},"")} // go back one screen
+  /* no back button = main menu → let the system exit normally */
+});
+ 
 menu();
 </script>
 <script>if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script></body></html>
