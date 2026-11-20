@@ -1011,6 +1011,309 @@ html.lowd .lun{display:none}
 #app:has(.lineup) .lineup .hvs{position:absolute;z-index:5;translate:-50% 0;font:400 clamp(18px,3.2vh,30px)/1 "Alfa Slab One","Arial Black",Impact,sans-serif;background:linear-gradient(#fff,#ffd36b 55%,#ff8a3d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 8px #ff9d3d);opacity:.8;pointer-events:none;animation:hvs 2.2s ease-in-out infinite}
 @keyframes hvs{50%{transform:scale(1.18);opacity:1}}
 @media(prefers-reduced-motion:reduce){#app:has(.lineup) .lineup .stage,.hg,.hpad,.hvs{animation:none!important}}
+
+/* ===== HOME v4 "Console": full-screen arena, banner on top, game dock with a raised PLAY button ===== */
+@property --ra{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes ra{to{--ra:360deg}}
+@keyframes gpp{0%{transform:scale(.95);opacity:.6}100%{transform:scale(1.55);opacity:0}}
+@keyframes evg{50%{box-shadow:0 4px 16px #0004,0 0 28px #c27bffaa}}
+body #app:has(.lineup){--st:150px;--sb:210px;display:flex;flex-direction:column;align-content:normal;max-width:none;width:100%;margin:0;padding:10px 12px calc(8px + env(safe-area-inset-bottom,0px))!important;overflow-x:hidden;overflow-y:auto}
+/* stage = the whole screen between the banner and the dock */
+body #app:has(.lineup) .lineup{position:fixed;left:0;right:0;top:var(--st);bottom:var(--sb);margin:0;padding:0;flex:none;min-height:0!important;z-index:1;overflow:visible}
+body #app:has(.lineup) .lineup::before{content:"";display:block;position:absolute;left:0;right:0;top:calc(var(--st)*-1);bottom:calc(var(--sb)*-1);height:auto;border-radius:0;pointer-events:none;z-index:0;
+ background:radial-gradient(ellipse 60% 50% at 50% 66%,color-mix(in srgb,var(--ac) 26%,transparent),transparent 70%),
+  repeating-conic-gradient(from var(--ra) at 50% 66%,color-mix(in srgb,var(--ac) 12%,transparent) 0 4deg,transparent 4deg 13deg);
+ -webkit-mask:radial-gradient(ellipse 90% 85% at 50% 66%,#000 15%,transparent 78%);mask:radial-gradient(ellipse 90% 85% at 50% 66%,#000 15%,transparent 78%);animation:ra 140s linear infinite}
+body #app:has(.lineup) .lineup::after{content:"";position:absolute;left:50%;bottom:-4%;width:min(125%,1500px);height:48%;translate:-50% 0;pointer-events:none;z-index:0;
+ background:radial-gradient(closest-side,transparent 60%,color-mix(in srgb,var(--ac) 38%,transparent) 61%,transparent 63%),
+  radial-gradient(closest-side,color-mix(in srgb,var(--ac) 22%,transparent),transparent 62%),
+  radial-gradient(closest-side,transparent 95%,color-mix(in srgb,var(--ac) 55%,transparent) 97%,transparent 99%)}
+html.lowd body #app:has(.lineup) .lineup::before{animation:none}
+
+/* top banner */
+.gtop{position:relative;z-index:20;display:grid;grid-template-columns:1fr auto;grid-template-areas:"id util" "word word";align-items:center;gap:8px 10px}
+.gid{grid-area:id;display:flex;align-items:center;gap:10px;min-width:0}
+.gid .emb{flex:none;width:44px;height:44px;margin:0;border-radius:14px;font-size:22px}
+.gid .rkpill{flex:1 1 auto;max-width:210px;min-width:0;margin:0;padding:6px 12px;border-radius:14px;border-width:1px;align-items:stretch;gap:5px;text-align:left;font-size:12px;white-space:nowrap;overflow:hidden}
+.gutil{grid-area:util;display:flex;gap:8px;padding-right:50px}
+.gu{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;min-width:40px;padding:0;border-radius:99px;border:1px solid var(--ln);background:color-mix(in srgb,var(--pn) 80%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-weight:800;font-size:13px;transition:.15s}
+.gu span{font-size:18px;line-height:1}.gu b{display:none}
+.gu:hover{border-color:var(--ac);transform:translateY(-2px)}
+.gword{grid-area:word;text-align:center}
+.gtitle{margin:0;line-height:.9}.gtitle br{display:none}
+.gtitle .t1{display:flex;align-items:center;justify-content:center;gap:10px;font:800 10px/1 Nunito,system-ui,sans-serif;letter-spacing:.44em;text-transform:uppercase;color:var(--mu);margin-bottom:6px}
+.gtitle .t1::before,.gtitle .t1::after{content:"";width:26px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--ac))}
+.gtitle .t1::after{transform:scaleX(-1)}
+.gtitle .t2{display:block;font-size:clamp(34px,10.6vw,48px);letter-spacing:1px;padding-bottom:.08em;background:linear-gradient(180deg,#fff4c9 0%,var(--ac) 52%,color-mix(in srgb,var(--ac) 55%,#7a3a00) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 0 #0006) drop-shadow(0 0 20px color-mix(in srgb,var(--ac) 38%,transparent))}
+.gword .tag{margin:6px 0 0;display:flex;justify-content:center;align-items:center;gap:8px;font-size:10px;letter-spacing:2.4px;text-transform:uppercase;color:var(--mu)}
+.gword .vtag{display:inline-block!important;margin:0}
+
+/* the dock */
+.gbar{position:relative;z-index:20;margin:auto auto 0;width:min(100%,560px);display:grid;grid-template-columns:1fr 1fr 1.35fr 1fr 1fr;grid-template-rows:auto auto;gap:16px 2px;align-items:end;padding:10px 8px 8px;border-radius:28px;border:1px solid var(--ln);background:linear-gradient(180deg,color-mix(in srgb,var(--pn2) 84%,transparent),color-mix(in srgb,var(--pn) 92%,transparent));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 -14px 40px #0004,inset 0 1px 0 #ffffff12}
+.gbar>:nth-child(1){grid-column:1;grid-row:2}.gbar>:nth-child(2){grid-column:2;grid-row:2}.gbar>:nth-child(5){grid-column:3;grid-row:2}.gbar>:nth-child(3){grid-column:4;grid-row:2}.gbar>:nth-child(4){grid-column:5;grid-row:2}.gbar>:nth-child(6){grid-column:1/-1;grid-row:1}
+.gt{--k:var(--ac);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:4px 0;border:0;border-radius:16px;background:transparent;font-weight:800;font-size:12px;color:var(--tx);transition:transform .18s cubic-bezier(.2,.9,.3,1.4)}
+.gt:nth-child(1){--k:#b57bff}.gt:nth-child(2){--k:#ffc83d}.gt:nth-child(3){--k:#ff7a8a}.gt:nth-child(4){--k:#4fd1c5}
+.gt .gi{display:grid;place-items:center;width:46px;height:46px;border-radius:15px;font-size:23px;background:linear-gradient(160deg,color-mix(in srgb,var(--k) 38%,var(--pn2)),color-mix(in srgb,var(--k) 14%,var(--pn)));border:1px solid color-mix(in srgb,var(--k) 55%,var(--ln));box-shadow:0 4px 10px #0004,inset 0 1px 0 #fff3;transition:box-shadow .18s}
+.gt:hover{transform:translateY(-5px)}.gt:hover .gi,.gt:focus-visible .gi{box-shadow:0 0 0 2px var(--k),0 10px 22px color-mix(in srgb,var(--k) 50%,transparent)}
+.gt:active{transform:scale(.94)}
+.gplay{position:relative;justify-self:center;align-self:end;width:clamp(84px,24vw,100px);aspect-ratio:1;margin:-10px 0 0;padding:0;border:0;border-radius:50%;display:grid;place-content:center;gap:0;text-align:center;color:#1a1424;background:radial-gradient(circle at 34% 26%,#fff3bd,var(--ac) 48%,#e07a10 100%);box-shadow:0 6px 0 #9a5a08,0 14px 30px #f4b94260,inset 0 3px 6px #fff9;transition:transform .15s}
+.gplay::before{content:"";position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(from var(--ra),var(--ac),transparent 30%,#fff9 50%,transparent 70%,var(--ac));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));animation:ra 4s linear infinite;pointer-events:none}
+.gplay::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--ac);animation:gpp 2.4s ease-out infinite;pointer-events:none}
+.gplay .gpi{font-size:28px;line-height:1;margin-left:3px}
+.gplay b{font:400 17px/1 "Alfa Slab One",Georgia,serif;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.gplay:hover{transform:scale(1.07)}.gplay:active{transform:scale(.95)}
+.gev .btn{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:7px 12px 7px 10px;border-radius:18px;text-align:left;position:relative;overflow:hidden;border:1px solid #c27bffaa;background:linear-gradient(100deg,color-mix(in srgb,#7a4dff 40%,var(--pn)),color-mix(in srgb,#ff4fd8 26%,var(--pn)));box-shadow:0 4px 16px #0004}
+.gev .btn:hover:not(:disabled){transform:translateY(-3px);border-color:#e0a8ff;box-shadow:0 10px 26px #0005,0 0 24px #c27bff55}
+.gev .btn.glow{animation:evg 2.4s ease-in-out infinite}
+.gev .mi{flex:none;display:grid;place-items:center;min-width:44px;height:48px;border-radius:12px;border:2px solid var(--ln);background:var(--pn2);font-size:22px}
+.gev .mtx{flex:1;min-width:0}.gev .mtx>b{display:block;font-size:15px}
+.gev .mtx small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11.5px;line-height:1.25;font-weight:600;color:color-mix(in srgb,var(--tx) 78%,transparent)}
+.gev .mar{display:block;font-style:normal;font-size:24px;opacity:.7}
+body #app:has(.lineup) .credit{position:relative;z-index:20;margin:10px 0 0;font-size:11px;line-height:1.2;text-align:center}
+
+@media(min-width:641px) and (max-width:999px) and (min-height:700px){.gbar{width:min(100%,680px)}.gt .gi{width:54px;height:54px;font-size:27px}.gt{font-size:14px}.gplay{width:118px}.gplay .gpi{font-size:36px}.gplay b{font-size:21px}.gtitle .t2{font-size:60px}.gid .emb{width:56px;height:56px}.gu{height:46px;min-width:46px}}
+@media(max-width:640px) and (max-height:700px){.gword .tag{display:none}.gplay{width:80px}.gbar{gap:12px 2px}.gev .mtx small{-webkit-line-clamp:1}}
+
+/* ---------- row dock: desktop + landscape phones ---------- */
+@media(min-width:1000px) and (min-height:560px),(min-width:561px) and (max-height:559px){
+ body #app:has(.lineup){padding:14px 26px calc(8px + env(safe-area-inset-bottom,0px))!important}
+ .gtop{grid-template-columns:1fr auto 1fr;grid-template-areas:"id word util"}
+ .gid .rkpill{max-width:none;width:220px;flex:0 0 auto}
+ .gutil{padding-right:54px;justify-content:flex-end}
+ .gu{padding:0 14px 0 11px}.gu b{display:inline}
+ .gtitle .t2{font-size:clamp(34px,4.6vw,60px)}
+ .gbar{width:min(1100px,100%);grid-template-columns:repeat(4,minmax(64px,94px)) 168px minmax(180px,1fr);grid-template-rows:auto;gap:4px 12px;align-items:center;padding:12px 20px;border-radius:36px}
+ .gbar>:nth-child(1){grid-column:1;grid-row:1}.gbar>:nth-child(2){grid-column:2;grid-row:1}.gbar>:nth-child(3){grid-column:3;grid-row:1}.gbar>:nth-child(4){grid-column:4;grid-row:1}.gbar>:nth-child(5){grid-column:5;grid-row:1}.gbar>:nth-child(6){grid-column:6;grid-row:1}
+ .gt .gi{width:52px;height:52px;font-size:26px}.gt{font-size:13px}
+ .gplay{width:148px;margin:-62px auto 0}
+ .gplay .gpi{font-size:44px}.gplay b{font-size:25px}
+ .gev .btn{min-height:70px}
+ .gev .mtx>b{font-size:16px}
+}
+@media(hover:hover) and (min-width:1000px) and (min-height:560px){
+ .gt::after{content:attr(data-sub);position:absolute;bottom:calc(100% + 14px);left:50%;translate:-50% 6px;white-space:nowrap;padding:6px 12px;border-radius:10px;background:var(--pn2);border:1px solid var(--ln);font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:.15s;box-shadow:0 8px 20px #0006}
+ .gt:hover::after{opacity:1;translate:-50% 0}
+}
+/* landscape phones / very short windows */
+@media(min-width:561px) and (max-height:559px){
+ body #app:has(.lineup){padding:8px 14px calc(6px + env(safe-area-inset-bottom,0px))!important}
+ .gid .emb,.gword .tag,.gtitle .t1{display:none}
+ .gid .rkpill{width:170px}
+ .gtitle .t2{font-size:30px}
+ .gu{height:36px;padding:0 10px}.gu b{display:none}
+ .gbar{padding:8px 14px;grid-template-columns:repeat(4,56px) 100px minmax(150px,1fr);gap:4px 8px;border-radius:26px}
+ .gt .gi{width:40px;height:40px;font-size:20px}.gt{font-size:11px;gap:3px}
+ .gplay{width:92px;margin-top:-30px}.gplay .gpi{font-size:26px}.gplay b{font-size:15px}
+ .gev .btn{min-height:50px;padding:5px 10px}.gev .mi{height:40px;min-width:38px}.gev .mtx small{display:none}
+ .credit{display:none}
+}
+@media(prefers-reduced-motion:reduce){body #app:has(.lineup) .lineup::before,.gplay::before,.gplay::after,.gev .btn.glow{animation:none}}
+
+/* ===== calm pass: flat and quiet, the fighters are the show ===== */
+body #app:has(.lineup) .lineup::before{background:radial-gradient(ellipse 55% 45% at 50% 70%,color-mix(in srgb,var(--ac) 14%,transparent),transparent 70%);-webkit-mask:none;mask:none;animation:none}
+body #app:has(.lineup) .lineup::after{width:min(110%,1300px);height:34%;bottom:0;background:radial-gradient(closest-side,color-mix(in srgb,var(--ac) 14%,transparent),transparent 70%)}
+.gtitle .t2{filter:none;background:none;color:var(--ac);-webkit-background-clip:border-box;background-clip:border-box}
+.gtitle .t1::before,.gtitle .t1::after{background:var(--ln)}
+.gid .emb{animation:none;box-shadow:none!important}
+.gbar,.gu{backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+.gbar{background:var(--pn)}
+.gu{background:var(--pn)}
+.gu:hover,.gt:hover,.gev .btn:hover:not(:disabled){transform:none}
+.gt .gi{box-shadow:none}
+.gt:hover .gi,.gt:focus-visible .gi{box-shadow:none;border-color:var(--k)}
+.gplay{box-shadow:0 4px 0 #9a5a08;background:var(--ac)}
+.gplay::before,.gplay::after{display:none}
+.gplay:hover{transform:none;filter:brightness(1.06)}
+.gev .btn{box-shadow:none}.gev .btn.glow{animation:none}
+.gev .btn:hover:not(:disabled){box-shadow:none;border-color:#e0a8ff}
+.gt::after{display:none!important}
+
+/* ===== Play: flat button in the dock row, no circle ===== */
+body #app:has(.lineup) .gbar{row-gap:10px}
+body #app:has(.lineup) .gplay{width:100%;height:auto;min-height:68px;aspect-ratio:auto;margin:0;align-self:stretch;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 3px 0 #9a5a08}
+body #app:has(.lineup) .gplay .gpi{font-size:22px;margin:0}
+body #app:has(.lineup) .gplay b{font-size:15px;letter-spacing:2px;margin:0}
+body #app:has(.lineup) .gplay:active{transform:translateY(2px);box-shadow:0 1px 0 #9a5a08}
+@media(min-width:1000px) and (min-height:560px),(min-width:561px) and (max-height:559px){
+ body #app:has(.lineup) .gplay{flex-direction:row;gap:12px;min-height:70px;border-radius:18px}
+ body #app:has(.lineup) .gplay .gpi{font-size:28px}
+ body #app:has(.lineup) .gplay b{font-size:24px;letter-spacing:3px}
+}
+@media(min-width:561px) and (max-height:559px){
+ body #app:has(.lineup) .gplay{min-height:50px;gap:8px}
+ body #app:has(.lineup) .gplay .gpi{font-size:20px}body #app:has(.lineup) .gplay b{font-size:17px}
+}
+@media(min-width:641px) and (max-width:999px) and (min-height:700px){
+ body #app:has(.lineup) .gplay{min-height:84px}body #app:has(.lineup) .gplay .gpi{font-size:28px}body #app:has(.lineup) .gplay b{font-size:19px}
+}
+
+/* ===== MENUS v2 "Console": every screen after the main menu shares the home dock's look =====
+   flat panels, 1px borders, pill buttons, tinted icon tiles, flat gold primary. Scoped to screens with an <h2> header,
+   so battle / boss / learn screens (which use <h3>) are untouched. */
+#app:has(>.hud>h2){max-width:820px;padding-top:max(14px,env(safe-area-inset-top,0px));padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
+#app:has(>.hud>h2):has(.shgrid,.rm,.rfwrap){max-width:980px}
+
+/* header: round back pill · centred slab title · pill on the right */
+#app:has(>.hud>h2) .hud{display:grid;grid-template-columns:1fr minmax(0,auto) 1fr;align-items:center;gap:10px;margin:0 0 16px;padding:0;background:none;border:0;border-radius:0;box-shadow:none}
+#app:has(>.hud>h2) .hud>:first-child{justify-self:start}
+#app:has(>.hud>h2) .hud>:last-child{justify-self:end}
+#app:has(>.hud>h2) .hud h2{margin:0;text-align:center;line-height:1.05;font-size:clamp(20px,5.6vw,30px);color:var(--ac);text-shadow:none;letter-spacing:.5px}
+#app:has(>.hud>h2) .hud .btn,#app:has(>.hud>h2) .hud .relic-pill{display:inline-flex;align-items:center;gap:6px;height:40px;min-height:40px;padding:0 15px;border-radius:99px;border:1px solid var(--ln);background:var(--pn);box-shadow:none;font-size:13px;font-weight:800;white-space:nowrap;color:var(--tx)}
+#app:has(>.hud>h2) .hud .relic-pill{padding:0 13px}
+#app:has(>.hud>h2) .hud .btn:hover:not(:disabled){transform:none;border-color:var(--ac)}
+#app:has(>.hud>h2) .hud>span:empty{display:block}
+
+/* base controls */
+#app:has(>.hud>h2) .btn{border-radius:14px;border:1px solid var(--ln);background:var(--pn);box-shadow:none;font-weight:800}
+#app:has(>.hud>h2) .panel .btn:not(.pri):not(.on):not(.pk):not(.rm-ch){background:var(--pn2)}
+#app:has(>.hud>h2) .btn:hover:not(:disabled){transform:none;border-color:var(--ac)}
+#app:has(>.hud>h2) .btn:active:not(:disabled){transform:translateY(1px)}
+#app:has(>.hud>h2) .btn.pri{background:var(--ac);color:#1a1424;border-color:var(--ac);box-shadow:0 3px 0 #9a5a08;letter-spacing:.03em}
+#app:has(>.hud>h2) .btn.pri:hover:not(:disabled){filter:brightness(1.06)}
+#app:has(>.hud>h2) .btn.pri:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #9a5a08}
+#app:has(>.hud>h2) .row{gap:10px;margin:16px 0 4px}
+#app:has(>.hud>h2) .row .btn.pri{min-height:52px;padding:0 34px;font-size:16px;border-radius:16px}
+#app:has(>.hud>h2) .row .btn:not(.pri){min-height:52px;padding:0 22px;border-radius:16px}
+
+/* panels */
+#app:has(>.hud>h2) .panel{background:var(--pn);border:1px solid var(--ln);border-radius:20px;padding:16px;margin:0 0 12px;box-shadow:none}
+#app:has(>.hud>h2) label:not(.vr){display:flex;align-items:center;gap:8px;margin:14px 0 7px;font:800 11px/1.2 Nunito,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
+#app:has(>.hud>h2) label:not(.vr):first-child{margin-top:0}
+#app:has(>.hud>h2) label:not(.vr)::before{content:"";flex:none;width:3px;height:11px;border-radius:2px;background:var(--ac)}
+#app:has(>.hud>h2) .panel h3:not(.sec){display:flex;align-items:center;gap:9px;margin:0 0 8px;font-size:19px;color:var(--tx)}
+#app:has(>.hud>h2) .panel h3:not(.sec)::before{content:"";flex:none;width:4px;height:18px;border-radius:2px;background:var(--ac)}
+#app:has(>.hud>h2) .panel ul{margin:6px 0 0;padding-left:20px;font-weight:600}
+#app:has(>.hud>h2) .panel li{margin:5px 0;line-height:1.5}
+#app:has(>.hud>h2) .panel li::marker{color:var(--ac)}
+#app:has(>.hud>h2) .sec{display:flex;align-items:center;font:800 11px/1.2 Nunito,system-ui,sans-serif;letter-spacing:.14em;margin:0 0 10px}
+#app:has(>.hud>h2) .sec::before{width:3px;height:11px}
+#app:has(>.hud>h2) input[type=text]{height:46px;padding:0 14px;border-radius:14px;border:1px solid var(--ln);background:var(--bg);font-weight:700}
+#app:has(>.hud>h2) input[type=text]:focus{outline:0;border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 25%,transparent)}
+#app:has(>.hud>h2) input[type=range]{accent-color:var(--ac)}
+#app:has(>.hud>h2) .vr{grid-template-columns:96px 1fr 46px;margin:12px 0;font-weight:800;color:var(--tx)}
+
+/* segmented tabs / toggles */
+#app:has(>.hud>h2) .seg{gap:4px;padding:4px;border-radius:18px;background:color-mix(in srgb,var(--bg) 55%,var(--pn));border:1px solid var(--ln)}
+#app:has(>.hud>h2) .seg .btn{flex:1 1 auto;min-height:38px;padding:0 16px;border:0;border-radius:14px;background:transparent!important;box-shadow:none;font-size:13px;color:var(--mu);justify-content:center}
+#app:has(>.hud>h2) .seg .btn:hover:not(:disabled){color:var(--tx)}
+#app:has(>.hud>h2) .seg .btn.on{background:var(--ac)!important;color:#1a1424;box-shadow:0 2px 0 #9a5a08}
+#app:has(>.hud>h2) .seg[style]{margin-top:0!important}
+#app:has(>.hud>h2) .shtab .btn{flex:1 1 0;min-width:110px;line-height:1.25;padding:6px 10px;text-align:center}
+#app:has(>.hud>h2) .chrow{gap:6px}
+#app:has(>.hud>h2) .chrow .btn{min-height:38px;padding:0 12px;border-radius:99px;font-size:14px}
+#app:has(>.hud>h2) .chrow .btn.on{background:var(--ac);color:#1a1424;border-color:var(--ac)}
+
+/* list rows: tinted icon tiles like the dock */
+#app:has(>.hud>h2) .menu.mm{grid-template-columns:1fr;max-width:560px;gap:10px;margin:4px auto 12px}
+#app:has(>.hud>h2) .mm .btn{grid-column:auto!important;--k:var(--ac);display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;border:1px solid var(--ln);background:var(--pn);box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden}
+#app:has(>.hud>h2) .mm .btn:nth-child(4n+1){--k:#b57bff}#app:has(>.hud>h2) .mm .btn:nth-child(4n+2){--k:#ffc83d}#app:has(>.hud>h2) .mm .btn:nth-child(4n+3){--k:#ff7a8a}#app:has(>.hud>h2) .mm .btn:nth-child(4n){--k:#4fd1c5}
+#app:has(>.hud>h2) .mm .btn:hover:not(:disabled){border-color:var(--k);box-shadow:none}
+#app:has(>.hud>h2) .mm .mi{flex:none;width:46px;height:46px;border-radius:15px;font-size:23px;border:1px solid color-mix(in srgb,var(--k) 55%,var(--ln));background:linear-gradient(160deg,color-mix(in srgb,var(--k) 38%,var(--pn2)),color-mix(in srgb,var(--k) 14%,var(--pn)));box-shadow:inset 0 1px 0 #fff3}
+#app:has(>.hud>h2) .mm .mtx b{font-size:15px}
+#app:has(>.hud>h2) .mm .mtx small{font-size:12px;line-height:1.3;color:var(--mu);font-weight:600}
+#app:has(>.hud>h2) .mm .mar{display:block;font-size:24px;color:var(--mu)}
+#app:has(>.hud>h2) .mm .btn:hover .mar{color:var(--k);transform:translateX(3px)}
+#app:has(>.hud>h2) .mm .btn.pri{padding:16px 18px;border:0;background:var(--ac);color:#1a1424;box-shadow:0 3px 0 #9a5a08}
+#app:has(>.hud>h2) .mm .btn.pri::after{display:none}
+#app:has(>.hud>h2) .mm .btn.pri .mi{width:52px;height:52px;font-size:27px;background:#1a142426;border-color:#1a142433;box-shadow:none}
+#app:has(>.hud>h2) .mm .btn.pri .mtx b{font:400 20px/1.1 "Alfa Slab One",Georgia,serif}
+#app:has(>.hud>h2) .mm .btn.pri .mtx small{color:#1a1424cc}
+#app:has(>.hud>h2) .mm .btn.pri .mar{color:#1a1424;font-size:28px}
+#app:has(>.hud>h2) .mm .btn.pri:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #9a5a08}
+
+/* fighter pickers */
+#app:has(>.hud>h2) .duo{gap:12px}
+#app:has(>.hud>h2) .pick{gap:8px;grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+#app:has(>.hud>h2) .pk{padding:8px 6px 9px;border-radius:16px;border:1px solid var(--ln);border-top:4px solid var(--c);background:var(--pn2)!important;box-shadow:none}
+#app:has(>.hud>h2) .pk:hover:not(.on):not(:disabled){transform:none;border-color:var(--c)}
+#app:has(>.hud>h2) .pk.on{transform:none;border-color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--pn))!important;box-shadow:0 0 0 1px var(--c)}
+#app:has(>.hud>h2) .pk b{font-size:13px}
+#app:has(>.hud>h2) .bd{top:-9px;right:-5px;padding:1px 9px;font-weight:800;border-radius:99px;box-shadow:0 2px 0 #9a5a08}
+#app:has(>.hud>h2) .lore{margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--bg);color:var(--mu);font-weight:600;font-size:13px}
+#app:has(>.hud>h2) .olrow input{height:46px}
+
+/* shop / rift cards */
+#app:has(>.hud>h2) .shgrid{gap:10px}
+#app:has(>.hud>h2) .shc{padding:10px;border-radius:18px;border:1px solid var(--ln);background:var(--pn);box-shadow:none}
+#app:has(>.hud>h2) .shc.own{border-color:var(--c)}
+#app:has(>.hud>h2) .shc .btn{min-height:38px;padding:0 8px}
+#app:has(>.hud>h2) .shsub{margin:8px 2px 12px;font-weight:600}
+#app:has(>.hud>h2) .salebar{border-radius:16px}
+#app:has(>.hud>h2) .perfrow{margin:0 0 12px}
+#app:has(>.hud>h2) .rflist{gap:8px}#app:has(>.hud>h2) .rfchip{border:1px solid var(--ln);border-radius:12px}
+#app:has(>.hud>h2) .rfchip.rare{border-color:#4fb7ff}#app:has(>.hud>h2) .rfchip.epic{border-color:#ffcf4a}
+#app:has(>.hud>h2) .rfwrap{gap:12px}
+
+/* remnant */
+#app:has(>.hud>h2) .rm{gap:12px}
+#app:has(>.hud>h2) .rm-ch{border:1px solid var(--ln);border-top:4px solid var(--c);border-radius:14px;background:var(--pn);box-shadow:none}
+#app:has(>.hud>h2) .rm-ch.on{background:color-mix(in srgb,var(--c) 16%,var(--pn));border-color:var(--c);box-shadow:0 0 0 1px var(--c)}
+#app:has(>.hud>h2) .rm-bar{border:1px solid var(--c);border-radius:16px;background:color-mix(in srgb,var(--c) 14%,var(--pn))}
+#app:has(>.hud>h2) .rm-card{border:1px solid var(--ln);border-top:4px solid var(--c);border-radius:18px;box-shadow:none}
+#app:has(>.hud>h2) .rm-card.cls{box-shadow:0 0 0 1px #b66cff}#app:has(>.hud>h2) .rm-card.rare{box-shadow:0 0 0 1px #ffd36b}
+#app:has(>.hud>h2) .rm-ico{border-radius:14px;border-width:1px}
+#app:has(>.hud>h2) .rm-track{border:1px solid var(--ln);background:var(--bg)}
+#app:has(>.hud>h2) .rm-fill{box-shadow:none}
+#app:has(>.hud>h2) .rm-fxbox{border-width:1px;border-radius:14px}
+
+/* rank / daily */
+#app:has(>.hud>h2) .rkp{border-top:1px solid var(--ln);position:relative;overflow:hidden}
+#app:has(>.hud>h2) .rkp::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--rc)}
+#app:has(>.hud>h2) .rkn{border-radius:16px}
+#app:has(>.hud>h2) .rkinv span,#app:has(>.hud>h2) .rkt span{border-width:1px}
+#app:has(>.hud>h2) .rkinv span{border-radius:99px}
+#app:has(>.hud>h2) .dcrow{padding:6px 0}
+
+/* lore */
+#app:has(>.hud>h2) .lorebox{border-radius:22px}
+
+/* pills + floating help */
+#app:has(>.hud>h2) .relic-pill{box-shadow:none}
+#helpbtn{height:36px;padding:0 14px!important;border-radius:99px!important;border:1px solid var(--ln)!important;background:var(--pn)!important;box-shadow:none!important;font-weight:800}
+
+/* popups ("How it works", dialogs) */
+.modal .card{border:1px solid var(--ln);border-top:4px solid var(--ac);border-radius:24px;padding:20px;background:var(--pn);box-shadow:0 24px 60px #000a}
+.modal .card>h2:first-child{color:var(--ac);font-size:22px;margin-bottom:6px}
+.modal .card ul{text-align:left;font-weight:600}
+.modal .card li{margin:6px 0}.modal .card li::marker{color:var(--ac)}
+.modal .opts .btn{min-height:46px;border-radius:14px}
+.modal .opts .btn.pri{background:var(--ac);color:#1a1424;border-color:var(--ac);box-shadow:0 3px 0 #9a5a08;letter-spacing:.03em}
+
+/* small screens: tighter header, stacked setup, 2-up shop */
+@media(max-width:640px){
+ #app:has(>.hud>h2){padding:10px 12px calc(24px + env(safe-area-inset-bottom,0px));padding-top:56px}
+ #app:has(>.hud>h2) .hud{margin-bottom:12px}
+ #app:has(>.hud>h2) .hud .btn,#app:has(>.hud>h2) .hud .relic-pill{height:38px;min-height:38px;padding:0 12px}
+ #app:has(>.hud>h2) .panel{padding:14px;border-radius:18px}
+ #app:has(>.hud>h2) .duo{grid-template-columns:1fr}
+ #app:has(>.hud>h2) .shgrid{grid-template-columns:repeat(2,1fr)}
+ #app:has(>.hud>h2) .row .btn.pri{flex:1}
+}
+@media(max-width:420px){#app:has(>.hud>h2) .hud h2{font-size:19px}#app:has(>.hud>h2) .vr{grid-template-columns:78px 1fr 42px}}
+/* landscape phones / short windows */
+@media(max-height:520px){
+ #app:has(>.hud>h2){padding-top:48px}
+ #app:has(>.hud>h2) .hud{margin-bottom:8px}
+ #app:has(>.hud>h2) .hud h2{font-size:20px}
+ #app:has(>.hud>h2) .hud .btn,#app:has(>.hud>h2) .hud .relic-pill{height:34px;min-height:34px}
+ #app:has(>.hud>h2) .menu.mm{max-width:none;grid-template-columns:1fr 1fr}
+ #app:has(>.hud>h2) .mm .btn.pri{grid-column:1/-1!important}
+}
+@media(min-width:1000px){#app:has(>.hud>h2){padding-top:22px}#app:has(>.hud>h2) .hud{margin-bottom:22px}}
+/* remnant on phones: fighters become a swipeable strip so the cards get the full width */
+@media(max-width:759px){
+ #app:has(>.hud>h2) .rm{grid-template-columns:1fr;gap:10px}
+ #app:has(>.hud>h2) .rm-list{position:static;flex-direction:row;max-height:none;overflow-x:auto;overflow-y:hidden;padding:2px 2px 8px;gap:8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+ #app:has(>.hud>h2) .rm-ch{flex:0 0 84px;scroll-snap-align:start}
+ #app:has(>.hud>h2) .rm-cards{grid-template-columns:1fr 1fr}
+ #app:has(>.hud>h2) .rm-card{min-height:0;padding:10px}
+ #app:has(>.hud>h2) .rm-mid{padding:8px 0}
+}
+@media(max-width:480px){#app:has(>.hud>h2) .rm-cards{grid-template-columns:1fr}}
+/* fighter picker: roomy two-row scroller */
+#app:has(>.hud>h2) .pick.cs,#app:has(>.hud>h2) .duo .pick.cs{max-height:252px;padding:8px;gap:8px;border:1px solid var(--ln);border-radius:16px;background:color-mix(in srgb,var(--bg) 55%,var(--pn));grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+#app:has(>.hud>h2) .pk .mini{width:58px;height:74px}#app:has(>.hud>h2) .pk .dice{height:74px;font-size:34px}
+#app:has(>.hud>h2) .pk small{font-size:10.5px;line-height:1.2;text-align:center}
 </style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
@@ -1108,7 +1411,7 @@ Gamer:{e:"🎮",c:"#8be62e",tag:"Level grinder",init:f=>{f.en=0;f.lvl=0;f.imm=0;
  bars:f=>[["Energy",f.en,100,"#4fd1ff"],["Lvl",f.lvl,6,"#ffe14d",`${lvD(f.lvl)}/999`]],
  info:["Attack (Tetris Shot): 17–23 damage, +15 energy. It is a single Attack button",`Level Up: +1 LVL. Every level multiplies the damage bonus by ×${GLV}. You can level up 6 times; the counter reads LVL 20, 130, 350, 500, 730, then 999`,"While you have any LVL, Attack upgrades into the Pac-Man Attack: 15–20 × the level bonus, heals 60–105, then resets LVL to 0 and goes back to the Tetris Shot","Heal 30–45 (cooldown 1 turn)","Ultimate (100 energy) Overclock: immune to the next 3 hits (max 5 turns). While active: Tetris +10, Pac-Man +5 (not the +10), Level Up stores +5 flat damage (never multiplied), Heal +37"]},
 Hemomancer:{e:"🩸",c:"#c4143c",tag:"Bleed stacker",init:f=>{f.en=0;f.vit=0;f.ecl=0;f.hb=0;f.hbt=0},bars:f=>[["Vitae",f.vit,5,"#ff3b5c"],["Energy",f.en,100,"#4fd1ff"]],
- info:["Lancet adds 1 Bleed stack to the target (max 6). Each stack deals 3 damage at the start of the target's turn, for 3 turns. A blocked hit adds no stack","Every bleed tick gives you +1 Vitae (max 5). Transfusion costs 3 Vitae, so it only works while the enemy is bleeding","Rupture (cd 2) needs 2+ stacks and eats them all: 8 + 10 damage per stack","Ultimate (100 energy) Crimson Eclipse: +3 stacks, and for 3 turns your bleed ticks ×1.5 and heal you","Bleed ignores parry and Overclock immunity, but not damage reduction"]},
+ info:["Lancet adds 1 Bleed stack to the target (max 6). Each stack deals 3 damage at the start of the target's turn, for 3 turns. A blocked hit adds no stack","Every bleed tick gives you +1 Vitae (max 5). Transfusion costs 4 Vitae, so it only works while the enemy is bleeding","Rupture (cd 2) needs 2+ stacks and eats them all: 8 + 10 damage per stack","Ultimate (100 energy) Crimson Eclipse: +3 stacks, and for 3 turns your bleed ticks ×1.5 and heal you","Bleed ignores parry and Overclock immunity, but not damage reduction"]},
 Champion:{e:"🌙",c:"#8fd0ff",tag:"Sword Champion",init:f=>{f.en=0;f.mn=1;f.mh=false;f.dr=0},bars:f=>[["Moon",f.mn,4,f.mh?"#ff5b78":"#bfe3ff",f.mn+"/4"],["Energy",f.en,100,"#4fd1ff"]],info:["You have a Moon bar (0–4) and start with 1 moon. Skill deals 12–25 and gives +1 moon (cooldown 1)","At 2 moons you enter the Moonlight Hunt: your Skill is sealed, the blindfold comes off, and Attack becomes the Enhanced Attack","Enhanced Attack: 58–78 damage, drains 2–4 of your own HP, costs 1 moon and gives +20 energy","Every 10 HP you have drained gives +1 moon. When the moon reaches 0, the Hunt ends","Heal 60–82 (+5 energy, cooldown 1 turn). Ultimate (100 energy): 30–50 damage and +1 moon","Boss Rush: your Enhanced Attack also drains 2–4 HP from one random teammate, and that counts toward moons. Support: +50 energy to all players"]},
 Simple:{e:"👤",c:"#8a84a8",bars:()=>[],init:()=>{}},BSaber:{boss:1,e:"⚔️",c:"#b0124a",bars:BBARS,init:()=>{}},BDevourer:{boss:1,e:"🃏",c:"#ff4fa3",bars:BBARS,init:()=>{}},BLord:{boss:1,e:"🌑",c:"#7a4dff",bars:BBARS,init:()=>{}},BSeam:{boss:1,e:"🪡",c:"#ffd36b",bars:BBARS,init:()=>{}}};
 function BBARS(f){return[["Energy",f.en,f.emax,"#ff9f43"],["Phase",f.ph,f.maxPh||3,"#b66cff","Phase "+f.ph+"/"+(f.maxPh||3)]]}
@@ -2547,12 +2850,22 @@ async function cosBuy(n,k){if(!NAMES.includes(n)||cosHas(n,k))return;if(riftLock
  const i=await ask(`<h2>Buy ${nm}?</h2><p>${k==="s"?"Skin":"Aura"} for <b>${n}</b> — ${cosWas(k)}<b>${cost.toLocaleString()}</b> ☀️ Solari.<br><small style="color:var(--mu)">You'll have ${(bal-cost).toLocaleString()} left. You can toggle it in Remnant.</small></p>`,["Buy","Cancel"]);
  if(i!==0)return;if(solariBalance()<cost)return;solariSet(solariBalance()-cost);COS.o[n][k]=1;COS.e[n][k]=1;cosSave();try{sfx("buff")}catch(e){}fragToast(`🛒 ${nm} unlocked and equipped!`);shop(SHOP_TAB)}
 var SHOP_TAB="s";
+const TRY_SH=5;
+async function cosTry(n,k){if(!NAMES.includes(n)||k!=="s")return;const nm=SKINS[n].n;
+ const i=await ask(`<h2>▶ Try ${nm}</h2><p>${k==="s"?"Skin":"Aura"} for <b>${n}</b> vs a 300 HP Elite test enemy.<br><small style="color:var(--mu)">Win the test for <b>+${TRY_SH} 🔷 Rift Shards</b>. Nothing you own changes.</small></p>`,["Start test","Cancel"]);if(i!==0)return;
+ token++;RMON=false;RUN=null;RUNMODE=null;CK=null;B={dmg:1,heal:1,hp:1};E={dmg:1,heal:1,hp:1};
+ const p=mk(n,"You",false);p.cv=k==="s"?{s:1,a:0}:{s:0,a:1};resetF(p);
+ const e=mkSimple("Test Elite",300,[5,12],[10,18],[12,22],"#9aa5b8","🛡️");e.elite=true;
+ const w=await fight(p,e,{title:"Test drive",sub:nm,first:"a"});
+ if(!w)return;
+ if(w!==p){await ask(`<h2>Test over</h2><p>The test enemy won this time, so no shards. Try again!</p>`,["Back to shop"]);shop(k);return}
+ riftGain(TRY_SH);riftSave();await ask(`<h2>✅ Test complete!</h2><p>${nm} looked great.<br><b>+${TRY_SH} 🔷 Rift Shards</b></p>`,["Back to shop"]);shop(k)}
 function shop(tab){if(tab)SHOP_TAB=tab;token++;const k=SHOP_TAB,D=k==="s"?SKINS:AURAS,cost=k==="s"?COS_SKIN:COS_AURA,owned=NAMES.filter(n=>cosHas(n,k)).length;
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>Shop</h2><span class="relic-pill" title="Solari">☀️ ${solariBalance().toLocaleString()}</span></div>
  <div class="seg shtab"><button class="btn ${k==="s"?"on":""}" onclick="shop('s')">🎭 Skins · ${cosWas("s")}${COS_SKIN.toLocaleString()}</button><button class="btn ${k==="a"?"on":""}" onclick="shop('a')">✨ Auras · ${cosWas("a")}${COS_AURA.toLocaleString()}</button></div>
  <p class="shsub">${owned} / ${NAMES.length} owned · Equip or unequip any time in <b>Remnant</b>. Cosmetics show on that fighter in every mode.</p>${perfBtn()}
  <div class="salebar">🔥 MEGA SALE · 50% OFF ALL ${k==="s"?"SKINS":"AURAS"}! <small style="display:block;opacity:.85;font-weight:600">☀️ Solari drops from wins, bosses, rank-ups and daily sweeps — spend it here and on Remnant Rerolls.</small></div><div class="shgrid">${NAMES.map(n=>{const c=CLS[n],d=D[n],has=cosHas(n,k),on=cosOn(n,k),pv=k==="s"?{s:1,a:0}:{s:0,a:1},col=k==="s"?cosSkinCol(n):c.c;
-  return`<div class="shc ${has?"own":""}" style="--c:${col}">${has?"":'<i class="sal">SALE −50%</i>'}<div class="shp"><div class="stage" style="--c:${col}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(n,"",pv)}</svg></div><div class="sh"></div></div></div><b>${d.n}</b><small>${n} · ${d.tx}</small>${has?`<button class="btn ${on?"":"pri"}" onclick="cosToggle('${n}','${k}','shop')">${on?"✓ Equipped — tap to remove":"Equip"}</button>`:`${riftLock(n,k)?'<button class="btn" onclick="rift()">🔒 Weekly Rift exclusive</button>':`<button class="btn pri" onclick="cosBuy('${n}','${k}')">☀️ ${cosWas(k)}${cost.toLocaleString()}</button>`}`}</div>`}).join("")}</div>`}
+  return`<div class="shc ${has?"own":""}" style="--c:${col}">${has?"":'<i class="sal">SALE −50%</i>'}<div class="shp"><div class="stage" style="--c:${col}"><div class="ch"><svg class="art" viewBox="0 0 120 150" aria-hidden="true">${cosSvg(n,"",pv)}</svg></div><div class="sh"></div></div></div><b>${d.n}</b><small>${n} · ${d.tx}</small>${has?`<button class="btn ${on?"":"pri"}" onclick="cosToggle('${n}','${k}','shop')">${on?"✓ Equipped — tap to remove":"Equip"}</button>`:`${riftLock(n,k)?'<button class="btn" onclick="rift()">🔒 Weekly Rift exclusive</button>':`<button class="btn pri" onclick="cosBuy('${n}','${k}')">☀️ ${cosWas(k)}${cost.toLocaleString()}</button>`}`}${k==="s"?`<button type="button" class="btn trybtn" onclick="cosTry('${n}','${k}')">▶ Try now · +${TRY_SH} 🔷</button>`:""}</div>`}).join("")}</div>`}
 function cosPanel(n){const row=(k,lab)=>{const D=k==="s"?SKINS:AURAS,has=cosHas(n,k),on=cosOn(n,k);return`<div class="cosrow"><div><b>${lab}: ${D[n].n}</b><small>${has?(on?"Equipped":"Owned · off"):"Not owned · "+(k==="s"?COS_SKIN:COS_AURA).toLocaleString()+" Solari"}</small></div>${has?`<button class="btn ${on?"on":""}" onclick="cosToggle('${n}','${k}')">${on?"On":"Off"}</button>`:`<button class="btn" onclick="shop('${k}')">🛒 Shop</button>`}</div>`};
  return`<div class="panel rm-cos"><label>Cosmetics</label>${row("s","🎭 Skin")}${row("a","✨ Aura")}</div>`}
 
@@ -2924,6 +3237,7 @@ function unitHTML(f,s){const k=f.simple?{c:f.col,e:f.emo}:CLS[f.cls];return`<div
 function pick(f,o){return new Promise(res=>{const box=$("#acts");box.innerHTML="";
  acts(f).concat(o&&o.extra||[]).forEach(([id,l,s,ok])=>{const b=document.createElement("button");b.className="btn k-"+id+(id==="stop"?" stop":"");b.disabled=!ok;b.innerHTML=`<span>${ICON[id]||""} ${l}</span><small>${s}</small>`;b.onclick=()=>{box.innerHTML="";res(id)};box.appendChild(b)})})}
 
+const dcStunChk=b=>{if(b&&b.dcStun&&!b.dcSt&&b.hp>0&&b.hp<=b.maxHp/2){b.dcSt=1;b.dstun=1;try{banner("STUNNED!","#ffd34d")}catch(e){}L(`😵 ${b.name} is stunned at 50% HP and will skip its next turn!`,"a");upd(b)}};
 async function fight(a,b,o={}){const my=++token;a.side="a";b.side="b";G={a,b};const bg=BGS[R(0,BGS.length-1)];music(o.boss?"boss":RUNMODE==="camp"?"camp":"battle");
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="leave()">☰ Menu</button><h3 id="ttl">${o.title||"Battle"}</h3><span style="color:var(--mu)">📍 ${bg.n}${o.sub?" · "+o.sub:""}</span></div>
  <div class="arena"><div class="scene" style="background:${bg.s}"><svg viewBox="0 0 600 200" preserveAspectRatio="none">${bg.a}</svg></div><span class="turn" id="turn"></span><div class="fxl" id="fxl"></div>${unitHTML(a,"a")}<div class="vs">VS</div>${unitHTML(b,"b")}</div>
@@ -2932,7 +3246,7 @@ async function fight(a,b,o={}){const my=++token;a.side="a";b.side="b";G={a,b};co
  let fresh=o.resume?o.resume.fresh:true;
  do{while(a.hp>0&&b.hp>0){if(my!==token)return null;if(o.online){const r=await ON.barrier(a,b,cur===a?"a":"b",fresh);if(my!==token)return null;cur=r.cur==="a"?a:b;fresh=r.fresh;if(a.hp<=0||b.hp<=0)break}
   if(o.snap){const sa=snapF(a),sb=snapF(b);if(sa&&sb)o.snap({a:sa,b:sb,cur:cur===a?"a":"b",fresh})}const f=cur,t=f===a?b:a;f.tgt=t;upd(a);upd(b);
-  if(fresh&&f.hb>0){await bleedTick(f);if(my!==token)return null;upd(a);upd(b);if(a.hp<=0||b.hp<=0)break}$("#ua").classList.toggle("act",f===a);$("#ub").classList.toggle("act",f===b);
+  if(fresh&&f.hb>0){await bleedTick(f);if(my!==token)return null;upd(a);upd(b);if(a.hp<=0||b.hp<=0)break}dcStunChk(b);if(f.dstun>0){f.dstun--;L(`😵 ${f.name} is stunned and skips its turn.`,"a");upd(f);await sleep(1100);cur=t;fresh=true;continue}$("#ua").classList.toggle("act",f===a);$("#ub").classList.toggle("act",f===b);
   const wk=f.simple?{c:f.col,e:f.emo}:CLS[f.cls],wh=$("#who");wh.style.setProperty("--c",wk.c);$("#acts").style.setProperty("--c",wk.c);$("#turn").textContent=`▶ ${f.name}’s turn`;wh.innerHTML=`<span class="pt">${wk.e}</span><b>${f.name}</b><small style="color:var(--mu)">${f.simple?"Enemy":f.cls} · ${f.ai?"Bot is moving":o.online&&f!==ON.me()?"opponent's move":"your move"}</small>`;
   let id;if(f.ai){$("#acts").innerHTML=`<p style="color:var(--mu);margin:6px">${f.name} is thinking…</p>`;await sleep(900);id=aiPick(f,t,o.hard)}
   else{$("#acts").innerHTML="";id=o.online?await ON.turn(f,t):await pick(f,t)}
@@ -2943,7 +3257,7 @@ async function fight(a,b,o={}){const my=++token;a.side="a";b.side="b";G={a,b};co
   await sleep(Math.max(220,vfx(f,t,id,tier,lab.toUpperCase())));const hp0=t.hp,again=o.online?ON.det(()=>DO(f,t,id)):DO(f,t,id);upd(a);upd(b);
   if(t.hp<hp0&&t.hp>0){if(t.hp<=t.maxHp*.3&&!t.warned){t.warned=1;say(t,TALK(t.cls,"low"))}else if(chance(.35))say(t,TALK(t.cls,"hurt"))}
   await sleep(850);
-  if(a.hp<=0||b.hp<=0)break;
+  dcStunChk(b);if(a.hp<=0||b.hp<=0)break;
   if(o.online)ON.det(()=>post(f));else post(f);upd(a);upd(b);if(again||(f.cls==="Archer"&&f.lock)){if(f.lock&&f.ai)L("🏹 Combo continues!","a");fresh=false;continue}
   cur=t;fresh=true}}while(o.online&&await ON.more(a,b));
  if(my!==token)return null;const w=a.hp>0?a:b;sfx(w.ai?"lose":"win");L(`🏆 ${w.name} wins!`,"a");upd(a);upd(b);await sleep(1700);return w}
@@ -3145,7 +3459,7 @@ Archer:["Attack builds SP. Caladbolg II (2 SP) enters Combo Lock: you keep the t
 Knight:["Energy goes up to 200. At 100 you can Charged Strike, but saving to 200 gives Full Glory, the biggest single hit.","Attack gives +2 SP; Skill and Heal each cost 1 SP, so keep an SP in reserve for Heal.","Plays best as a patient fighter: heal, then burst."],
 Trickster:["Every hit you take fills Stolen. At 50 it counterattacks and earns a coin, so tanking hits is part of the plan.","Steal does no damage but weakens the enemy's next attack by 10%, so use it before a big incoming hit.","Hold coins and Spend them together: each coin is extra damage."],
 Champion:["Skill is your moon engine: use it first to reach 2 moons and open the Moonlight Hunt.","In the Hunt every Attack is a 58–78 hit, but it costs a moon and a few HP. Heal between hunts, because the drain adds up.","Ultimate gives +1 moon, so cast it mid-Hunt to keep the Hunt going. Every 10 HP drained also gives a moon back.","Boss Rush: your Enhanced Attack also drains one random teammate (2–4), so keep them healthy and use the shared support for +50 energy."],
-Hemomancer:["Open with Lancet. Each hit adds a stack, and refreshing keeps the timer at 3 turns, so keep attacking while stacks tick.","Hold Vitae for Transfusion (3 Vitae). Bleed ticks fill it, so heal in the middle of a fight, not at the start.","Rupture burns the stacks for burst, so use it to finish or when 5–6 stacks are up. Crimson Eclipse is best with 2+ stacks already on the enemy, because every tick heals you."],
+Hemomancer:["Open with Lancet. Each hit adds a stack, and refreshing keeps the timer at 3 turns, so keep attacking while stacks tick.","Hold Vitae for Transfusion (4 Vitae). Bleed ticks fill it, so heal in the middle of a fight, not at the start.","Rupture burns the stacks for burst, so use it to finish or when 5–6 stacks are up. Crimson Eclipse is best with 2+ stacks already on the enemy, because every tick heals you."],
 Gamer:["Level Up gives energy and a damage stack, and each level multiplies the next Pac-Man bonus.","The Pac-Man Attack replaces Tetris while you have any level. It deals the stacked damage, heals, then resets your level.","Overclock gives 3-hit immunity and boosts everything. Use it before cashing in a high-level Pac-Man Attack."]};
 function gMoves(n){const f=mk(n,"x",false),L=(ac)=>ac.map(([i,l,s])=>`<li><b>${l}</b>: ${s}</li>`).join("");f.en=100;f.sp=Math.max(f.sp||0,3);
  const out=[`<li class="gh">Normal</li>`+L(acts(f))];
@@ -3262,7 +3576,7 @@ Hemomancer:{intro:"<b>Role:</b> bleed controller. <b>Lancet</b> adds a bleed sta
  steps:[
  {t:"Stack bleed with Lancet",m:"Each Lancet deals 13–19 and adds <b>+1 bleed stack</b> (3 turns, refreshed on every hit). Bleed ticks on the dummy's turn and count toward its damage.",task:"Get 3 bleed stacks on the dummy.",allow:["attack"],setup:(f,d)=>{d.hb=0;d.hbt=0},prog:(f,d)=>[d.hb||0,6,"Bleed stacks"],ok:(f,id,p,c)=>(c.d.hb||0)>=3},
  {t:"Rupture",m:"Rupture needs 2+ stacks and eats them all: <b>8 + 10 damage per stack</b>. It has a 3-turn cooldown.",task:"Use Rupture.",allow:["skill"],setup:(f,d)=>{f.sk=0;d.hb=Math.max(d.hb||0,4);d.hbt=3;d.hbs=f},ok:(f,id)=>id==="skill"},
- {t:"Transfusion",m:"Transfusion costs <b>3 Vitae</b> and heals 35–50 (×1.5) plus 6 per bleed stack on the enemy. Vitae comes from bleed ticks.",task:"Use Transfusion.",allow:["heal"],setup:(f,d)=>{f.vit=3;f.hp=140;f.hc=0;d.hb=3;d.hbt=3;d.hbs=f},ok:(f,id)=>id==="heal"},
+ {t:"Transfusion",m:"Transfusion costs <b>4 Vitae</b> and heals 35–50 (×1.5) plus 6 per bleed stack on the enemy. Vitae comes from bleed ticks.",task:"Use Transfusion.",allow:["heal"],setup:(f,d)=>{f.vit=4;f.hp=140;f.hc=0;d.hb=3;d.hbt=3;d.hbs=f},ok:(f,id)=>id==="heal"},
  {t:"Crimson Eclipse",m:"At 100 energy the Ultimate deals 30–40, adds +3 stacks, and for 3 turns your bleed ticks are <b>×1.5 and heal you</b>.",task:"Cast Crimson Eclipse.",allow:["ultimate"],setup:(f,d)=>{f.en=100;d.hb=Math.max(d.hb||0,2);d.hbt=3;d.hbs=f},ok:f=>f.ecl>0},
  {t:"Eclipse window",m:"While the Eclipse lasts, bleed hurts more and feeds you HP. Keep stacking and watch the dummy's damage per turn.",task:"Use 2 actions during the Eclipse.",allow:["attack","skill","heal"],prog:(f,d,c)=>[Math.min(2,c.n),2,"Actions"],ok:(f,id,p,c)=>c.n>=2}]},
 Champion:{intro:"<b>Role:</b> burst swordsman with a blood price. <b>Skill</b> gives +1 moon. At 2 moons you enter the <b>Moonlight Hunt</b>: Attack becomes a 58–78 hit that costs a moon and a little HP. Drained HP gives moons back (1 per 10 HP).<p><b>Rhythm:</b> Skill ×2 → Hunt → heal between hunts.</p>",
@@ -3385,7 +3699,7 @@ function gRewards(){const row=(a,b,c)=>`<tr><td>${a}</td><td>${b}</td><td>${c}</
  <div class="panel"><h3>👑 Boss Rush · 5 bosses cleared</h3><table class="gtab"><tr><th>Difficulty</th><th>🔧 Reworkable Relic</th><th>Fragments</th></tr>${row("Normal","×1","+30 for every character")}${row("☄️ Apocalyptic","×3","+60 for every character")}</table><p class="lore">Paid once, when you defeat the final boss. These come on top of the per-boss rewards above.</p></div>
  <div class="panel"><h3>What the rewards do</h3><ul><li><b>Solari:</b> spend it on Remnant Rerolls (150 each).</li><li><b>☀️ Solari also buys skins and auras in the Shop.</b></li><li><b>🎟️ Reroll Token:</b> a free Remnant reroll. Earned from dailies, goals, rank-ups and the Daily Sweep.</li><li><b>📦 Fragment Cache:</b> ${CACHE_FR} fragments for any fighter you pick. Open it from the Rank screen.</li><li><b>🛒 Shop:</b> skins (${COS_SKIN.toLocaleString()} Solari) and auras (${COS_AURA.toLocaleString()}) for each fighter. Toggle them in Remnant.</li><li><b>🎖️ Badges and emblems:</b> goal tiers award badges, and every new title changes your menu emblem.</li><li><b>Fragments:</b> 100 unlocks a character's two Remnants, then 500 per Ascend (two Ascends in total).</li><li><b>🔧 Reworkable Relic:</b> pick a Remnant's regular stat yourself (1 relic Common, 2 relics Rare).</li><li><b>PVP:</b> no rewards.</li></ul></div>`}
 /* ===== Hemomancer: bleed engine ===== */
-const HM={lan:[13,19],rupB:8,rupS:10,heal:[35,50],healS:6,vit:3,ecl:1.5,ult:[30,40],tick:3,max:6};
+const HM={lan:[13,19],rupB:8,rupS:10,heal:[35,50],healS:6,vit:4,ecl:1.5,ult:[30,40],tick:3,max:6};
 function addBleed(src,t,n){if(!t||t.hp<=0)return;t.hb=Math.min(HM.max,(t.hb||0)+n);t.hbt=3;t.hbs=src;
  try{const[x,y]=pos(t);drips(x,y-10,3+n*2);ring(x,y+36,"#c4143c",90+t.hb*14);sfx("bleed")}catch(e){}
  L(`🩸 ${t.name} bleeds ×${t.hb} (3 turns).`,"r");upd(t)}
@@ -3691,7 +4005,7 @@ function rkOpenCache(){if(RNK.cc<1)return;const m=document.createElement("div");
 var RIFT=riftClean((function(){try{return JSON.parse(localStorage.getItem("aoa_rift")||"{}")}catch(e){return{}}})());
 function riftClean(o){o=o&&typeof o==="object"?o:{};const n=v=>Math.max(0,Math.min(999999,Math.floor(+v)||0));return{dc:/^\d{4}-\d{2}-\d{2}$/.test(o.dc)?o.dc:"",lk:+o.lk>=0&&+o.lk<=100?+o.lk:-1,sh:n(o.sh),w:n(o.w),x:n(o.x),pt:n(o.pt),fk:typeof o.fk==="string"?o.fk.slice(0,40):"",xf:typeof o.xf==="string"?o.xf.slice(0,40):"",np:n(o.np),xb:Array.isArray(o.xb)?o.xb.filter(v=>typeof v==="string").slice(0,300).map(v=>v.slice(0,40)):[],last:Array.isArray(o.last)?o.last.slice(0,10).map(r=>({i:String(r&&r.i||"").slice(0,8),t:String(r&&r.t||"").slice(0,40),r:["","rare","epic"].includes(r&&r.r)?r.r:""})):[]}}
 function riftSave(){try{localStorage.setItem("aoa_rift",JSON.stringify(RIFT))}catch(e){}}
-const RF_COST=10,RF_GIFT=10,RF_XB=100,RF_XR=180,RF_BASE=.005,RF_HARD=150,RF_SOL=[40,120];
+const RF_COST=10,RF_GIFT=10,RF_XB=100,RF_XR=180,RF_BASE=.005,RF_HARD=150,RF_SOL=[15,45];
 /* week id = number of Mondays since 2024-01-01 (local time) */
 function riftWk(){const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7));return Math.round((m-new Date(2024,0,1))/864e5/7)+1}
 function riftLeft(){const d=new Date(),e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+(8-(d.getDay()||7))%7+((d.getDay()===1)?7:0));let ms=Math.max(0,e-d);const D=Math.floor(ms/864e5),H=Math.floor(ms%864e5/36e5);return D?D+"d "+H+"h":H+"h "+Math.floor(ms%36e5/6e4)+"m"}
@@ -3704,9 +4018,9 @@ function riftGain(a){a=Math.max(0,Math.floor(a)||0);if(a){RIFT.sh=Math.min(99999
 function riftTick(){const w=riftWk();if(RIFT.w!==w){RIFT.w=w;RIFT.sh+=RF_GIFT;riftSave();setTimeout(()=>fragToast("🎁 Weekly Rift gift: +"+RF_GIFT+" 🔷 Rift Shards"),400)}}
 {const _s=window.solari;window.solari=function(rg){const a=_s.apply(this,arguments);try{riftGain(Math.max(1,Math.round((a||0)/10)))}catch(e){}return a}}
 const RF_TAB=[
- {w:53,f:()=>{const a=RF_SOL[0]+Math.floor(Math.random()*(RF_SOL[1]-RF_SOL[0]+1));return{i:"☀️",t:"+"+a+" Solari",r:"",g:()=>solariSet(solariBalance()+a)}}},
- {w:25,f:()=>{const a=Math.random()<.2?2:1;return{i:"🎟️",t:"+"+a+" Reroll Token"+(a>1?"s":""),r:"",g:()=>{RNK.tk=(RNK.tk||0)+a;rkSave()}}}},
- {w:20,f:()=>{const a=Math.random()<.1?2:1;return{i:"📦",t:"+"+a+" Fragment Cache"+(a>1?"s":""),r:"rare",g:()=>{RNK.cc=(RNK.cc||0)+a;rkSave()}}}},
+ {w:42,f:()=>{const a=RF_SOL[0]+Math.floor(Math.random()*(RF_SOL[1]-RF_SOL[0]+1));return{i:"☀️",t:"+"+a+" Solari",r:"",g:()=>solariSet(solariBalance()+a)}}},
+ {w:30,f:()=>{const a=Math.random()<.2?2:1;return{i:"🎟️",t:"+"+a+" Reroll Token"+(a>1?"s":""),r:"",g:()=>{RNK.tk=(RNK.tk||0)+a;rkSave()}}}},
+ {w:26,f:()=>{const a=Math.random()<.1?2:1;return{i:"📦",t:"+"+a+" Fragment Cache"+(a>1?"s":""),r:"rare",g:()=>{RNK.cc=(RNK.cc||0)+a;rkSave()}}}},
  {w:2,f:()=>({i:"🔧",t:"+1 Reworkable Relic",r:"epic",g:()=>relicSet(relicGet()+1)})}];
 function riftRoll(ft){const wk=riftWk();riftSync();
  if(ft&&RIFT.x!==wk){const p=riftP();if(Math.random()<p){RIFT.x=wk;RIFT.xf=ft.n+"|"+ft.k;RIFT.pt=0;{const bk=ft.n+"|"+ft.k;if(!RIFT.xb.includes(bk)){RIFT.xb.push(bk);RIFT.sh=Math.min(999999,RIFT.sh+RF_XB);ft.bn=RF_XB}}COS.o[ft.n][ft.k]=1;COS.e[ft.n][ft.k]=1;cosSave();return{i:"🌟",t:(ft.k==="s"?SKINS:AURAS)[ft.n].n+" (exclusive!)",r:"epic",ex:ft}}RIFT.pt++}
@@ -3779,7 +4093,7 @@ function rift(){token++;riftTick();riftSync();const wk=riftWk(),ft=riftFeat(),wo
  <div class="rf-btns"><button class="btn pri" ${RIFT.sh<RF_COST?"disabled":""} onclick="riftPull(1)">Pull ×1<br><small>${RF_COST} 🔷</small></button><button class="btn pri" ${RIFT.sh<RF_COST*10?"disabled":""} onclick="riftPull(10)">Pull ×10<br><small>${RF_COST*10} 🔷</small></button></div>
  ${RIFT.last.length?`<div class="panel"><label>Last pull</label><div class="rflist">${RIFT.last.map((r,i)=>`<div class="rfchip ${r.r}" style="animation-delay:${i*70}ms"><span>${r.i}</span><b>${r.t}</b></div>`).join("")}</div></div>`:""}
  ${riftPool()}
- <div class="panel"><label>Rewards</label><ul class="rfodds"><li>☀️ Solari ${RF_SOL[0]}–${RF_SOL[1]} <b>53%</b></li><li>🎟️ Reroll Token <b>25%</b></li><li>📦 Fragment Cache <b>20%</b></li><li>🔧 Reworkable Relic <b>2%</b></li><li>🔷 +${RF_XB} Rift Shards <b>first win of each exclusive</b></li><li>🌟 Weekly exclusive ${won?"<b>Claimed</b> <small>(next one in "+riftLeft()+")</small>":"<b>"+(p*100).toFixed(2)+"%</b> <small>(flat chance, guaranteed within "+RF_HARD+" pulls)</small>"}</li></ul><small style="display:block;margin-top:6px;color:var(--mu)">🎯 Pity: <b>${RIFT.pt}/${RF_HARD}</b> — carries over between weeks, resets to 0 when you win the weekly exclusive.</small></div>
+ <div class="panel"><label>Rewards</label><ul class="rfodds"><li>☀️ Solari ${RF_SOL[0]}–${RF_SOL[1]} <b>42%</b></li><li>🎟️ Reroll Token <b>30%</b></li><li>📦 Fragment Cache <b>26%</b></li><li>🔧 Reworkable Relic <b>2%</b></li><li>🔷 +${RF_XB} Rift Shards <b>first win of each exclusive</b></li><li>🌟 Weekly exclusive ${won?"<b>Claimed</b> <small>(next one in "+riftLeft()+")</small>":"<b>"+(p*100).toFixed(2)+"%</b> <small>(flat chance, guaranteed within "+RF_HARD+" pulls)</small>"}</li></ul><small style="display:block;margin-top:6px;color:var(--mu)">🎯 Pity: <b>${RIFT.pt}/${RF_HARD}</b> — carries over between weeks, resets to 0 when you win the weekly exclusive.</small></div>
  <div class="panel"><label>Earn 🔷 Rift Shards</label><small style="color:var(--mu)">🎁 ${RF_GIFT} free every Monday · 🌟 +${RF_XB} the first time you win each weekly exclusive · Tap your 🔷 counter at the top: ${RF_XR} ☀️ Solari = 1 🔷 · ⚔️ Every Solari reward also pays shards (about 1 per 10 Solari): enemies 1, Boss Rush 10–15 per boss.</small></div></div>`}
 {const st=document.createElement("style");st.textContent=`.rfwrap{display:grid;gap:12px;max-width:520px;margin:0 auto}.rfx{max-width:230px;margin:0 auto;width:100%}.rf-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rf-btns .btn small{opacity:.85}
 .rflist{display:grid;grid-template-columns:1fr 1fr;gap:6px}.rfchip{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;border:2px solid var(--ln);background:var(--pn2);animation:rfpop .35s both;font-size:12px}.rfchip span{font-size:20px}
@@ -3794,6 +4108,7 @@ function rift(){token++;riftTick();riftSync();const wk=riftWk(),ft=riftFeat(),wo
 @media(min-width:820px){.menu.mm.mmain{grid-template-columns:repeat(3,1fr);max-width:820px}.mm.mmain .btn{min-height:76px}}
 @media(min-width:820px){.rfwrap{max-width:900px;grid-template-columns:270px 1fr;align-items:start;column-gap:18px}.rfwrap>:first-child{grid-column:1;grid-row:1/span 6}.rfwrap>:not(:first-child){grid-column:2}.rfx{max-width:none}}
 html.lowd .rfchip{animation:none}html.lowd2 .rfx .stage *{animation:none}.rfpill{cursor:pointer;color:var(--tx);font:inherit;font-weight:800;border:2px solid #4fb7ff;box-shadow:0 0 10px #4fb7ff55}.rfpill{display:inline-flex;align-items:center;gap:6px}.rfpill i{position:relative;flex:none;width:18px;height:18px;border-radius:50%;background:#4fb7ff}.rfpill i::before,.rfpill i::after{content:"";position:absolute;left:50%;top:50%;background:#06182a;border-radius:1px;transform:translate(-50%,-50%)}.rfpill i::before{width:10px;height:2px}.rfpill i::after{width:2px;height:10px}.rfpill:active{transform:scale(.95)}
+.shc .trybtn{background:transparent;border-style:dashed;font-size:12px;padding:6px}
 .rfxbtn{position:fixed;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:6;width:32px;height:32px;padding:0;border-radius:50%;border:2px solid var(--ln);background:var(--pn2);color:var(--tx);font:800 15px/1 system-ui,sans-serif;cursor:pointer;opacity:.85;box-shadow:0 2px 8px #0005}.rfxbtn:active{transform:scale(.92)}\n.rfxs{margin:14px 0 4px}.rfxs input{width:100%;accent-color:#4fb7ff;height:28px}.rfxl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--mu)}.rfxl b{color:var(--tx);font-size:14px}\n`;document.head.appendChild(st)}
 /* ===== Daily Challenge (Play menu). The Daily Challenge and the Daily Sweep (all 3 quests) each pay RF_DAILY Rift Shards ===== */
 const RF_DAILY=50,RF_TITLE=100;
@@ -3811,7 +4126,7 @@ function dcSub(){return RIFT.dc===dcToday().day?"✅ Done today · quests below"
 function dailyScreen(){token++;const d=dcToday(),done=RIFT.dc===d.day,k=CLS[d.cls],bk=CLS[d.bc],m=d.mod,[n1,n2]=ENEMY[d.bc];
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="playMenu()">← Back</button><h2>📅 Daily</h2><span class="relic-pill" title="Rift Shards">🔷 ${RIFT.sh.toLocaleString()}</span></div>
  <div class="rfwrap dcwrap"><div class="panel dcmain"><h3 class="sec">Daily Challenge</h3>${d.rush?`<div class="dcrow"><span>👥</span><div><b>${CLS[d.tm[0]].e} ${d.tm[0]} + ${CLS[d.tm[1]].e} ${d.tm[1]} · Support ${CLS[d.tm[2]].e} ${d.tm[2]}</b><small>Boss Rush day: random Player 1, Player 2 and Support</small></div></div><div class="dcrow"><span>${BOSSES[d.boss].e}</span><div><b>${BOSSES[d.boss].n}</b><small>One normal Boss Rush boss · Remnant effects active</small></div></div>`:`<div class="dcrow"><span>${k.e}</span><div><b>Your fighter: ${d.cls}</b><small>Fixed for today — same for everyone · Remnant effects active</small></div></div>
- <div class="dcrow"><span>⚔️</span><div><b>${n1} → ${n2} → ${bk.e} ${d.bc} Boss</b><small>Three fights in a row, full HP at each start</small></div></div>`}
+ <div class="dcrow"><span>⚔️</span><div><b>${n1} → ${n2} → ${bk.e} ${d.bc} Boss</b><small>Three fights in a row, full HP at each start · the Boss is stunned once when it falls to 50% HP</small></div></div>`}
  <div class="dcrow"><span>${m.i}</span><div><b>${m.n}</b><small>${m.d}</small></div></div>
  <div class="dcrow"><span>🎁</span><div><b>+${RF_DAILY} 🔷 Rift Shards · +200 ☀️ Solari · +60 XP</b><small>${done?"Claimed today — replay for practice (no reward)":"Win all three fights. Retry as often as you like."}</small></div></div>
  <button class="btn pri" onclick="dcStart()">${done?"↻ Replay (practice)":"▶ Start challenge"}</button><small style="color:var(--mu);text-align:center">Resets in ${dcLeft()}</small></div>
@@ -3819,7 +4134,7 @@ function dailyScreen(){token++;const d=dcToday(),done=RIFT.dc===d.day,k=CLS[d.cl
 async function dcStart(){const d=dcToday(),m=d.mod,k=CLS[d.bc],[n1,n2]=ENEMY[d.bc];token++;RMON=true;RUN=null;
  if(d.rush)return dcRush(d);
  B={dmg:1,heal:1,hp:1};E={dmg:1.2,heal:1.1,hp:1.15};for(const a in m.B||{})B[a]*=m.B[a];for(const a in m.E||{})E[a]*=m.E[a];
- const p=mk(d.cls,S.n1.trim()||"Hero",false),st=[()=>mkSimple(n1,Math.floor(150*E.hp),[10,30],[20,30],null,k.c,k.e),()=>{const e=mkSimple(n2,Math.floor(180*E.hp),[10,30],[20,35],[30,40],k.c,k.e);e.elite=true;return e},()=>{const b=mk(d.bc,d.bc+" Boss",true);b.maxHp=b.hp=Math.floor(300*E.hp*1.15);return b}];
+ const p=mk(d.cls,S.n1.trim()||"Hero",false),st=[()=>mkSimple(n1,Math.floor(150*E.hp),[10,30],[20,30],null,k.c,k.e),()=>{const e=mkSimple(n2,Math.floor(180*E.hp),[10,30],[20,35],[30,40],k.c,k.e);e.elite=true;return e},()=>{const b=mk(d.bc,d.bc+" Boss",true);b.maxHp=b.hp=Math.floor(300*E.hp*1.15);b.dcStun=1;return b}];
  await ask(`<h2>📅 Daily Challenge</h2><p>${CLS[d.cls].e} ${d.cls} vs ${n1} → ${n2} → ${d.bc} Boss<br>${m.i} <b>${m.n}</b> — ${m.d}</p>`,["Fight!"]);
  for(let s=0;s<3;s++){CK=null;RUNMODE=null;resetF(p);const e=st[s](),w=await fight(p,e,{title:`Daily · ${["Enemy","Elite","Boss"][s]}`,sub:`${m.i} ${m.n}`,hard:true,boss:s===2,first:chance(.5)?"a":"b"});
   if(!w)return;if(w!==p){await ask(`<h2>💀 Challenge failed</h2><p>${m.i} ${m.n} got you at fight ${s+1}/3. Try again!</p>`,["Back"]);dailyScreen();return}
@@ -3840,10 +4155,14 @@ async function dcRush(d){const m=d.mod,bd=BOSSES[d.boss];B={dmg:1,heal:1,hp:1};E
 {const st=document.createElement("style");st.textContent=`.dcwrap{max-width:560px}.dcmain{display:grid;gap:10px}.dcrow{display:flex;gap:12px;align-items:center}.dcrow>span{font-size:26px;width:36px;text-align:center}.dcrow b{display:block;font-size:14px}.dcrow small{color:var(--mu)}
 @media(min-width:820px){.dcwrap{max-width:900px;grid-template-columns:1fr 1fr!important;align-items:start}.dcwrap>*{grid-column:auto!important;grid-row:auto!important}}`;document.head.appendChild(st)}
 function menu(){RUNMODE=null;CK=null;token++;document.querySelectorAll(".modal").forEach(m=>m.remove());music("menu");
- $("#app").innerHTML=`<div class="hero"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div><h1>Arena of <br>Ascension</h1><p class="tag"><span class="tt">Turn-based battle game</span><b class="vtag">v2.0</b></p><div class="pills"><span>v2.0</span><span>Ten fighters</span><span>One arena</span></div>${rkPill()}</div>
- <div class="menu mm mmain">${MB2("pri","▶","Play","PVP, Campaign, Boss Rush","playMenu()")}${riftBtn()}${MB2("","🔮","Remnant","Fragments for each fighter","remnant()")}${MB2("","🛒","Shop","Skins and auras","shop()")}${MB2("","📖","Lore book","The story of the Arena","story()")}${MB2("","📚","Guides","Fighters, bosses and tips","guide()")}${MB2("","🧠","Rules &amp; Bot","How it all works","howto()")}${MB2("","⚙️","Settings","Audio and more","settingsMenu()")}</div>
+ const G=(ic,t,sub,on)=>`<button class="gt" onclick="${on}" data-sub="${sub}" aria-label="${t}: ${sub}"><span class="gi">${ic}</span><b>${t}</b></button>`;
+ $("#app").innerHTML=`<i class="hero" aria-hidden="true"></i>
+ <header class="gtop"><div class="gid"><div class="emb" style="--rc:${rkCol(rkLevel().l)}">${rkEmb(rkLevel().l)}</div>${rkPill()}</div>
+ <div class="gword"><h1 class="gtitle"><span class="t1">Arena of </span><br><span class="t2">Ascension</span></h1><p class="tag"><span class="tt">Turn-based battle game</span><b class="vtag">v2.0</b></p></div>
+ <div class="gutil"><button class="gu" onclick="howto()" aria-label="Rules and Bot"><span>🧠</span><b>Rules</b></button><button class="gu" onclick="settingsMenu()" aria-label="Settings"><span>⚙️</span><b>Settings</b></button></div></header>
  <div class="lineup">${NAMES.map(n=>charHTML(n)).join("")}</div>
- <div class="credit">Created by JairusJBDR</div>`;requestAnimationFrame(()=>{homeSetup();fitHome()});setTimeout(fitHome,350)}
+ <nav class="gbar" aria-label="Main menu">${G("🔮","Remnant","Fragments for each fighter","remnant()")}${G("🛒","Shop","Skins and auras","shop()")}${G("📖","Lore","The story of the Arena","story()")}${G("📚","Guides","Fighters, bosses and tips","guide()")}<button class="gplay" onclick="playMenu()" aria-label="Play: PVP, Campaign, Boss Rush"><span class="gpi">▶</span><b>Play</b></button><div class="gev">${riftBtn()}</div></nav>
+ <div class="credit">Created by JairusJBDR</div>`;requestAnimationFrame(()=>{homeSetup();fitHome()});setTimeout(fitHome,350);try{document.fonts&&document.fonts.ready.then(fitHome)}catch(e){}}
 /* ===== home: two squads of five face off; each fighter bobs on its own rhythm, taps and random duels trigger real attack animations ===== */
 var HOME_T=null;
 function homeSetup(){const l=document.querySelector("#app .lineup");if(!l)return;
@@ -3855,10 +4174,12 @@ function homeSetup(){const l=document.querySelector("#app .lineup");if(!l)return
  const v=document.createElement("b");v.className="hvs";v.textContent="VS";l.appendChild(v);
  l.onclick=e=>{const s=e.target.closest(".stage");if(s){homeAct(+s.dataset.i);homeTag(+s.dataset.i)}};
  clearInterval(HOME_T);if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches))HOME_T=setInterval(homeDuel,2300)}
-function fitHome(){const l=document.querySelector("#app .lineup");if(!l)return;const H=l.clientHeight,W=l.clientWidth;if(!H||!W)return;
+function fitHome(){const l=document.querySelector("#app .lineup");if(!l)return;
+ try{const a=document.getElementById("app"),g=a.querySelector(".gbar"),t=a.querySelector(".gtop");if(g&&t){const gt=g.getBoundingClientRect().top,tb=t.getBoundingClientRect().bottom,cw=document.documentElement.clientWidth,st=cw<1000?Math.max(tb,gt-(cw*.8+30)):tb;a.style.setProperty("--st",Math.round(st)+"px");a.style.setProperty("--sb",Math.max(0,Math.round(innerHeight-gt))+"px")}}catch(e){}
+ const H=l.clientHeight,W=l.clientWidth;if(!H||!W)return;
  /* two squads facing off. Wide screens: 2 depth rows per squad. Phones/tall: 3 rows, so fighters stay big and don't hide each other */
  const wide=W/H>2.4,RS=wide?[1,.88]:[1,.9,.8],RL=wide?[0,.55]:[0,.55,1.1],topU=Math.max(...RS.map((x,r)=>x+RL[r])),
-  sf=Math.max(.2,Math.min(wide?.95:1.1,(H-14)/(150*topU),W/(wide?630:570))),step=120*sf*(wide?1.02:.82),gap=wide?Math.min(W*.16,300):120*sf*1.1,off=Math.max(0,H-14-150*sf*topU)*.5,
+  sf=Math.max(.2,Math.min(wide?1.6:1.8,(H-14)/(150*topU),W/(wide?630:570))),step=120*sf*(wide?1.02:.82),gap=wide?Math.min(W*.16,300):120*sf*1.1,off=Math.max(0,H-14-150*sf*topU)*.5,
   SL=wide?[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,2,0]]:[[4,0,0],[3,.5,1],[2,1,0],[1,1.5,1],[0,1,2]],lay=[];
  l.querySelectorAll(".stage").forEach((s,i)=>{const side=i<5?-1:1,q=SL.find(x=>x[0]===(i<5?i:9-i)),row=q[2],sc=sf*RS[row],cx=W/2+side*(gap/2+q[1]*step),bt=off+10+RL[row]*150*sf;
   s.style.left=(cx-60)+"px";s.style.bottom=bt+"px";s.style.transform="scale("+sc.toFixed(3)+")";s.style.zIndex=30-row*10+Math.round(4-q[1]*2);s.style.filter=row?"brightness("+(1-row*.045)+")":"";
@@ -3869,7 +4190,7 @@ function homeAct(i){const l=document.querySelector("#app .lineup");if(!l)return;
  const a=(typeof ARCH!=="undefined"&&ARCH[NAMES[i]])||"lunge";["lunge","leap","spin","cast","slash"].forEach(x=>ch.classList.remove("wa-"+x));ch.style.setProperty("--dir",i<5?1:-1);void ch.offsetWidth;ch.classList.add("wa-"+a);setTimeout(()=>ch.classList.remove("wa-"+a),1000)}
 function homeTag(i){const l=document.querySelector("#app .lineup"),m=l&&l._lay&&l._lay[i];if(!m)return;l.querySelectorAll(".hn").forEach(x=>x.remove());const e=document.createElement("b");e.className="hn";e.textContent=NAMES[i];e.style.cssText=`left:${m.cx}px;bottom:${m.bt+m.h+4}px;--c:${m.c}`;l.appendChild(e);setTimeout(()=>e.remove(),1700)}
 function homeSpark(l,x,y,c){for(const k of["hsp","hsr"]){const e=document.createElement("i");e.className=k;e.style.cssText=`left:${x}px;bottom:${y}px;--c:${c}`;l.appendChild(e);setTimeout(()=>e.remove(),800)}}
-function homeDuel(){const l=document.querySelector("#app .lineup");if(!l){clearInterval(HOME_T);return}if(document.hidden||!l.offsetParent||!l._lay)return;
+function homeDuel(){const l=document.querySelector("#app .lineup");if(!l){clearInterval(HOME_T);return}if(document.hidden||!l.getClientRects().length||!l._lay)return;
  const A=[4,4,3,2,1,0],B=[5,5,6,7,8,9],go=(a,b,dl)=>{setTimeout(()=>{if(!document.body.contains(l))return;homeAct(a);homeAct(b);setTimeout(()=>{if(!document.body.contains(l))return;const m=l._lay[a],n=l._lay[b];if(m&&n)homeSpark(l,(m.cx+n.cx)/2,(m.bt+m.h*.5+n.bt+n.h*.5)/2,m.c)},330)},dl)};
  const a=A[R(0,A.length-1)],b=B[R(0,B.length-1)];go(a,b,0);
  if(chance(.45)){let a2=A[R(0,A.length-1)],b2=B[R(0,B.length-1)];if(a2!==a&&b2!==b)go(a2,b2,420)}}
