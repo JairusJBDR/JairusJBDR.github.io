@@ -1323,7 +1323,8 @@ body:has(#app .lineup){height:100vh;height:100dvh}
 body #app:has(.lineup) .gutil:has(.annbell){padding-right:0}
 @media(min-width:1000px) and (min-height:560px),(min-width:561px) and (max-height:559px){body #app:has(.lineup) .gutil:has(.annbell){padding-right:0}}
 @media(min-width:561px) and (max-height:559px){.gutil .annbell{width:36px;height:36px}}
-</style></head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
+</style><style>html,body{overscroll-behavior-x:none;overscroll-behavior-y:contain}</style>
+</head><body><div id="ldscr"><div class="lt">ARENA OF ASCENSION</div><div class="ls">LOADING</div><div class="lb"><i id="ldbar"></i></div><div class="lm" id="ldm"></div><div class="lh" id="ldh"></div></div><div id="app"></div>
 <script>
 (function(){
 const app=document.getElementById("app"),desc=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML");
@@ -1406,14 +1407,14 @@ Titankin:{e:"⚒️",c:"#e8643c",tag:"Iron wall",init:f=>{f.en=0;f.enh=false},ba
 Emanator:{e:"🔥",c:"#ff7a3d",tag:"Rage engine",init:f=>{f.core=1;f.sp=0;f.bz=false;f.bt=0},bars:f=>[["Core",f.core,10,"#f4b942"],["SP",f.sp,7,"#b66cff"]],
  info:["Normal state: 25% chance to dodge any hit. Gains +1 Core each time it is hit; at 10 Core it goes Berserk for 7 turns","Normal state: 15% chance to parry a hit (blocks it, heals 15–30, still gives +1 Core)","Normal skill costs 35 HP (cd 2) and gives +3 Core","Berserk: strong attacks that heal, skill costs 4 SP, +135 HP on entry, +45 HP on exit"]},
 Genius:{e:"🧠",c:"#3fb6e8",tag:"Calculated",init:f=>{f.en=0;f.sp=1;f.dm=0;f.ens=false},bars:f=>[["Energy",f.en,100,"#4fd1ff"],["SP",f.sp,3,"#b66cff"],["DM",f.dm,6,"#ff6b6b"]],
- info:["Crit 20% (×1.2). Attack gives +2 SP; skill and heal cost 1 SP","Each Skill adds a DM stack","Ultimate (100 energy) unlocks one Enhanced Skill that scales ×(1 + 0.3 per DM)"]},
+ info:["Crit 20% (×1.2). Attack gives +2 SP; skill and heal cost 1 SP","Each Skill adds a DM stack","Ultimate (100 energy) unlocks one Enhanced Skill that scales ×(1 + 0.4 per DM)"]},
 Demigod:{e:"⚡",c:"#d8b24a",tag:"Ascends",init:f=>{f.ch=0;f.chMax=150;f.en=0;f.und=false;f.st=0},
  bars:f=>f.und?[["Energy",f.en,100,"#4fd1ff"],["Charge",f.ch,f.chMax,"#f4b942"]]:[["Charge",f.ch,f.chMax,"#f4b942"]],
  info:["Only action: Sacrifice 50% HP to gain that much Charge; taking damage also charges","At 150 Charge it ascends into the Undying King (480 max HP, +300 HP)","King: stacking-damage Skill, Ultimate heals 270, Conquer (90–115 dmg + 120 heal) at full Charge (800)"]},
 Archer:{e:"🏹",c:"#d2352d",tag:"Chain fighter",init:f=>{f.en=0;f.sp=3;f.lock=false;f.cm=1},bars:f=>[["Energy",f.en,100,"#4fd1ff"],["SP",f.sp,9,"#b66cff"]],
  info:["Crit 35% (×1.5) and sidestep 20%","Skill (2 SP) enters Lock: you keep the turn, the enemy gets none, and damage stacks +0.2 per shot","Only Skill or Stop while locked. Ultimate: 30–50 dmg and +3 SP"]},
 Knight:{e:"🛡️",c:"#7d8cff",tag:"Graceful",init:f=>{f.en=0;f.sp=3},bars:f=>[["Energy",f.en,200,"linear-gradient(90deg,#4fd1ff 50%,#4a6cff 50%)"],["SP",f.sp,4,"#b66cff"]],
- info:["Energy goes to 200. At 100: Charged Strike (55–75). At 200: Full Glory (120–160)","Attack gives +2 SP; skill and heal cost 1 SP"]},
+ info:["Energy goes to 200. At 100: Charged Strike (55–75). At 200: Full Glory (190–250)","Attack gives +2 SP; skill and heal cost 1 SP"]},
 Trickster:{e:"🎭",c:"#c75ce0",tag:"Counter thief",init:f=>{f.stolen=0;f.coins=1},bars:f=>[["Stolen",f.stolen,50,"#f4b942"],["Coins",f.coins,9,"#ffd966"]],
  info:["Damage taken fills Stolen (33%); at 50 it counter-attacks (38–48) and earns a coin","Steal (cd 3): +5–10 Stolen, no damage, and the enemy deals 10% less damage on its next turn","Spend Coins: 33 damage per coin","Heal 75–90 (cd 2)"]},
 Gamer:{e:"🎮",c:"#8be62e",tag:"Level grinder",init:f=>{f.en=0;f.lvl=0;f.imm=0;f.oct=0;f.flat=0},
@@ -2913,7 +2914,7 @@ function acts(f){const c=f.cls,A=[],a=(i,l,s,ok=true)=>A.push([i,l,s,ok]);
   a("skill",z?"Berserk Skill":"Skill",z?"65–90 · −4 SP":f.sk?`cooldown ${f.sk}`:"15–30 · −35 HP · +3 core",z?f.sp>=4:!f.sk);
   a("heal","Heal",z?"52–82 · +3 SP":"24–39")}
  else if(c==="Genius"){a("attack","Attack","27–43 · +2 SP · +10 en");
-  a("skill",f.ens?"Enhanced Skill":"Skill",f.ens?`×${(1+f.dm*.3).toFixed(1)} · −1 SP`:"39–47 · −1 SP · +1 DM",f.sp>=1);
+  a("skill",f.ens?"Enhanced Skill":"Skill",f.ens?`×${(1+f.dm*.4).toFixed(1)} · −1 SP`:"39–47 · −1 SP · +1 DM",f.sp>=1);
   a("heal","Heal","54–66 · −1 SP",f.sp>=1);a("ultimate","Ultimate","50–65 · unlocks Enhanced",f.en>=100)}
  else if(c==="Demigod"){a("skill",f.und?"Royal Skill":"Sacrifice",f.und?"drain 34% · stacking":"drain 50% HP → charge");
   if(f.und){a("ultimate","Ultimate","heal 270 · reset stacks",f.en>=100);a("conquer","Conquer","100–130 dmg · heal 120",f.ch>=f.chMax)}}
@@ -2921,7 +2922,7 @@ function acts(f){const c=f.cls,A=[],a=(i,l,s,ok=true)=>A.push([i,l,s,ok]);
   if(f.lock){a("stop","Stop","end combo lock");a("skill",`Caladbolg ×${f.cm.toFixed(1)}`,"−2 SP · keep chaining",f.sp>=2)}
   else{a("attack","Attack","12–25 · +2 SP · +20 en");a("skill","Caladbolg II","−2 SP · enter Lock",f.sp>=2);a("heal","Heal","57–87 · −1 SP",f.sp>=1);a("ultimate","Blade Works","30–50 · +3 SP",f.en>=100)}}
  else if(c==="Knight"){a("attack","Attack","18–34 · +2 SP · +20 en");a("skill","Radiant Skill","28–48 · −1 SP",f.sp>=1);a("heal","Heal","52–90 · −1 SP",f.sp>=1);
-  a("ultimate",f.en>=200?"Full Glory":"Charged Strike",f.en>=200?"120–160 · −200 en":"55–75 · −100 en",f.en>=100)}
+  a("ultimate",f.en>=200?"Full Glory":"Charged Strike",f.en>=200?"190–250 · −200 en":"55–75 · −100 en",f.en>=100)}
  else if(c==="Gamer"){const oc=f.imm>0,mul=Math.pow(GLV,f.lvl);
   if(f.lvl>0)a("enhatk","Pac-Man Attack",`~${f.lvl>=6?GMAX:Math.min(Math.round(17.5*mul+(oc?5+f.flat:0)),GMAX)} dmg (×${mul.toFixed(1)}) · heal 60–105 · LVL→0`);else a("attack","Tetris Shot",oc?"27–33 · +15 en":"17–23 · +15 en");
   a("skill","Level Up",oc?`+1 LVL · ×${GLV} · +5 flat`:`+1 LVL · ×${GLV} DMG bonus`,f.lvl<6);
@@ -2954,7 +2955,7 @@ function DO(f,t,id){const c=f.cls,m=dm(f),h=hm(f),heal=n=>healF(f,n),H=(n,o)=>hi
   else if(id==="heal"){const n=heal(z?R(35,55)*h:R(16,26)*h);if(z)f.sp=cl(f.sp+3,0,7);L(`${f.name} heals ${n}`,"g")}}
  else if(c==="Genius"){const cr={cr:[.2,1.2]};
   if(id==="attack"){f.sp=cl(f.sp+2,0,3);f.en=cl(f.en+10,0,100);H(R(27,43)*m,cr)}
-  else if(id==="skill"){f.sp--;if(f.ens){const x=R(45,50)*m*(1+f.dm*.3);f.dm=0;f.ens=false;H(x,cr)}else{f.dm=cl(f.dm+1,0,6);f.en=cl(f.en+20,0,100);H(R(39,47)*m,cr)}}
+  else if(id==="skill"){f.sp--;if(f.ens){const x=R(65,75)*m*(1+f.dm*.4);f.dm=0;f.ens=false;H(x,cr)}else{f.dm=cl(f.dm+1,0,6);f.en=cl(f.en+20,0,100);H(R(39,47)*m,cr)}}
   else if(id==="heal"){f.sp--;f.en=cl(f.en+20,0,100);L(`${f.name} heals ${heal(R(36,44)*h)}`,"g")}
   else if(id==="ultimate"){f.en=0;f.ens=true;H(R(50,65)*m,cr);L("Enhanced Skill unlocked!","a")}}
  else if(c==="Demigod"){
@@ -2972,7 +2973,7 @@ function DO(f,t,id){const c=f.cls,m=dm(f),h=hm(f),heal=n=>healF(f,n),H=(n,o)=>hi
   if(id==="attack"){f.sp=cl(f.sp+2,0,4);f.en=cl(f.en+20,0,200);H(R(18,34)*m)}
   else if(id==="skill"){f.sp--;f.en=cl(f.en+25,0,200);H(R(28,48)*m)}
   else if(id==="heal"){f.sp--;f.en=cl(f.en+15,0,200);L(`${f.name} heals ${heal(R(35,60)*h)}`,"g")}
-  else if(id==="ultimate"){if(f.en>=200){f.en=0;H(R(120,160)*m)}else{f.en-=100;H(R(55,75)*m)}}}
+  else if(id==="ultimate"){if(f.en>=200){f.en=0;H(R(190,250)*m)}else{f.en-=100;H(R(55,75)*m)}}}
  else if(c==="Gamer"){const oc=f.imm>0;
   if(id==="attack"){f.en=cl(f.en+GEN.atk,0,100);H(R(17,23)*m+(oc?10:0))}
   else if(id==="skill"){f.lvl=Math.min(6,f.lvl+1);f.en=cl(f.en+GEN.lvl,0,100);if(oc)f.flat+=5;L(`🎮 ${f.name} levels up! LVL ${lvD(f.lvl)} (×${Math.pow(GLV,f.lvl).toFixed(2)} DMG bonus)${oc?" · +5 flat stored":""}`,"a")}
@@ -3462,7 +3463,7 @@ let GT="basics";
 const gTips={
 Titankin:["Parry (30%) and a big heal make it the most durable fighter. Use Heal every time its cooldown is ready.","Hit Skill when it is off cooldown, since +30 energy gets you to Titan Overdrive fast.","Overdrive's Enhanced Attack doubles damage and heals 15. Enhanced Skill hits for about 125, staggers a boss for 1 turn and cuts damage taken by 40% for 2 turns, but costs 20 HP. Enhanced Heal is more than double a normal heal. Enhanced Skill and Heal still need their cooldown to be ready and start it again, so plan which one you want to spend Overdrive on."],
 Emanator:["Normal state is weak on purpose. Let enemies hit you: every hit gives +1 Core, and a 15% parry blocks the hit, heals 10–20 and still gives +1 Core.","Normal Skill costs 35 HP but gives +3 Core, so use it to reach 10 Core sooner when your HP allows.","Berserk lasts 7 turns and heals on entry. Spend it attacking: Strikes heal, and the Skill costs 4 SP."],
-Genius:["Attack builds SP, so alternate Attack with Skill and Heal.","Skills add DM stacks (max 6). Ultimate unlocks an Enhanced Skill that scales ×(1 + 0.3 per DM), so stack first, then fire it.","Crit chance is 20% (×1.2), so it is steady rather than explosive."],
+Genius:["Attack builds SP, so alternate Attack with Skill and Heal.","Skills add DM stacks (max 6). Ultimate unlocks an Enhanced Skill that scales ×(1 + 0.4 per DM), so stack first, then fire it.","Crit chance is 20% (×1.2), so it is steady rather than explosive."],
 Demigod:["You only have Sacrifice at first. It halves your HP into Charge, so you ascend in about 2 turns. Do not stall: you are fragile before the crown.","As the Undying King the Skill drains HP into Charge and its damage stacks each use.","Ultimate heals and resets the stacks, so use it when low. Conquer needs full Charge and is a huge hit plus heal."],
 Archer:["Attack builds SP. Caladbolg II (2 SP) enters Combo Lock: you keep the turn and damage grows +0.2 per shot.","In Lock only Skill or Stop. Stop before you run out of SP if you need Heal.","Crit 35% and sidestep 20% make it good at chain damage. Blade Works gives +3 SP back."],
 Knight:["Energy goes up to 200. At 100 you can Charged Strike, but saving to 200 gives Full Glory, the biggest single hit.","Attack gives +2 SP; Skill and Heal each cost 1 SP, so keep an SP in reserve for Heal.","Plays best as a patient fighter: heal, then burst."],
@@ -3543,7 +3544,7 @@ Genius:{intro:"<b>Role:</b> methodical stacker. Attack gives SP (max 3); Skill a
  {t:"Attack builds SP",m:"Attack gives <b>+2 SP</b> (max 3) and +10 energy. SP is the fuel for everything else.",task:"Reach 3 SP.",allow:["attack"],setup:f=>{f.sp=0},prog:f=>[f.sp,3,"SP"],ok:f=>f.sp>=3},
  {t:"Stack DM with Skill",m:"Each Skill costs 1 SP, deals 39–47 and adds <b>+1 DM</b>. Alternate Attack and Skill to keep SP up.",task:"Reach 3 DM stacks.",allow:["attack","skill"],setup:f=>{f.sp=3;f.dm=0},prog:f=>[f.dm,6,"DM stacks"],ok:f=>f.dm>=3},
  {t:"Unlock Enhanced Skill",m:"The Ultimate needs 100 energy. It deals 50–65 and <b>unlocks the Enhanced Skill</b>.",task:"Cast the Ultimate.",allow:["ultimate"],setup:f=>{f.en=100;f.sp=3;f.dm=Math.max(f.dm,3)},ok:f=>f.ens},
- {t:"Fire the Enhanced Skill",m:"Enhanced Skill deals 45–50 × (1 + 0.3 × DM) and resets your DM. Watch the dummy's damage this turn.",task:"Use the Enhanced Skill.",allow:["skill"],setup:f=>{f.sp=Math.max(f.sp,1)},ok:(f,id,p)=>p.ens&&!f.ens}]},
+ {t:"Fire the Enhanced Skill",m:"Enhanced Skill deals 65–75 × (1 + 0.4 × DM) and resets your DM. Watch the dummy's damage this turn.",task:"Use the Enhanced Skill.",allow:["skill"],setup:f=>{f.sp=Math.max(f.sp,1)},ok:(f,id,p)=>p.ens&&!f.ens}]},
 Demigod:{intro:"<b>Role:</b> glass cannon that becomes a king. At first you only have <b>Sacrifice</b>: it halves your HP into Charge, and damage you take also fills Charge. At full Charge you ascend into the <b>Undying King</b>.<p><b>Rhythm:</b> ascend fast → stack Royal Skills → heal with the Ultimate → Conquer.</p>",
  outro:"Do not stall before the crown. As King, watch your HP: every Royal Skill drains 34%.",
  steps:[
@@ -3558,13 +3559,13 @@ Archer:{intro:"<b>Role:</b> chain-damage specialist. Attack gives SP (+2). Calad
  {t:"Enter Combo Lock",m:"Caladbolg II costs 2 SP and enters Lock. In Lock only Skill or Stop work, and you keep your turn.",task:"Use Caladbolg II.",allow:["skill"],setup:f=>{f.sp=Math.max(f.sp,5)},ok:f=>f.lock},
  {t:"Chain, then Stop",m:"Each Caladbolg costs 2 SP and multiplies damage (×1.2, ×1.4…). Stop ends the Lock and passes the turn. If SP runs out the Lock ends by itself.",task:"Chain at least once, then press Stop.",allow:["skill","stop"],setup:f=>{f.sp=Math.max(f.sp,6)},ok:(f,id)=>id==="stop"||!f.lock},
  {t:"Heal and Blade Works",m:"Heal costs 1 SP (57–87). Blade Works needs 100 energy and gives 30–50 damage plus <b>+3 SP</b>, so it refuels your next combo.",task:"Use Heal and Blade Works.",allow:["heal","ultimate"],setup:f=>{f.en=100;f.sp=3;f.hp=150;f.hc=0},prog:(f,d,c)=>[c.used.has("heal")+c.used.has("ultimate"),2,"Moves used"],ok:(f,id,p,c)=>U_(c,"heal","ultimate")}]},
-Knight:{intro:"<b>Role:</b> patient, steady fighter. Energy goes up to <b>200</b>. At 100 you can Charged Strike (55–75), but saving to 200 gives <b>Full Glory</b> (120–160). SP (max 4) pays for Skill and Heal.<p><b>Rhythm:</b> Attack for SP → heal/skill as needed → save energy → Full Glory.</p>",
+Knight:{intro:"<b>Role:</b> patient, steady fighter. Energy goes up to <b>200</b>. At 100 you can Charged Strike (55–75), but saving to 200 gives <b>Full Glory</b> (190–250). SP (max 4) pays for Skill and Heal.<p><b>Rhythm:</b> Attack for SP → heal/skill as needed → save energy → Full Glory.</p>",
  outro:"Keep 1 SP in reserve for Heal, and use Charged Strike only if the fight needs it now.",
  steps:[
  {t:"Attack for SP",m:"Attack gives <b>+2 SP</b> and +20 energy. Skill and Heal each cost 1 SP.",task:"Reach 4 SP.",allow:["attack"],setup:f=>{f.sp=0},prog:f=>[f.sp,4,"SP"],ok:f=>f.sp>=4},
  {t:"Skill and Heal",m:"Radiant Skill: 28–48 damage. Heal: 52–90. Both cost <b>1 SP</b>, so use Attack to refill SP when you run low.",task:"Use Radiant Skill and Heal.",allow:["attack","skill","heal"],setup:f=>{f.sp=3;f.hp=150},prog:(f,d,c)=>[c.used.has("skill")+c.used.has("heal"),2,"Moves used"],ok:(f,id,p,c)=>U_(c,"skill","heal")},
  {t:"Charged Strike (100 energy)",m:"At 100 energy you can strike for 55–75, but it spends 100 energy. Good when you must finish something.",task:"Use Charged Strike.",allow:["ultimate"],setup:f=>{f.en=100},ok:(f,id)=>id==="ultimate"},
- {t:"Full Glory (200 energy)",m:"If you wait until 200 energy, the same button becomes <b>Full Glory</b>: 120–160 damage, your biggest hit.",task:"Use Full Glory.",allow:["ultimate"],setup:f=>{f.en=200},ok:(f,id,p)=>id==="ultimate"&&p.en>=200}]},
+ {t:"Full Glory (200 energy)",m:"If you wait until 200 energy, the same button becomes <b>Full Glory</b>: 190–250 damage, your biggest hit.",task:"Use Full Glory.",allow:["ultimate"],setup:f=>{f.en=200},ok:(f,id,p)=>id==="ultimate"&&p.en>=200}]},
 Trickster:{intro:"<b>Role:</b> counter-puncher. Every hit you take fills <b>Stolen</b> (33% of the damage). At 50 it counterattacks (38–48) and earns a <b>coin</b>. Coins are spent together for big burst.<p><b>Rhythm:</b> Steal before big hits → tank → coins → Spend.</p>",
  outro:"Hold coins and Spend them together: each coin is worth 33 damage.",
  steps:[
@@ -3956,7 +3957,7 @@ async function doom(P,b,sup,i){const[n,c]=DOOM[((i%4)+4)%4],t=((i%4)+4)%4,[W]=aS
 const MB2=(c,ic,t,sub,on)=>`<button class="btn ${c}" onclick="${on}"><span class="mi">${ic}</span><span class="mtx"><b>${t}</b><small>${sub}</small></span><i class="mar">›</i></button>`;
 const MB=(c,ic,t,sub,on)=>`<button class="btn ${c}" ${on?`onclick="${on}"`:"disabled"}><span class="mi">${ic}</span><span class="mtx"><b>${t}</b><small>${sub}</small></span><i class="mar">›</i></button>`;
 /* ===== rank & quests ===== */
-const RK_MAX=50,rkNeed=l=>80+40*(l-1),RK_TITLES=[[1,"Rookie"],[3,"Squire"],[5,"Gladiator"],[8,"Challenger"],[12,"Veteran"],[16,"Champion"],[20,"Slayer"],[25,"Warlord"],[30,"Ascendant"],[40,"Mythic"],[50,"Legend"]],RK_COLS=["#9aa4b8","#6ec6ff","#66e08a","#f4b942","#ff9d3d","#ff6b6b","#b66cff","#ff4bd8","#4be3ff","#ffd36b","#fff3b0"];
+const RK_MAX=50,rkNeed=l=>150+75*(l-1),RK_TITLES=[[1,"Rookie"],[3,"Squire"],[5,"Gladiator"],[8,"Challenger"],[12,"Veteran"],[16,"Champion"],[20,"Slayer"],[25,"Warlord"],[30,"Ascendant"],[40,"Mythic"],[50,"Legend"]],RK_COLS=["#9aa4b8","#6ec6ff","#66e08a","#f4b942","#ff9d3d","#ff6b6b","#b66cff","#ff4bd8","#4be3ff","#ffd36b","#fff3b0"];
 const DQ=[{id:"win",t:"Win 3 fights",e:"win",g:3,r:{sol:60}},{id:"boss",t:"Defeat 2 bosses",e:"boss",g:2,r:{tk:1,sol:20}},{id:"camp",t:"Clear 3 campaign stages",e:"camp",g:3,r:{fa:8}},{id:"cls",t:"Win with 2 different fighters",e:"cls",g:2,r:{fa:10,sol:20}},{id:"pvp",t:"Play a PVP match",e:"pvp",g:1,r:{tk:1,sol:25}},{id:"apoc",t:"Defeat a boss in Apocalyptic",e:"apoc",g:1,r:{cc:1,tk:1}},{id:"hard",t:"Win a Hard Bot fight",e:"hard",g:1,r:{tk:2}},{id:"rush",t:"Clear a Boss Rush",e:"rush",g:1,r:{rel:1,sol:30}}];
 const GQ=[{k:"win",n:"Fighter",t:[10,50,200],u:"wins",rw:[{sol:100,tk:1},{sol:150,cc:2},{rel:2,cc:3,sol:200}],bd:["🥊 Brawler","⚔️ Duelist","🗡️ Blademaster"]},
 {k:"boss",n:"Boss Hunter",t:[5,25,100],u:"bosses defeated",rw:[{cc:1,sol:100},{rel:1,tk:2},{rel:3,cc:2}],bd:["🎯 Bounty Hunter","🪓 Titan Breaker","💀 Giant Slayer"]},
@@ -4027,10 +4028,10 @@ function riftGain(a){a=Math.max(0,Math.floor(a)||0);if(a){RIFT.sh=Math.min(99999
 function riftTick(){const w=riftWk();if(RIFT.w!==w){RIFT.w=w;RIFT.sh+=RF_GIFT;riftSave();setTimeout(()=>fragToast("🎁 Weekly Rift gift: +"+RF_GIFT+" 🔷 Rift Shards"),400)}}
 {const _s=window.solari;window.solari=function(rg){const a=_s.apply(this,arguments);try{riftGain(Math.max(1,Math.round((a||0)/10)))}catch(e){}return a}}
 const RF_TAB=[
- {w:42,f:()=>{const a=RF_SOL[0]+Math.floor(Math.random()*(RF_SOL[1]-RF_SOL[0]+1));return{i:"☀️",t:"+"+a+" Solari",r:"",g:()=>solariSet(solariBalance()+a)}}},
+ {w:43.5,f:()=>{const a=RF_SOL[0]+Math.floor(Math.random()*(RF_SOL[1]-RF_SOL[0]+1));return{i:"☀️",t:"+"+a+" Solari",r:"",g:()=>solariSet(solariBalance()+a)}}},
  {w:30,f:()=>{const a=Math.random()<.2?2:1;return{i:"🎟️",t:"+"+a+" Reroll Token"+(a>1?"s":""),r:"",g:()=>{RNK.tk=(RNK.tk||0)+a;rkSave()}}}},
  {w:26,f:()=>{const a=Math.random()<.1?2:1;return{i:"📦",t:"+"+a+" Fragment Cache"+(a>1?"s":""),r:"rare",g:()=>{RNK.cc=(RNK.cc||0)+a;rkSave()}}}},
- {w:2,f:()=>({i:"🔧",t:"+1 Reworkable Relic",r:"epic",g:()=>relicSet(relicGet()+1)})}];
+ {w:.5,f:()=>({i:"🔧",t:"+1 Reworkable Relic",r:"epic",g:()=>relicSet(relicGet()+1)})}];
 function riftRoll(ft){const wk=riftWk();riftSync();
  if(ft&&RIFT.x!==wk){const p=riftP();if(Math.random()<p){RIFT.x=wk;RIFT.xf=ft.n+"|"+ft.k;RIFT.pt=0;{const bk=ft.n+"|"+ft.k;if(!RIFT.xb.includes(bk)){RIFT.xb.push(bk);RIFT.sh=Math.min(999999,RIFT.sh+RF_XB);ft.bn=RF_XB}}COS.o[ft.n][ft.k]=1;COS.e[ft.n][ft.k]=1;cosSave();return{i:"🌟",t:(ft.k==="s"?SKINS:AURAS)[ft.n].n+" (exclusive!)",r:"epic",ex:ft}}RIFT.pt++}
  let x=Math.random()*100;for(const e of RF_TAB){if(x<e.w){const r=e.f();r.g();return r}x-=e.w}const r=RF_TAB[0].f();r.g();return r}
@@ -4102,7 +4103,7 @@ function rift(){token++;riftTick();riftSync();const wk=riftWk(),ft=riftFeat(),wo
  <div class="rf-btns"><button class="btn pri" ${RIFT.sh<RF_COST?"disabled":""} onclick="riftPull(1)">Pull ×1<br><small>${RF_COST} 🔷</small></button><button class="btn pri" ${RIFT.sh<RF_COST*10?"disabled":""} onclick="riftPull(10)">Pull ×10<br><small>${RF_COST*10} 🔷</small></button></div>
  ${RIFT.last.length?`<div class="panel"><label>Last pull</label><div class="rflist">${RIFT.last.map((r,i)=>`<div class="rfchip ${r.r}" style="animation-delay:${i*70}ms"><span>${r.i}</span><b>${r.t}</b></div>`).join("")}</div></div>`:""}
  ${riftPool()}
- <div class="panel"><label>Rewards</label><ul class="rfodds"><li>☀️ Solari ${RF_SOL[0]}–${RF_SOL[1]} <b>42%</b></li><li>🎟️ Reroll Token <b>30%</b></li><li>📦 Fragment Cache <b>26%</b></li><li>🔧 Reworkable Relic <b>2%</b></li><li>🔷 +${RF_XB} Rift Shards <b>first win of each exclusive</b></li><li>🌟 Weekly exclusive ${won?"<b>Claimed</b> <small>(next one in "+riftLeft()+")</small>":"<b>"+(p*100).toFixed(2)+"%</b> <small>(flat chance, guaranteed within "+RF_HARD+" pulls)</small>"}</li></ul><small style="display:block;margin-top:6px;color:var(--mu)">🎯 Pity: <b>${RIFT.pt}/${RF_HARD}</b> — carries over between weeks, resets to 0 when you win the weekly exclusive.</small></div>
+ <div class="panel"><label>Rewards</label><ul class="rfodds"><li>☀️ Solari ${RF_SOL[0]}–${RF_SOL[1]} <b>43.5%</b></li><li>🎟️ Reroll Token <b>30%</b></li><li>📦 Fragment Cache <b>26%</b></li><li>🔧 Reworkable Relic <b>0.5%</b></li><li>🔷 +${RF_XB} Rift Shards <b>first win of each exclusive</b></li><li>🌟 Weekly exclusive ${won?"<b>Claimed</b> <small>(next one in "+riftLeft()+")</small>":"<b>"+(p*100).toFixed(2)+"%</b> <small>(flat chance, guaranteed within "+RF_HARD+" pulls)</small>"}</li></ul><small style="display:block;margin-top:6px;color:var(--mu)">🎯 Pity: <b>${RIFT.pt}/${RF_HARD}</b> — carries over between weeks, resets to 0 when you win the weekly exclusive.</small></div>
  <div class="panel"><label>Earn 🔷 Rift Shards</label><small style="color:var(--mu)">🎁 ${RF_GIFT} free every Monday · 🌟 +${RF_XB} the first time you win each weekly exclusive · Tap your 🔷 counter at the top: ${RF_XR} ☀️ Solari = 1 🔷 · ⚔️ Every Solari reward also pays shards (about 1 per 10 Solari): enemies 1, Boss Rush 10–15 per boss.</small></div></div>`}
 {const st=document.createElement("style");st.textContent=`.rfwrap{display:grid;gap:12px;max-width:520px;margin:0 auto}.rfx{max-width:230px;margin:0 auto;width:100%}.rf-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rf-btns .btn small{opacity:.85}
 .rflist{display:grid;grid-template-columns:1fr 1fr;gap:6px}.rfchip{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:12px;border:2px solid var(--ln);background:var(--pn2);animation:rfpop .35s both;font-size:12px}.rfchip span{font-size:20px}
@@ -4762,7 +4763,7 @@ async function dwTurn(b,P){
  b.fxk=id==="heal"?"heal":id;L(`👹 ${b.name}: ${lab}`,"a");fx(b,"atk");if(id==="ultimate")sfx("ult");await sleep(300);
  if(id==="attack"){for(const t of pick2(b,A))await bHit(b,t,R(24,36),lab)}
  else if(id==="skill"){await bAoe(b,A,16,26,lab);const g=R(1,2);b.gaze=(b.gaze||0)+g;L(`👁️ ${b.name} gains ${g} Gaze (${b.gaze}/5).`,"a");b.cd.skill=(b.apoc&&b.ph>=3)?2:3;upd(b);
-  if(b.gaze>=5){b.gaze-=5;await sleep(300);banner("FOLLOW-UP!","#ff2a4d");L(`👁️ Gaze is full: ${b.name} strikes again!`,"a");b.fxk="fua";await dwEyesOpen(b,650);await bAoe(b,livP(P),26,42,"Follow-up Attack");if(b.apoc&&b.ph>=4&&chance(.2)){const lv=livP(P);if(lv.length){const tg=[...lv].sort(()=>Math.random()-.5).slice(0,R(1,2));tg.forEach(t=>{t.stun=Math.max(t.stun||0,1);upd(t)});banner("STUNNED!","#b04cff");L(`👁️ The Follow-up Attack paralyzes ${tg.map(t=>t.name).join(" and ")} for 1 turn!`,"r");try{tg.forEach(t=>{const[x,y]=pos(t);ring(x,y+36,"#b04cff",210)})}catch(e){}sfx("crit");await sleep(500)}}b.fxk="skill";upd(b)}}
+  if(b.gaze>=5){b.gaze-=5;await sleep(300);banner("FOLLOW-UP!","#ff2a4d");L(`👁️ Gaze is full: ${b.name} strikes again!`,"a");b.fxk="fua";await dwEyesOpen(b,650);await bAoe(b,livP(P),40,60,"Follow-up Attack");if(b.apoc&&b.ph>=4&&chance(.2)){const lv=livP(P);if(lv.length){const tg=[...lv].sort(()=>Math.random()-.5).slice(0,R(1,2));tg.forEach(t=>{t.stun=Math.max(t.stun||0,1);upd(t)});banner("STUNNED!","#b04cff");L(`👁️ The Follow-up Attack paralyzes ${tg.map(t=>t.name).join(" and ")} for 1 turn!`,"r");try{tg.forEach(t=>{const[x,y]=pos(t);ring(x,y+36,"#b04cff",210)})}catch(e){}sfx("crit");await sleep(500)}}b.fxk="skill";upd(b)}}
  else if(id==="heal"){const n=healF(b,80);b.te=1;b.eyes=0;b.cd.heal=6;banner("TERMINAL ECLIPSE","#b04cff");flash("#6b1fb8");upd(b);try{const[sx,sy]=pos(b);burst(sx,sy,"#7dffb0",12,64,"✚");[0,220,440,660].forEach((t,i)=>setTimeout(()=>{ring(sx,sy+10,i%2?"#ff5aa8":"#9b5cff",300+i*70);burst(sx,sy,"#c07bff",10,110+i*20,"✦")},t));shakeArena(500)}catch(e){}
   L(`🌑 ${b.name} heals ${n} and opens all six eyes. Each hit turns 2 red: when all are red, the last attacker is killed.`,"a");await sleep(1300)}
  else{await cutscene("death");banner("FATAL AMBUSH","#ff2a4d");flash("#ff1744");shakeArena(700);for(const p of A){if(p.hp<=0)continue;p.bb=Math.max(p.bb||0,Math.ceil(p.maxHp*.5));try{const[x,y]=pos(p);slash(x,y,270,"#fff","#ff1744",-32);ring(x,y+36,"#ff1744",230)}catch(e){}upd(p);await sleep(250)}
@@ -4776,7 +4777,7 @@ function dwSync(f){const u=$("#u"+f.side);if(!u)return;
   (f.PL||[]).forEach(p=>{const pu=$("#u"+p.side);if(pu)pu.classList.toggle("dwgh",p===o)})}
  else if(!f.boss&&!f.simple){const tr=u.querySelector(".hp .tr");if(!tr)return;let k=tr.querySelector(".bbk");if(f.bb>0){if(!k){k=document.createElement("div");k.className="bbk";tr.appendChild(k)}k.style.width=Math.min(100,f.bb/f.maxHp*100)+"%";k.title=`Blood blockade: ${f.bb}`;const sp=u.querySelector(".hp span:last-child");if(sp&&!sp.dataset.bb)sp.textContent+=` ▮${f.bb}`}else if(k)k.remove()}}
 function dwHeart(){const ar=$(".arena");if(!ar)return;let on=false;try{const B=(typeof G!=="undefined"&&G)?G.c:null;on=!!(B&&B.key==="death"&&[G.a,G.b].some(p=>p&&p.bb>0))}catch(e){}let h=ar.querySelector(".dwhb:not(.out)");if(on&&!h){h=document.createElement("div");h.className="dwhb";ar.appendChild(h)}else if(!on&&h){h.classList.add("out");setTimeout(()=>h.remove(),800)}}
-{const _u=upd;upd=function(f){_u(f);try{dwSync(f);dwHeart()}catch(e){}}}
+{const _u=upd;upd=function(f){try{if(f&&!f.boss&&!f.simple&&f.bb>0&&f.hp>0){const lim=Math.max(1,f.maxHp-f.bb);if(f.hp>lim)f.hp=lim}}catch(e){}_u(f);try{dwSync(f);dwHeart()}catch(e){}}}
 
 /* ----- Who Towards Death: animations ----- */
 function dwArt(b){const u=$("#u"+b.side);return u&&u.querySelector(".art")}
