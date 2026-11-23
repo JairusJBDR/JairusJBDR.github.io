@@ -167,75 +167,6 @@ body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),r
 .fxl .lz0{width:5px;background:var(--c);box-shadow:0 0 10px var(--c);animation:lz0 .4s forwards}@keyframes lz0{from{opacity:.2}50%{opacity:1}to{opacity:.4}}
 .ch.bz .art{scale:1;transform-origin:50% 100%}.flame{transform-origin:60px 134px;animation:flk .45s infinite alternate}@keyframes flk{to{transform:scale(1.07,.93)}}
 @media(prefers-reduced-motion:reduce){*:not(.ch):not(.ch *):not(.lineup *){animation-duration:.01s!important;animation-iteration-count:1!important}}
-.rush #ua .stage,.rush #ub .stage{transform:scale(.62);margin:-26px auto -44px}.rush .br{grid-template-columns:30px 1fr 40px;font-size:10px}.rush .nm b{font-size:11px}.rush .tg em{font-size:9px}.btn.k-support{outline:2px solid var(--ac)}.rush #ub .art{transform:none}.rush #uc .art{transf1fr}.vs{display:none}.stage{transform:scale(.8);margin:-12px auto -18px}.br{grid-template-columns:46px 1fr 50px}}
-@keyframes bob{50%{transform:translateY(-5px)}}@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
-@keyframes lungeA{40%{transform:translateX(70px)}}@keyframes lungeB{40%{transform:translateX(-70px)}}
-@keyframes hit{0%{filter:brightness(3) saturate(0)}20%{transform:translateX(-12px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}}
-@keyframes heal{0%,100%{filter:none}40%{filter:drop-shadow(0 0 14px #66e08a) brightness(1.3)}}
-@keyframes parry{0%{filter:brightness(2.4) drop-shadow(0 0 18px #ffb347);transform:translateY(-4px)}30%{transform:none}60%{filter:brightness(1.2) drop-shadow(0 0 10px #ffb347)}to{filter:none;transform:none}}
-.pry{position:absolute;left:50%;top:48%;width:0;height:0;pointer-events:none;z-index:6}
-.pry .rg{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border:4px solid #ffd36b;border-radius:50%;box-shadow:0 0 14px #ff9a3d,inset 0 0 10px #ffb347;animation:pryr .5s ease-out forwards}
-.pry .sl{position:absolute;left:-46px;top:-2px;width:92px;height:4px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);transform:rotate(-35deg);animation:pryl .35s ease-out forwards}
-.pry .sp{position:absolute;left:-3px;top:-6px;width:6px;height:12px;border-radius:3px;background:#ffe9a8;box-shadow:0 0 6px #ffb347;animation:prys .5s ease-out forwards}
-@keyframes pryr{from{transform:scale(.3);opacity:1}to{transform:scale(2.3);opacity:0}}
-@keyframes pryl{0%{scale:.2 1;opacity:1}40%{scale:1 1;opacity:1}to{scale:1.1 .3;opacity:0}}
-@keyframes prys{from{transform:rotate(var(--a)) translateY(-12px);opacity:1}to{transform:rotate(var(--a)) translateY(-58px) scaleY(.3);opacity:0}}
-@keyframes dodge{40%{transform:translateX(26px) skewX(-12deg);opacity:.5}}
-@keyframes rise{to{transform:translateY(-70px);opacity:0}}@keyframes pop{from{transform:scale(.8);opacity:0}}
-#app{padding-top:54px}
-body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),radial-gradient(900px 500px at 92% 0,#c4700d33,transparent),var(--bg)}
-.hero h1{background:linear-gradient(180deg,#ffe9a8,var(--ac) 60%,#c4700d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #0006)}
-.panel{background:color-mix(in srgb,var(--pn) 90%,transparent);backdrop-filter:blur(6px);box-shadow:0 8px 24px #0003}
-.sec{font:400 12px "Alfa Slab One",serif;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin:0 0 8px}
-.hud{background:var(--pn);border:2px solid var(--ln);border-radius:14px;padding:8px 12px}.hud h3{font-size:18px}
-.arena{position:relative;overflow:hidden;min-height:350px;padding:46px 12px 14px;border:3px solid var(--ln);box-shadow:0 12px 34px #0006;background:none}
-.scene{position:absolute;inset:0;z-index:0}.scene svg{position:absolute;left:0;bottom:0;width:100%;height:58%}
-.scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;background:linear-gradient(transparent,#0008)}
-.u{z-index:1}.vs{z-index:1;color:#fff;text-shadow:0 3px 0 #000a}
-.nm{display:block;width:fit-content;max-width:100%;margin:0 auto;background:#000a;color:#fff;border-radius:12px;padding:2px 12px}.nm small{color:#cfc8ea}
-.bars{background:#000b;padding:7px 9px;border-radius:12px;backdrop-filter:blur(3px)}.br{color:#d6d1ea}.br span:last-child{color:#fff}
-.turn{position:absolute;top:10px;left:50%;translate:-50% 0;z-index:2;background:var(--ac);color:#1a1424;border-radius:999px;padding:3px 16px;font-weight:800;font-size:13px;white-space:nowrap;box-shadow:0 3px 10px #0006}
-.stage.pow{filter:drop-shadow(0 0 18px var(--c))}
-#acts .btn{display:flex;flex-direction:column;gap:2px;padding:10px 12px}#acts .btn span{font-weight:800}
-#acts .btn.k-heal{border-top:4px solid #4fd17a}#acts .btn.k-attack{border-top:4px solid #ff7a6b}
-#acts .btn.k-ultimate,#acts .btn.k-conquer,#acts .btn.k-spend{background:linear-gradient(135deg,var(--pn),#5a4412);border-color:var(--ac);box-shadow:0 0 14px #f4b94255}
-#log{height:200px}
-.fxl{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
-.fxl i{position:absolute;translate:-50% -50%;font-style:normal}
-.fxl .p{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);font-size:16px;line-height:1;animation:pf .7s ease-out forwards}
-@keyframes pf{from{transform:translate(0,0) scale(1.3)}to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
-.fxl .rg{width:var(--s);height:calc(var(--s)*.45);border:4px solid var(--c);border-radius:50%;box-shadow:0 0 18px var(--c);animation:rgf .7s ease-out forwards}
-@keyframes rgf{from{transform:scale(.1);opacity:1}to{transform:scale(1.4);opacity:0}}
-.fxl .rn{font-size:26px;animation:rnf var(--d) ease-in forwards}@keyframes rnf{to{transform:translateY(190px);opacity:.1}}
-.fxl .bm{translate:0 -50%;transform-origin:0 50%;background:linear-gradient(90deg,transparent,var(--c),#fff,var(--c));border-radius:6px;box-shadow:0 0 18px var(--c);animation:bmf .55s forwards}
-@keyframes bmf{0%{opacity:0;scale:1 .2}30%{opacity:1;scale:1 1}to{opacity:0;scale:1 .1}}
-.fxl .pj{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#fff,var(--c) 60%,transparent 72%);box-shadow:0 0 16px var(--c)}
-.fxl .pj.slash{width:78px;height:10px;border-radius:6px;background:linear-gradient(90deg,transparent,var(--c),#fff)}
-.fxl .pj.arrow{width:50px;height:5px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--c),#fff)}
-.fxl .pj.coin{width:auto;height:auto;background:none;box-shadow:none;font-size:28px}.fxl .pj.cala{width:160px;height:9px;border-radius:2px 6px 6px 2px;background:linear-gradient(90deg,transparent,#0b1030 35%,#05081c);box-shadow:0 0 12px 4px #2f8cff,0 0 28px 8px #2f8cff66}.fxl .pj.cala::after{content:"";position:absolute;right:-14px;top:-6px;border-left:18px solid #05081c;border-top:10px solid transparent;border-bottom:10px solid transparent;filter:drop-shadow(0 0 6px #2f8cff)}
-.fxl .sw{width:62px;height:8px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,#6b4a2b 0 14%,#c8a24a 14% 20%,#dfe9f7 20%,#fff);box-shadow:0 0 12px var(--c)}
-.fxl .sl{width:var(--s);height:var(--s);border-radius:50%;border-top:calc(var(--s)*.07) solid var(--k);transform:rotate(var(--a));filter:drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 22px var(--c));animation:slf .42s ease-out forwards}
-@keyframes slf{0%{clip-path:inset(-40% 100% -40% -40%);opacity:1}55%{clip-path:inset(-40%);opacity:1}to{clip-path:inset(-40%);opacity:0;scale:1.12}}
-.fxl .ban{font:400 clamp(24px,6vw,46px) "Alfa Slab One",Georgia,serif;color:#fff;white-space:nowrap;text-shadow:0 0 18px var(--c),0 4px 0 #000a;-webkit-text-stroke:2px var(--c);paint-order:stroke fill;animation:banf 1.15s forwards}
-@keyframes banf{0%{transform:scale(2.4);opacity:0}18%{transform:scale(1);opacity:1}75%{opacity:1}to{transform:scale(.95) translateY(-14px);opacity:0}}
-.fxl .fl2{translate:0 0;width:100%;height:100%;background:radial-gradient(circle at 50% 55%,var(--c),transparent 70%);animation:fl2 .6s forwards}@keyframes fl2{from{opacity:.8}to{opacity:0}}
-.arena.shake{animation:shk .5s}@keyframes shk{20%{transform:translate(-7px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
-.m2{right:64px}
-.fxl .tt{width:52px;height:26px}.fxl .tt b{position:absolute;width:12px;height:12px;background:var(--c);border:2px solid #fff8;border-radius:2px;box-shadow:0 0 8px var(--c)}
-.fxl .pac{width:66px;height:66px;border-radius:50%;background:#ffe14d;box-shadow:0 0 18px #ffe14d;animation:chomp .16s infinite alternate}
-@keyframes chomp{from{clip-path:polygon(50% 50%,100% 20%,100% 0,0 0,0 100%,100% 100%,100% 80%)}to{clip-path:polygon(50% 50%,100% 48%,100% 0,0 0,0 100%,100% 100%,100% 52%)}}
-.fxl .dot{width:9px;height:9px;border-radius:50%;background:#ffe9a8;animation:dotf .7s forwards}@keyframes dotf{70%{opacity:1}to{opacity:0;scale:.2}}
-.ch.rgb .art{animation:rgbf 1.3s linear infinite}@keyframes rgbf{from{filter:drop-shadow(0 0 12px #f0f) hue-rotate(0deg)}to{filter:drop-shadow(0 0 12px #f0f) hue-rotate(360deg)}}
-#acts .btn.k-enhatk{border-top:4px solid #ffe14d}.m3{right:116px}
-.vol{position:fixed;top:calc(56px + env(safe-area-inset-top,0px));right:12px;z-index:21;background:var(--pn);border:2px solid var(--ln);border-radius:14px;padding:10px 14px;display:grid;gap:8px;box-shadow:0 10px 30px #0008}.vol[hidden]{display:none}.vol label{display:flex;gap:10px;align-items:center;justify-content:space-between}.vol input{width:150px;accent-color:var(--ac)}
-.fxl .fy{font-size:24px}.fxl .tx{font:400 20px "Alfa Slab One",serif;color:var(--c);text-shadow:0 2px 0 #000a;white-space:nowrap;animation:rise 1.1s forwards}
-.fxl .mt{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6a8,#ff9a3d 45%,#c2310f 75%);box-shadow:0 0 26px 10px #ff6a2b,-60px -36px 34px 12px #ff6a2b88}
-.fxl .lz,.fxl .lz0{translate:-50% 0}
-.fxl .lz{width:110px;background:linear-gradient(90deg,transparent,var(--c),#fff 50%,var(--c),transparent);box-shadow:0 0 40px 10px var(--c);animation:lzf .7s forwards}
-@keyframes lzf{0%{scale:.1 1;opacity:1}25%{scale:1 1}to{scale:.4 1;opacity:0}}
-.fxl .lz0{width:5px;background:var(--c);box-shadow:0 0 10px var(--c);animation:lz0 .4s forwards}@keyframes lz0{from{opacity:.2}50%{opacity:1}to{opacity:.4}}
-.ch.bz .art{scale:1;transform-origin:50% 100%}.flame{transform-origin:60px 134px;animation:flk .45s infinite alternate}@keyframes flk{to{transform:scale(1.07,.93)}}
-@media(prefers-reduced-motion:reduce){*:not(.ch):not(.ch *):not(.lineup *){animation-duration:.01s!important;animation-iteration-count:1!important}}
 .rush #ua .stage,.rush #ub .stage{transform:scale(.62);margin:-26px auto -44px}.rush .br{grid-template-columns:30px 1fr 40px;font-size:10px}.rush .nm b{font-size:11px}.rush .tg em{font-size:9px}.btn.k-support{outline:2px solid var(--ac)}.rush #ub .art{transform:none}.rush #uc .art{transform:scaleX(-1)}.rush #uc .stage{transform:scale(1.25);margin:0 auto 12px}.rush #ub.atk{animation:lungeA .5s}.rush #uc.atk{animation:lungeB .5s}
 @media(min-width:760px){
 #app{padding:46px 14px 6px}
@@ -3400,7 +3331,7 @@ function music(m){if(m===mMode&&mT)return;mMode=m;mStep=0;if(!au())return;mNext=
 bgSync();
 function setMus(on){MUS=on;try{localStorage.setItem("mus",on?"1":"0")}catch(e){}if(!on){clearInterval(mT);mT=null}else{const m=mMode||"menu";mMode=null;music(m)}}
 document.addEventListener("click",e=>{if(e.target.closest(".btn"))sfx("click")},true);["pointerup","mousedown","click","touchend","keydown"].forEach(ev=>{document.addEventListener(ev,()=>{if(!AC){au();if(MUS&&mMode&&!mT){mStep=0;mNext=0;mT=setInterval(mtick,100)}}else if(AC.state!=="running"){try{AC.resume()}catch(e){}}},true);window.addEventListener(ev,()=>{if(AC&&AC.state!=="running"){try{AC.resume()}catch(e){}}},true)});
-const tagsOf=f=>{const t=[];if(f.cls==="Ranger"){if(f.bl>0)t.push("🔫 Bullets ×"+f.bl)}if(f.shred>0)t.push("🎯 Duel · shred ⏱"+f.shred);if(f.sshred>0)t.push("🎯 Shredded ⏱"+f.sshred);if(f.dstun>0)t.push("😵 Stunned ×"+f.dstun);if(f.mh)t.push("🌙 Moonlight Hunt");if(f.bz)t.push(`Berserk ${f.bt}`);if(f.lock)t.push(`Lock ×${f.cm.toFixed(1)}`);if(f.und)t.push("Undying King");if(f.enh)t.push("Overdrive");if(f.ens)t.push("Enhanced ready");if(f.imm>0)t.push(`🛡️ Immune ×${f.imm}`);if(f.cls==="Gamer"&&f.lvl>0)t.push(`LVL ${lvD(f.lvl)} ×${Math.pow(GLV,f.lvl).toFixed(1)}`);if(f.weak)t.push("−10% DMG");if(f.hb>0)t.push(`🩸 Bleed ×${f.hb} · ${f.hbt}t`);if(f.ecl>0)t.push(`🌑 Eclipse ${f.ecl}`);if(f.bld>0)t.push(`🩸 Bleed ${f.bld}`);if(f.mk>0)t.push(`🎯 Mark ${f.mk}/2`);if(f.sk||f.hc)t.push("⏳");if(f.stun>0)t.push("😵 Stunned");if(f.bh>0)t.push("🌑 Black hole ×"+f.bh);if(f.bld>0)t.push("🩸 Bleed ⏱"+f.bld);if(f.ls>0)t.push("💛 Players heal "+Math.round((f.lsr||.7)*100)+"% ⏱"+f.ls);if(f.red>0)t.push("🛡 −40% taken ⏱"+f.red);if(f.up>0)t.push("⬆ +30% DMG ⏱"+f.up);if(f.atkdn>0)t.push("⬇ −30% DMG ⏱"+f.atkdn);if(f.mgB)t.push("🔥 Burning");if(f.mgS>0)t.push("🛡 Magma res "+Math.round(Math.min(.9,f.mgS*.05)*100)+"%");if(f.key==="magma"){t.push(`🐚 Shells ${f.sh}/${f.shM} · ${Math.round(mgRes(f)*(f.sshred>0?.5:1)*100)}%`);if(f.chg)t.push("🔥 Charging");if(f.dom>0)t.push("🌋 Domain "+f.dom)}return t};
+const tagsOf=f=>{const t=[];if(f.cls==="Ranger"){if(f.bl>0)t.push("🔫 Bullets ×"+f.bl)}if(f.shred>0)t.push("🎯 Duel · shred ⏱"+f.shred);if(f.pxw>0)t.push("🔻 Resistance shred ·"+f.pxw);if(f.sshred>0)t.push("🎯 Shredded ⏱"+f.sshred);if(f.dstun>0)t.push("😵 Stunned ×"+f.dstun);if(f.mh)t.push("🌙 Moonlight Hunt");if(f.bz)t.push(`Berserk ${f.bt}`);if(f.lock)t.push(`Lock ×${f.cm.toFixed(1)}`);if(f.und)t.push("Undying King");if(f.enh)t.push("Overdrive");if(f.ens)t.push("Enhanced ready");if(f.imm>0)t.push(`🛡️ Immune ×${f.imm}`);if(f.cls==="Gamer"&&f.lvl>0)t.push(`LVL ${lvD(f.lvl)} ×${Math.pow(GLV,f.lvl).toFixed(1)}`);if(f.weak)t.push("−10% DMG");if(f.hb>0)t.push(`🩸 Bleed ×${f.hb} · ${f.hbt}t`);if(f.ecl>0)t.push(`🌑 Eclipse ${f.ecl}`);if(f.bld>0)t.push(`🩸 Bleed ${f.bld}`);if(f.mk>0)t.push(`🎯 Mark ${f.mk}/2`);if(f.sk||f.hc)t.push("⏳");if(f.stun>0)t.push("😵 Stunned");if(f.bh>0)t.push("🌑 Black hole ×"+f.bh);if(f.bld>0)t.push("🩸 Bleed ⏱"+f.bld);if(f.ls>0)t.push("💛 Players heal "+Math.round((f.lsr||.7)*100)+"% ⏱"+f.ls);if(f.red>0)t.push("🛡 −40% taken ⏱"+f.red);if(f.up>0)t.push("⬆ +30% DMG ⏱"+f.up);if(f.atkdn>0)t.push("⬇ −30% DMG ⏱"+f.atkdn);if(f.mgB)t.push("🔥 Burning");if(f.mgS>0)t.push("🛡 Magma res "+Math.round(Math.min(.9,f.mgS*.05)*100)+"%");if(f.key==="magma"){t.push(`🐚 Shells ${f.sh}/${f.shM} · ${Math.round(mgRes(f)*(f.sshred>0?.5:1)*100)}%`);if(f.chg)t.push("🔥 Charging");if(f.dom>0)t.push("🌋 Domain "+f.dom)}return t};
 function upd(f){const u=$("#u"+f.side);if(!u)return;const r=f.hp/f.maxHp,hp=u.querySelector(".hp");
  hp.querySelector(".fi").style.cssText+=`;width:${r*100}%;background:${r>.6?"#4fd17a":r>.3?"#f4b942":"#ff5d5d"}`;hp.querySelector("span:last-child").textContent=`${Math.max(0,f.hp)}/${f.maxHp}`;
  const bars=CLS[f.cls].bars(f),box=u.querySelector(".bars");
@@ -3866,6 +3797,7 @@ const GREM={
  Trickster:{reg:["Defense (fills Stolen faster)","Ultimate Bonus (Spend Coins)","Healing"],orn:["Trickster: less damage taken","Demigod: Max HP"],cry:["Trickster: counter damage","Knight or Gamer: less damage taken"],why:"Gets stronger by taking hits: the counterattack and coins come from damage taken, so survive and boost the counter."},
  Champion:{reg:["Attack Bonus (Enhanced Attack)","Healing","Max HP"],orn:["Champion: Healing","Genius or Gamer: Attack bonus"],cry:["Champion: Attack bonus","Demigod: Healing"],why:"Drains and heals with Attacks, so Attack bonus and healing both scale its Moonlight Hunt."},
  Hemomancer:{reg:["Skill Bonus (Rupture)","Attack Bonus (Lancet)","Healing (Transfusion)"],orn:["Hemomancer: bleed effect"],cry:["Hemomancer: bleed effect"],why:"Its damage comes from bleed ticks, so both class Remnants should be Hemomancer's (+10% bleed in total)."},
+ Ranger:{reg:["Skill Bonus (Bullet Attack and follow-up shot)","Ultimate Bonus (Wanted Poster)","Healing (first aid keeps the bullet loop going)"],orn:["Ranger: Healing (+5%)","Archer: Skill bonus"],cry:["Ranger: Ultimate bonus (+5%)","Archer or Knight: Ultimate bonus"],why:"Marks the enemy with Weakness and Duel shred, then wins with follow-up shots and the Ultimate. Ultimate bonus and Healing help most; a Ranger pair adds +7% follow-up and counter damage, and +3% damage while the enemy has a debuff."},
  Gamer:{reg:["Attack Bonus (Tetris and Pac-Man)","Damage","Healing"],orn:["Gamer or Genius: Attack bonus"],cry:["Gamer: less damage taken","Champion: Attack bonus"],why:"Its Tetris Shot and Pac-Man Attack are both Attacks, so Attack bonus is the clear pick; Overclock covers defense."}};
 const GPW={
  Titankin:["Characters with cooldowns","Titankin, Emanator, Trickster, Gamer, Hemomancer, Champion"],
@@ -3876,14 +3808,15 @@ const GPW={
  Knight:["Characters that go above 100 Energy or 400 Charge","Knight, Demigod"],
  Trickster:["Characters with a Skill and an Attack","Titankin, Emanator, Genius, Archer, Knight, Trickster, Gamer, Hemomancer, Champion"],
  Gamer:["Characters with a Skill that deals no damage","Trickster (Steal), Gamer (Level Up)"],
- Hemomancer:["Characters that apply debuffs to enemies","Trickster, Hemomancer"],
+ Hemomancer:["Characters that apply debuffs to enemies","Trickster, Hemomancer, Ranger"],
+ Ranger:["Characters with follow-ups, counters or debuffs on the enemy","Ranger (Skill follow-up), Trickster (counter), Hemomancer (bleed)"],
  Champion:["Characters with a transformation","Demigod, Emanator, Champion"]};
 function gRemnants(){const li=a=>a.map(x=>`<li>${x}</li>`).join("");
  return`<div class="panel"><h3>🔮 How Remnants work</h3><ul><li>Every character has its own <b>fragment bar</b>. Win Campaign floors and Boss Rush bosses to earn fragments.</li><li><b>100 fragments</b> unlocks both Remnants: the <b>Ornament</b> and the <b>Crystal</b>. Each one rolls a random regular stat.</li><li><b>Common</b> (80%): +3% max HP, +3% damage, +3% healing or −3% damage taken. <b>Rare</b> (20%): +9% Attack, Skill or Ultimate damage.</li><li><b>Reroll</b> (150 Solari) re-rolls that slot's regular stat. On an upgraded slot it also gives a different class Remnant.</li><li><b>🔧 Rework</b> (Reworkable Relic) lets you pick the regular stat yourself: Common costs 1 relic, Rare costs 2. Class Remnants are not changed.</li><li>At <b>500 fragments</b> an <b>Ascend</b> button appears. The first Ascend upgrades the Ornament, the second the Crystal, each into a random <b>class Remnant</b> with a permanent +5% bonus on top of the regular stat. Fragments reset to 0 each time.</li><li><b>🔗 2-Pair:</b> after both Ascends, if the Ornament and Crystal are the <b>same class</b>, you also unlock that class's 2-Pair effect (see below).</li><li>Remnants only work in <b>Campaign</b> and <b>Boss Rush</b>, not in PVP.</li></ul></div>
- <div class="panel"><h3>Class Remnants</h3><ul><li><b>Ornament:</b> Titankin enhanced effectivity · Archer Skill · Knight Ultimate · Emanator Skill · Genius Attack · Demigod Max HP · Trickster less damage taken · Champion Healing · Hemomancer bleed · Gamer Attack (all +5%)</li><li><b>Crystal:</b> Titankin Skill · Archer Ultimate · Knight less damage taken · Emanator enhanced effectivity · Genius enhanced effectivity · Demigod Healing · Trickster counter damage · Champion Attack · Hemomancer bleed · Gamer less damage taken (all +5%)</li><li><i>Enhanced effectivity</i> = +5% damage and healing while in the enhanced state (Titankin enhanced, Emanator Berserk, Genius Enhanced).</li><li>Bleed effect only helps Hemomancer and counter damage only helps Trickster, so a class Remnant from another class can be a dud. That is what Reroll is for.</li></ul></div>
- <div class="panel"><h3>🔗 2-Pair effects</h3><p class="lore" style="margin-top:0">Ascend both Remnants and make them the same class. Any fighter can use any pair, but only the parts that match its own kit trigger.</p><table class="gtab"><tr><th>Pair</th><th>Effect</th><th>Works best on</th></tr>${NAMES.map(c=>`<tr><td><b>${CLS[c].e} ${c}</b></td><td>${PXD(c,c)}</td><td><b>${GPW[c][0]}</b><br>${GPW[c][1]}</td></tr>`).join("")}</table></div>
+ <div class="panel"><h3>Class Remnants</h3><ul><li><b>Ornament:</b> Ranger Healing • Titankin enhanced effectivity · Archer Skill · Knight Ultimate · Emanator Skill · Genius Attack · Demigod Max HP · Trickster less damage taken · Champion Healing · Hemomancer bleed · Gamer Attack (all +5%)</li><li><b>Crystal:</b> Ranger Ultimate • Titankin Skill · Archer Ultimate · Knight less damage taken · Emanator enhanced effectivity · Genius enhanced effectivity · Demigod Healing · Trickster counter damage · Champion Attack · Hemomancer bleed · Gamer less damage taken (all +5%)</li><li><i>Enhanced effectivity</i> = +5% damage and healing while in the enhanced state (Titankin enhanced, Emanator Berserk, Genius Enhanced).</li><li>Bleed effect only helps Hemomancer and counter damage only helps Trickster, so a class Remnant from another class can be a dud. That is what Reroll is for.</li></ul></div>
+ <div class="panel"><h3>🔗 2-Pair effects</h3><p class="lore" style="margin-top:0">Ascend both Remnants and make them the same class. Any fighter can use any pair, but only the parts that match its own kit trigger.</p><table class="gtab"><tr><th>Pair</th><th>Effect</th><th>Works best on</th></tr>${PLAYN.map(c=>`<tr><td><b>${CLS[c].e} ${c}</b></td><td>${PXD(c,c)}</td><td><b>${GPW[c][0]}</b><br>${GPW[c][1]}</td></tr>`).join("")}</table></div>
  <div class="panel"><h3>Best Remnants for each character</h3><p class="lore" style="margin-top:0">Picked from each character's kit. Use Reroll or the 🔧 Rework button to chase them.</p></div>
- <div class="cards">${NAMES.map(n=>{const g=GREM[n];return`<div class="card" style="--c:${CLS[n].c}">${charHTML(n)}<h3>${CLS[n].e} ${n}</h3><small style="color:var(--mu)">${CLS[n].tag}</small><p class="lore">${g.why}</p><p class="sec" style="margin-top:10px">Best regular stats</p><ul>${li(g.reg)}</ul><p class="sec" style="margin-top:10px">📿 Ornament to look for</p><ul>${li(g.orn)}</ul><p class="sec" style="margin-top:10px">💎 Crystal to look for</p><ul>${li(g.cry)}</ul><p class="sec" style="margin-top:10px">🔗 2-Pair</p><p class="lore" style="margin-top:2px">${n} + ${n}: ${PXD(n,n)}</p></div>`}).join("")}</div>`}
+ <div class="cards">${PLAYN.map(n=>{const g=GREM[n];return`<div class="card" style="--c:${CLS[n].c}">${charHTML(n)}<h3>${CLS[n].e} ${n}</h3><small style="color:var(--mu)">${CLS[n].tag}</small><p class="lore">${g.why}</p><p class="sec" style="margin-top:10px">Best regular stats</p><ul>${li(g.reg)}</ul><p class="sec" style="margin-top:10px">📿 Ornament to look for</p><ul>${li(g.orn)}</ul><p class="sec" style="margin-top:10px">💎 Crystal to look for</p><ul>${li(g.cry)}</ul><p class="sec" style="margin-top:10px">🔗 2-Pair</p><p class="lore" style="margin-top:2px">${n} + ${n}: ${PXD(n,n)}</p></div>`}).join("")}</div>`}
 function gRewards(){const row=(a,b,c)=>`<tr><td>${a}</td><td>${b}</td><td>${c}</td></tr>`;
  return`<div class="panel"><h3>💰 Campaign</h3><table class="gtab"><tr><th>Win</th><th>Solari</th><th>Fragments</th></tr>${row("Enemy","10–15","1–7 (your class)")}${row("Elite","15–20","5–10 (your class)")}${row("Boss","30–50","8–15 (your class) + <b>20</b> (the boss's class)")}</table></div>
  <div class="panel"><h3>👥 Boss Rush · per boss defeated</h3><table class="gtab"><tr><th>Difficulty</th><th>Solari</th><th>Fragments</th></tr>${row("Normal","100–150","15–20 for each of your two fighters")}${row("☄️ Apocalyptic","300–600","20–25 for each of your two fighters")}</table><p class="lore">The Support fighter does not earn fragments.</p></div>
@@ -4054,7 +3987,7 @@ function RGR(f,t,id,m,heal,h,H){
   if(f.bl>0){/* loaded: Skill is the Bullet Attack */
    if(!t.wkOn){t.wkOn=1;t.wk=0}f.bl--;f.en=cl(f.en+15,0,100);const d=H(R(15,27)*m);
    const was=!!t.wkOn&&(t.wk||0)>=100,fill=d>0&&t.hp>0&&rgWeak(f,t,40,true);
-   if(t.hp>0&&t.wkOn&&d>0&&(fill||was)){L(`🔫 Follow-up shot!`,"a");H(R(20,30)*(1+.25*(f.rk||0))*m)}
+   if(t.hp>0&&t.wkOn&&d>0&&(fill||was)){L(`🔫 Follow-up shot!`,"a");H(R(20,30)*(1+.25*(f.rk||0))*(f.pxfu||1)*m)}
    if(f.bl<=0){f.sk=4;L(`🔫 ${f.name} is out of bullets: Reload in 3 turns.`,"a")}}
   else{/* empty: Skill is Reload */
    if(!t.wkOn){t.wkOn=1;t.wk=0}const xb=chance(.25)?1:0;f.bl=Math.min(6,(f.bl||0)+2+xb);t.shred=4;
@@ -4210,7 +4143,7 @@ function rankScreen(){token++;rkDay();const v=rkLevel(),pc=v.l>=RK_MAX?100:Math.
  <div class="panel"><h3 class="sec">Badges</h3><div class="rkt">${GQ.map(g=>g.bd.map((b,i)=>`<span class="${RNK.bd.includes(g.k+i)?"on":""}" style="--rc:${RK_COLS[3+i*2]}">${RNK.bd.includes(g.k+i)?"":"🔒 "}${b}<small> · ${g.n} ${["I","II","III"][i]}</small></span>`).join("")).join("")}</div></div>
  <div class="panel"><h3 class="sec">Titles</h3><small style="display:block;color:var(--mu);margin-bottom:6px">🔷 Every new title pays +${RF_TITLE} Rift Shards.</small><div class="rkt">${RK_TITLES.map((t,i)=>`<span class="${v.l>=t[0]?"on":""}" style="--rc:${RK_COLS[i]}">${v.l>=t[0]?"":"🔒 "}${RK_EMB[i]} ${t[1]}<small> · Rank ${t[0]}${RK_TR[t[0]]?" · "+rkTxt(RK_TR[t[0]]).replace(/ Solari/,""):""}</small></span>`).join("")}</div></div>`}
 function rkOpenCache(){if(RNK.cc<1)return;const m=document.createElement("div");m.className="modal";document.body.appendChild(m);
- const draw=()=>{m.innerHTML=`<div class="card" style="--c:var(--ac)"><h2>📦 Fragment Cache</h2><p>Pick a fighter to receive <b>${CACHE_FR}</b> fragments. You have <b>${RNK.cc}</b>.</p><div class="rw-grid">${NAMES.map(n=>{const f=fragGet(n),full=f.a>=2||(f.m===500&&f.p>=500);return`<button class="btn rwb" data-n="${n}" ${full?"disabled":""}><b>${CLS[n].e} ${n}</b><small>${full?(f.a>=2?"fully ascended":"ready to Ascend"):f.p+" / "+f.m}</small></button>`}).join("")}</div><div class="opts"><button class="btn" id="cqx">Close</button></div></div>`;
+ const draw=()=>{m.innerHTML=`<div class="card" style="--c:var(--ac)"><h2>📦 Fragment Cache</h2><p>Pick a fighter to receive <b>${CACHE_FR}</b> fragments. You have <b>${RNK.cc}</b>.</p><div class="rw-grid">${PLAYN.map(n=>{const f=fragGet(n),full=f.a>=2||(f.m===500&&f.p>=500);return`<button class="btn rwb" data-n="${n}" ${full?"disabled":""}><b>${CLS[n].e} ${n}</b><small>${full?(f.a>=2?"fully ascended":"ready to Ascend"):f.p+" / "+f.m}</small></button>`}).join("")}</div><div class="opts"><button class="btn" id="cqx">Close</button></div></div>`;
   m.querySelectorAll(".rwb").forEach(b=>b.onclick=()=>{if(RNK.cc<1)return;const n=b.dataset.n;RNK.cc--;const note=fragAddQ(n,CACHE_FR);fragSave();rkSave();try{sfx("buff")}catch(e){}fragToast("📦 "+n+" +"+CACHE_FR+" fragments"+(note?" — "+note:""));if(RNK.cc>0)draw();else{m.remove();rankScreen()}});
   m.querySelector("#cqx").onclick=()=>{m.remove();rankScreen()}};draw()}
 /* ===== Weekly Rift event: spend Rift Shards 🔷 for random rewards; weekly featured exclusive skin/aura, flat 0.50% + hard pity 150 ===== */
@@ -4427,24 +4360,24 @@ function cmdScreen(){if(!CMD_ON)return;$("#app").innerHTML=`<div class="hud"><bu
 <div class="ch-row"><b>🎟️ Reroll Tokens</b><code>/token +5</code> add<code>/token -2</code> subtract<code>/token 10</code> set to 10</div>
 <div class="ch-row"><b>📦 Fragment Caches</b><code>/cache +5</code> add<code>/cache -2</code> subtract<code>/cache 10</code> set to 10</div>
 <div class="ch-row"><b>♻️ Reset</b><code>/reset Knight</code> clear one character's fragments and unlocks<code>/reset all</code> clear every character<br><small>Solari is kept. You will be asked to confirm.</small></div>
-<p class="lore"><small>Tip: names can be shortened (/fragments kni +50). Characters: ${NAMES.join(", ")}</small></p></div>`;cmdDraw()}
+<p class="lore"><small>Tip: names can be shortened (/fragments kni +50). Characters: ${PLAYN.join(", ")}</small></p></div>`;cmdDraw()}
 function cmdDraw(){const l=document.getElementById("cmdLog");if(l)l.innerHTML=CMDL.slice(-8).map(m=>`<div class="${m[0]?"ok":"bad"}">${m[1]}</div>`).join("")}
 function cmdGo(){const i=document.getElementById("cmdIn");if(!i)return;const raw=i.value.trim();if(!raw)return;i.value="";let r;try{r=cmdRun(raw)}catch(e){r=[false,"Error: "+e.message]}CMDL.push([r[0],"&gt; "+raw.replace(/</g,"&lt;")+"<br>"+r[1]]);cmdDraw();if(r[0])sfx&&sfx("buff")}
-function findChar(q){q=(q||"").trim().toLowerCase();if(!q)return null;let f=NAMES.find(x=>x.toLowerCase()===q);if(f)return f;const p=NAMES.filter(x=>x.toLowerCase().startsWith(q));return p.length===1?p[0]:null}
+function findChar(q){q=(q||"").trim().toLowerCase();if(!q)return null;let f=PLAYN.find(x=>x.toLowerCase()===q);if(f)return f;const p=PLAYN.filter(x=>x.toLowerCase().startsWith(q));return p.length===1?p[0]:null}
 function cmdRun(raw){if(!CMD_ON)return[false,"Unavailable."];
  const t=raw.replace(/^\//,"").trim().split(/\s+/),c=(t[0]||"").toLowerCase(),last=t[t.length-1],m=/^([+\-−]?)(\d+)$/.exec(last);
  if(c==="help"||c==="?")return[true,"/solari +100 · /shard +10 · /luck 50 · /fragments Knight +100 · /buff Knight 1000 · /skin Knight · /aura Knight · /token 5 · /cache 5 · /reset Knight · /reset all"];
- if(c==="buff"){const num=/^\+?(\d+)$/.exec(last);if(t.length<3||!num)return[false,"Use: /buff Knight 1000  (or /buff all 1000). Use 0 to remove."];const v=parseInt(num[1],10),q=t.slice(1,-1).join(" ").toLowerCase();let who;if(q==="all")who=NAMES.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+t.slice(1,-1).join(" ")+". Characters: "+NAMES.join(", ")];who=[f]}
+ if(c==="buff"){const num=/^\+?(\d+)$/.exec(last);if(t.length<3||!num)return[false,"Use: /buff Knight 1000  (or /buff all 1000). Use 0 to remove."];const v=parseInt(num[1],10),q=t.slice(1,-1).join(" ").toLowerCase();let who;if(q==="all")who=PLAYN.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+t.slice(1,-1).join(" ")+". Characters: "+PLAYN.join(", ")];who=[f]}
   who.forEach(n=>{if(v>0)FB[n]=v;else delete FB[n]});fbSave();return[true,v>0?`⚔️ ${q==="all"?"All characters":who[0]}: +${v.toLocaleString()} damage and +${v.toLocaleString()} healing on every hit and heal (all modes).`:`Buff removed for ${q==="all"?"all characters":who[0]}.`]}
  if(c==="luck"){const a=(t[1]||"").replace("%","").toLowerCase();if(a==="off"||a==="reset"){RIFT.lk=-1;riftSave();return[true,"🍀 Luck reset to normal odds."]}
   if(!/^\d+(\.\d+)?$/.test(a))return[false,"Use: /luck 50  (0–100% = chance of the weekly exclusive on each Rift pull) or /luck off"+(RIFT.lk>=0?" · now "+RIFT.lk+"%":"")];const x=Math.max(0,Math.min(100,+a));RIFT.lk=x;riftSave();return[true,`🍀 Rift luck: ${x}% chance of the weekly exclusive per pull.`]}
  if(c==="skin"||c==="aura"){const k=c==="skin"?"s":"a",lab=c==="skin"?"Skin":"Aura",D=k==="s"?SKINS:AURAS;let q=t.slice(1).join(" ").toLowerCase(),off=false;if(/\s+off$/.test(q)){off=true;q=q.replace(/\s+off$/,"")}
   if(!q)return[false,"Use: /"+c+" Knight  (or /"+c+" all). Add 'off' to unequip: /"+c+" Knight off"];
-  let who;if(q==="all")who=NAMES.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+q+". Characters: "+NAMES.join(", ")];who=[f]}
+  let who;if(q==="all")who=PLAYN.slice();else{const f=findChar(q);if(!f)return[false,"Unknown character: "+q+". Characters: "+PLAYN.join(", ")];who=[f]}
   who.forEach(n=>{if(off){COS.e[n][k]=0}else{COS.o[n][k]=1;COS.e[n][k]=1}});cosSave();
   return[true,off?`${lab} unequipped for ${q==="all"?"all characters":who[0]}.`:q==="all"?`✨ All ${lab.toLowerCase()}s unlocked and equipped.`:`✨ ${D[who[0]].n} (${who[0]} ${lab.toLowerCase()}) unlocked and equipped.`]}
  if(c==="reset"){const q=t.slice(1).join(" ").toLowerCase();if(!q)return[false,"Use: /reset Knight  or  /reset all"];
-  let who,label;if(q==="all"){who=NAMES.slice();label="ALL characters"}else{const f=findChar(q);if(!f)return[false,"Unknown character: "+t.slice(1).join(" ")+". Characters: "+NAMES.join(", ")];who=[f];label=f}
+  let who,label;if(q==="all"){who=PLAYN.slice();label="ALL characters"}else{const f=findChar(q);if(!f)return[false,"Unknown character: "+t.slice(1).join(" ")+". Characters: "+PLAYN.join(", ")];who=[f];label=f}
   ask(`<h2>♻️ Reset ${label}?</h2><p>This clears all fragments and unlocks for ${q==="all"?"every character":label}. Solari is kept. This cannot be undone.</p>`,["Reset","Cancel"]).then(i=>{if(i===0){who.forEach(n=>{delete FR[n]});fragSave();CMDL.push([true,`♻️ Reset ${label}: fragments 0/100, locked.`]);try{sfx("buff")}catch(e){}}else CMDL.push([false,"Reset cancelled."]);cmdDraw()});
   return[true,"Confirm the reset in the pop-up."]}
  if(!m||t.length<2)return[false,c==="fragments"||c==="frag"||c==="fragment"?"Use: /fragments Knight +100  (or all, or just +100 for the Remnant character)":"Use: /"+(c||"solari")+" +100, -100 or a number."];
@@ -4455,8 +4388,8 @@ function cmdRun(raw){if(!CMD_ON)return[false,"Unavailable."];
  if(c==="fragments"||c==="fragment"||c==="frag"){
   const nm=t.slice(1,-1).join(" ").toLowerCase();let who;
   if(!nm){if(!RM)return[false,"Open Remnant and pick a character first, or add a name: /fragments Name +100"];who=[RM]}
-  else if(nm==="all")who=NAMES.slice();
-  else{const f=findChar(nm);if(!f)return[false,"Unknown character: "+t.slice(1,-1).join(" ")+". Characters: "+NAMES.join(", ")];who=[f]}
+  else if(nm==="all")who=PLAYN.slice();
+  else{const f=findChar(nm);if(!f)return[false,"Unknown character: "+t.slice(1,-1).join(" ")+". Characters: "+PLAYN.join(", ")];who=[f]}
   const out=who.map(n=>{const f=fragGet(n),was=f.p+"/"+f.m,np=op==="+"?f.p+v:op==="-"?f.p-v:v;let note="";
    if(f.m===100&&np>=100){f.u=true;f.m=500;f.p=0;remEnsure(n);note=" 🔓 unlocked"}else f.p=Math.max(0,Math.min(f.m,np));
    return `${n}: ${was} → ${f.p}/${f.m}${note}`});
@@ -4479,12 +4412,12 @@ function remRework(i){const f=fragGet(RM);if(!f.u)return;let sel=null;const m=do
   m.querySelector("#rwok").onclick=()=>{if(!sel)return;const cost=RMS[sel].r?2:1,r=relicGet();if(r<cost){fragToast("Not enough Reworkable Relics.");return}relicSet(r-cost);f.r[i]=sel;fragSave();m.remove();try{sfx("buff")}catch(e){}fragToast(`🔧 ${nm} reworked: ${RMS[sel].d}`);remnant(RM)}};
  draw()}
 function fragAddQ(n,a){const f=fragGet(n);let note="";if(f.m===100){f.p+=a;if(f.p>=100){f.p=0;f.m=500;f.u=true;remEnsure(n);note="🔓 Remnants unlocked"}}else if(f.a>=2){}else if(f.p<500){f.p=Math.min(500,f.p+a);if(f.p>=500)note="✨ Ready to Ascend"}return note}
-async function allClear(ap){rkEvt(["rush"],ap?300:150,{});const rel=ap?3:1,fr=ap?60:30,notes=[];relicSet(relicGet()+rel);NAMES.forEach(n=>{const t=fragAddQ(n,fr);if(t)notes.push(`${n}: ${t}`)});fragSave();try{sfx("ascend")}catch(e){}
+async function allClear(ap){rkEvt(["rush"],ap?300:150,{});const rel=ap?3:1,fr=ap?60:30,notes=[];relicSet(relicGet()+rel);PLAYN.forEach(n=>{const t=fragAddQ(n,fr);if(t)notes.push(`${n}: ${t}`)});fragSave();try{sfx("ascend")}catch(e){}
  return new Promise(res=>{const m=document.createElement("div");m.className="modal clearm"+(ap?" apoc":"");
   const conf=Array.from({length:26},(_,i)=>`<i style="left:${Math.round(Math.random()*100)}%;animation-delay:${(Math.random()*2.4).toFixed(2)}s;animation-duration:${(2.6+Math.random()*2).toFixed(2)}s">${ap?["🔥","☄️","✨","💥"][i%4]:["✨","⭐","🎉","👑"][i%4]}</i>`).join("");
   m.innerHTML=`<div class="clearbg">${conf}</div><div class="card clearc"><div class="clear-rays"></div><div class="clear-crown">${ap?"☄️":"👑"}</div><div class="clear-kick">${ap?"APOCALYPTIC":"BOSS RUSH"}</div><h1 class="clear-title">BOSS RUSH<br>CLEARED</h1><p class="clear-sub">${ap?"The end is postponed. Nothing is left standing.":"All five bosses have fallen. The arena is yours."}</p>
   <div class="clear-rew"><div class="rew relic"><div class="rew-ico">🔧</div><b>Reworkable Relic</b><span>×${rel}</span><small>You now have ${relicGet()}</small></div>
-  <div class="rew frag"><div class="rew-ico">🔮</div><b>+${fr} fragments</b><span>every character</span><div class="rew-strip">${NAMES.map(n=>`<div title="${n}"><div class="mini">${art(n)}</div></div>`).join("")}</div></div></div>
+  <div class="rew frag"><div class="rew-ico">🔮</div><b>+${fr} fragments</b><span>every character</span><div class="rew-strip">${PLAYN.map(n=>`<div title="${n}"><div class="mini">${art(n)}</div></div>`).join("")}</div></div></div>
   ${(()=>{const j=CORR.just;CORR.just=0;return j?'<p class="clear-note" style="color:#d58cff;font-weight:800">☠️ Corruption unlocked! Find it under Boss Rush → Apocalyptic.</p>':""})()}${notes.length?`<p class="clear-note">${notes.join(" · ")}</p>`:""}<div class="opts"><button class="btn pri">Continue</button></div></div>`;
   document.body.appendChild(m);m.querySelector(".btn").onclick=()=>{m.remove();res()}})}
 var RMS={hp:{r:0,n:"Max HP",d:"+3% max HP"},dmg:{r:0,n:"Damage",d:"+3% damage"},heal:{r:0,n:"Healing",d:"+3% healing effect"},red:{r:0,n:"Defense",d:"−3% damage taken"},
@@ -4494,8 +4427,9 @@ function remRoll(){const rare=Math.random()<RM_RARE,pool=Object.keys(RMS).filter
 var CRN={Titankin:"eff",Archer:"skl",Knight:"ult",Emanator:"skl",Genius:"atk",Demigod:"hp",Trickster:"red",Champion:"heal",Hemomancer:"bleed",Gamer:"atk"},
  CRC={Titankin:"skl",Archer:"ult",Knight:"red",Emanator:"eff",Genius:"eff",Demigod:"heal",Trickster:"ctr",Champion:"atk",Hemomancer:"bleed",Gamer:"red"},
  CRD={hp:"+5% max HP",dmg:"+5% damage",heal:"+5% healing effect",red:"−5% damage taken",atk:"+5% Attack damage",skl:"+5% Skill damage",ult:"+5% Ultimate damage",eff:"+5% enhanced effectivity (damage and healing while enhanced)",bleed:"+5% bleed effect",ctr:"+5% counter damage"};
+CRN.Ranger="heal";CRC.Ranger="ult";
 function crTab(i){return i===0?CRN:CRC}
-function crPick(i,not){const p=NAMES.filter(x=>x!==not);return p[Math.floor(Math.random()*p.length)]}
+function crPick(i,not){const p=PLAYN.filter(x=>x!==not);return p[Math.floor(Math.random()*p.length)]}
 function remEnsure(n){const f=fragGet(n);if(f.u){for(let i=0;i<2;i++){if(!f.r[i])f.r[i]=remRoll();if(f.a>i&&!f.c[i])f.c[i]=crPick(i)}fragSave()}return f}
 function rmOf(cls){const f=FR[cls];if(!f||!f.u||!f.r)return null;const o={hp:0,dmg:0,heal:0,red:0,atk:0,skl:0,ult:0};o.eff=0;o.bleed=0;o.ctr=0;f.r.forEach(k=>{if(k&&RMV[k])o[k]+=RMV[k]});(f.c||[]).forEach((c,i)=>{if(c&&i<f.a){const k=crTab(i)[c];if(k)o[k]=(o[k]||0)+.05}});return o}
 (function(){const _DO=DO;DO=function(f,t,id){const o=f.rm;if(!o)return _DO(f,t,id);const c=actCat(f,id),k=c==="atk"?o.atk:c==="skl"?o.skl:c==="ult"?o.ult:0,a0=f.am||1;f.am=a0*(1+k);try{return _DO(f,t,id)}finally{f.am=a0}}})();
@@ -4507,6 +4441,7 @@ const TF={Emanator:"Berserk",Champion:"Moonlight Hunt",Demigod:"Undying King"};
 const EF={Titankin:"Titan Overdrive",Genius:"Enhanced Skill",Emanator:"Berserk",Champion:"Moonlight Hunt"};
 const pxTr=f=>!!(f.bz||f.mh||f.und);
 const pxEn=f=>!!(f.enh||f.bz||f.ens||f.mh);
+const pxDeb=t=>!!t&&(t.shred>0||t.sshred>0||t.dstun>0||t.hb>0||t.pxw>0||t.weak>0||t.stun>0);
 function pxHi(f){return f.cls==="Knight"?f.en>100:f.cls==="Demigod"?(!!f.und&&f.ch>400):false}
 window.PXD=function(p,w){
  const ult=w==="Trickster"?"Spend":"Ultimate",tf=TF[w],ef=EF[w],sp=SPMAX[w]!=null;
@@ -4518,7 +4453,8 @@ window.PXD=function(p,w){
  if(p==="Trickster")return`After using a Skill, your next Attack or ${ult} deals +7% damage.`+(w==="Trickster"?" Steal with a full Stolen bar triggers a Counter at once.":"");
  if(p==="Knight")return w==="Knight"?"+8% Skill damage while your Energy is above 100.":w==="Demigod"?"+8% Skill damage while your Charge is above 400.":"Needs a bar above 100 that this fighter does not have, so it never triggers.";
  if(p==="Gamer")return"A Skill that deals no damage gives a stack (max 3): your Attack deals +3 damage per stack. Resets after you Attack.";
- if(p==="Hemomancer")return"Applying a debuff gives +7% Skill damage for 5 turns, and the enemy gets Weakness (takes 10% more damage) for 3 turns."+((w==="Hemomancer"||w==="Trickster")?"":" This fighter has no debuffs of its own, so it never triggers.");
+ if(p==="Hemomancer")return"Applying a debuff gives +7% Skill damage for 5 turns, and the enemy gets Resistance Shred (takes 10% more damage) for 3 turns. It stacks with the Ranger's Duel shred."+((w==="Hemomancer"||w==="Trickster"||w==="Ranger")?"":" This fighter has no debuffs of its own, so it never triggers.");
+  if(p==="Ranger")return"+7% Follow-up and Counter damage. While the enemy has a debuff (shred, bleed, stun, weakness): +3% overall damage."+((w==="Ranger"||w==="Trickster"||w==="Hemomancer")?"":" Without follow-ups or counters, only the +3% part applies.");
  if(p==="Champion")return"Normal Attack or Skill heals 8 HP."+(tf?` While in ${tf}: +6% Attack and healing. Ends with the form.`:"");
  return""};
 window.pxLine=function(f,tot){if(!f||!f.u)return"";
@@ -4526,12 +4462,12 @@ window.pxLine=function(f,tot){if(!f||!f.u)return"";
  const p=tot&&tot.pair;
  return p?`<div>🔗 <b>2-Pair · ${p}</b>: ${PXD(p,RM)}</div>`:`<div style="opacity:.7">🔗 No 2-Pair: both Class Remnants must be the same class (now ${f.c[0]||"?"} + ${f.c[1]||"?"}).</div>`};
 
-const _rmOf=rmOf;rmOf=function(cls){const o=_rmOf(cls);if(!o)return o;const f=FR[cls];o.pair=(f&&f.a>=2&&f.c&&f.c[0]&&f.c[0]===f.c[1])?f.c[0]:null;return o};
+const _rmOf=rmOf;rmOf=function(cls){const o=_rmOf(cls);if(!o)return o;const f=FR[cls];o.pair=(f&&f.a>=2&&f.c&&f.c[0]&&f.c[0]===f.c[1])?f.c[0]:null;if(o.pair==="Ranger")o.ctr=(o.ctr||0)+.07;return o};
 const _reset=resetF;resetF=function(f){_reset(f);f.pxk=f.pxg=f.pxt=f.pxh=f.pxr=f.pxd=f.pxs=f.pxw=f.pxf=0};
 const _hit=hit;hit=function(a,d,base,o){if(a&&a.pxf){base+=a.pxf;a.pxf=0}return _hit(a,d,base,o)};
 
 function pxCounter(d,a){d.stolen=0;const x=Math.floor(R(38,48)*dm(d)*(1+((d.rm&&d.rm.ctr)||0)));try{sfx("coin");fly(pos(d),pos(a),"🪙",7);setTimeout(()=>coinBoom(a),380)}catch(e){}L(`🎭 ${d.name} unleashes stolen damage: ${x}!`,"a");d.coins=cl(d.coins+1,0,9);recv(a,x,d,true)}
-function pxDebuff(f,t){if(pair(f)!=="Hemomancer"||!t||t.hp<=0)return;f.pxh=5;t.pxw=3;L(`🩸 2-Pair Hemomancer: ${t.name} is Weakened (3 turns), ${f.name}'s Skills +7% for 5 turns.`,"a")}
+function pxDebuff(f,t){if(pair(f)!=="Hemomancer"||!t||t.hp<=0)return;f.pxh=5;t.pxw=3;L(`🩸 2-Pair Hemomancer: ${t.name} suffers Resistance Shred (3 turns, +10% damage taken), ${f.name}'s Skills +7% for 5 turns.`,"a")}
 function pxDemi(d){if(!d||d.hp<=0||d.pxd>0||d.hp>=d.maxHp*.3)return;
  const n=Math.min(d.maxHp-d.hp,d.hp);d.hp+=n;try{fx(d,"heal",n)}catch(e){}d.pxd=3;let r="";
  if(d.cls==="Demigod"){d.ch=cl(d.ch+100,0,d.chMax);r=" and gains 100 Charge";if(!d.und&&d.ch>=d.chMax)ascend(d)}
@@ -4541,17 +4477,18 @@ function pxDemi(d){if(!d||d.hp<=0||d.pxd>0||d.hp>=d.maxHp*.3)return;
 const _DO=DO;
 DO=function(f,t,id){
  const p=pair(f);if(!p)return _DO(f,t,id);
- const c=id==="stop"?0:actCat(f,id),en0=pxEn(f),tr0=pxTr(f),a0=f.am,rh0=f.rh,hp0=t?t.hp:0,w0=t?(t.weak||0):0;
+ const c=id==="stop"?0:actCat(f,id),en0=pxEn(f),tr0=pxTr(f),a0=f.am,rh0=f.rh,hp0=t?t.hp:0,w0=t?(t.weak||0):0,sh0=t?(t.shred||0):0,ds0=t?(t.dstun||0):0;
  let mul=1,hl=1,ca=0;
  if(p==="Emanator"){if(tr0&&(c==="atk"||c==="skl"))mul*=1.03;if(en0&&c)mul*=1.05}
  else if(p==="Knight"&&c==="skl"&&pxHi(f))mul*=1.08;
  else if(p==="Genius"&&c==="skl"&&f.pxg){mul*=en0?1.08:1.03;ca="g"}
  else if(p==="Trickster"&&(c==="atk"||c==="ult")&&f.pxt){mul*=1.07;ca="t"}
  else if(p==="Hemomancer"&&c==="skl"&&f.pxh>0)mul*=1.07;
- else if(p==="Champion"&&tr0){if(c==="atk")mul*=1.06;hl=1.06}
+ else if(p==="Ranger"&&c&&pxDeb(t))mul*=1.03;
+  else if(p==="Champion"&&tr0){if(c==="atk")mul*=1.06;hl=1.06}
  else if(p==="Gamer"&&c==="atk"&&f.pxs>0)f.pxf=3*f.pxs;
- f.am=(a0||1)*mul;f.rh=(rh0||1)*hl;
- let r;try{r=_DO(f,t,id)}finally{f.am=a0;f.rh=rh0;f.pxf=0}
+ f.am=(a0||1)*mul;f.rh=(rh0||1)*hl;f.pxfu=p==="Ranger"?1.07:0;
+ let r;try{r=_DO(f,t,id)}finally{f.am=a0;f.rh=rh0;f.pxf=0;f.pxfu=0}
  const dealt=!!t&&t.hp<hp0;
  if(ca==="g")f.pxg=0;if(ca==="t")f.pxt=0;
  if(p==="Titankin"&&c==="ult"&&chance(.4)){f.sk=0;f.hc=0;L(`⚒️ 2-Pair Titankin: ${f.name}'s cooldowns are all reset!`,"a")}
@@ -4559,7 +4496,7 @@ DO=function(f,t,id){
  if(p==="Genius"&&c==="ult")f.pxg=1;
  if(p==="Trickster"&&c==="skl"){f.pxt=1;if(f.cls==="Trickster"&&f.stolen>=50&&t&&t.hp>0)pxCounter(f,t)}
  if(p==="Gamer"){if(c==="skl"&&!dealt){f.pxs=Math.min(3,(f.pxs||0)+1);L(`🎮 2-Pair Gamer: no damage dealt, Attack +${3*f.pxs} (stack ${f.pxs}/3).`,"a")}else if(c==="atk")f.pxs=0}
- if(p==="Hemomancer"&&t&&(t.weak||0)>w0)pxDebuff(f,t);
+ if(p==="Hemomancer"&&t&&((t.weak||0)>w0||(f.cls==="Ranger"&&((t.shred||0)>sh0||(t.dstun||0)>ds0))))pxDebuff(f,t);
  if(p==="Champion"&&(c==="atk"||c==="skl")&&!en0&&f.hp>0){f.hp=cl(f.hp+8,0,f.maxHp);try{fx(f,"heal",8)}catch(e){}}
  return r};
 
@@ -4581,7 +4518,7 @@ function remnant(n){RM=n||RM||NAMES[0];const k=CLS[RM];
  spec=(ico,t,need)=>{const on=f.a>=need;return`<div class="rm-card ${on?"":"lock"}"><div class="rm-head"><div class="rm-ico">${on?ico:"🔒"}</div><div><b>${RM}'s ${t}</b><small>${on?"Unlocked":"Locked"}</small></div></div><div class="rm-mid">${on?"<span>Effect</span><b>Coming soon</b>":`<span>Locked</span><b>Ascend ${need===1?"once":"twice"}</b>`}</div></div>`},
  tot=rmOf(RM),eff=tot?f.r.map(k=>k?`<div>${RMS[k].r?"🌟":"💠"} ${RMS[k].d}</div>`:"").join("")+(f.c||[]).map((c,i)=>c&&i<f.a?`<div>🔮 ${c}'s ${i?"Crystal":"Ornament"}: ${CRD[crTab(i)[c]]}</div>`:"").join(""):"";
  $("#app").innerHTML=`<div class="hud"><button class="btn" onclick="menu()">← Back</button><h2>Remnant</h2><span class="relic-pill" title="Reworkable Relics · Reroll Tokens">🔧 ${relicGet()} · 🎟️ ${RNK.tk}</span></div>
- <div class="rm" style="--c:${k.c}"><div class="rm-list">${NAMES.map(n=>{const c=CLS[n];return`<button class="btn rm-ch ${n===RM?"on":""}" style="--c:${c.c}" onclick="remnant('${n}')"><div class="mini">${art(n)}</div><b>${n}</b></button>`}).join("")}</div>
+ <div class="rm" style="--c:${k.c}"><div class="rm-list">${PLAYN.map(n=>{const c=CLS[n];return`<button class="btn rm-ch ${n===RM?"on":""}" style="--c:${c.c}" onclick="remnant('${n}')"><div class="mini">${art(n)}</div><b>${n}</b></button>`}).join("")}</div>
  <div class="rm-main"><div class="rm-bar"><div class="rm-row"><span>${f.a>=2?"Fully ascended":"Fragment"}</span><small>${k.e} ${RM} · ${k.tag}</small></div>${f.a>=2?"":`<div class="rm-row"><div class="rm-track"><i class="rm-fill" style="width:${Math.min(100,f.p/f.m*100)}%"></i><em>${f.p} / ${f.m}</em></div>${f.u&&f.p>=500&&f.a<2?'<button class="btn pri rm-asc" onclick="remAsc()">✨ Ascend</button>':""}</div>`}</div>
  <div class="rm-cards">${reg(0)}${reg(1)}</div>
  <div class="panel rm-fx"><label>Effects <small style="font-weight:500;color:var(--mu)">· active in Campaign and Boss Rush only</small></label><div class="rm-fxbox">${(eff||"None yet — reach 100 fragments.")+(window.pxLine?pxLine(f,tot):"")}</div></div>${cosPanel(RM)}</div></div>`}
@@ -4589,10 +4526,10 @@ function subMenu(t,btns){token++;$("#app").innerHTML=`<div class="hud"><button c
 function playMenu(){subMenu("Play",MB("pri","📅","Daily Challenge",dcSub(),"dailyScreen()")+MB("","⚔️","PVP","Duel a friend or a Bot","S.mode='pvp';setup()")+MB("","🗺️","Campaign","Floors, bosses and buffs","campSetup()")+MB("","👥","Boss Rush","Solo or Host a co-op room · ☄️ Apocalyptic","rushChoose()"))}
 /* ===== export / import save ===== */
 const SAVE_GAME="Arena of Ascension",SAVE_VER=3,svOwn=(o,k)=>typeof k==="string"&&Object.prototype.hasOwnProperty.call(o,k);
-function saveCollect(){const chars={};NAMES.forEach(n=>{const f=FR[n];if(!f)return;const e=[];(f.r||[]).forEach((k,i)=>{if(k&&svOwn(RMS,k))e.push(`${i?"Crystal":"Ornament"}: ${RMS[k].d}`)});(f.c||[]).forEach((c,i)=>{if(c&&i<(f.a||0)){const k=crTab(i)[c];if(k&&CRD[k])e.push(`${c}'s ${i?"Crystal":"Ornament"}: ${CRD[k]}`)}});chars[n]=Object.assign(JSON.parse(JSON.stringify(f)),{effects:e})});
+function saveCollect(){const chars={};PLAYN.forEach(n=>{const f=FR[n];if(!f)return;const e=[];(f.r||[]).forEach((k,i)=>{if(k&&svOwn(RMS,k))e.push(`${i?"Crystal":"Ornament"}: ${RMS[k].d}`)});(f.c||[]).forEach((c,i)=>{if(c&&i<(f.a||0)){const k=crTab(i)[c];if(k&&CRD[k])e.push(`${c}'s ${i?"Crystal":"Ornament"}: ${CRD[k]}`)}});chars[n]=Object.assign(JSON.parse(JSON.stringify(f)),{effects:e})});
  return{game:SAVE_GAME,version:SAVE_VER,exported:new Date().toISOString(),solari:(typeof solariBalance==="function"?solariBalance():0),relics:relicGet(),corruption:{unlocked:!!CORR.u,level:CORR.l},characters:chars,fighterBuffs:JSON.parse(JSON.stringify(FB||{})),rank:JSON.parse(JSON.stringify(RNK)),shards:RIFT.sh,rift:JSON.parse(JSON.stringify(RIFT)),cosmetics:JSON.parse(JSON.stringify(COS))}}
-function saveCleanFR(src){const o={};NAMES.forEach(n=>{const f=svOwn(src,n)&&src[n];if(!f||typeof f!=="object")return;const rk=Array.isArray(f.r)?f.r:[],ck=Array.isArray(f.c)?f.c:[],m=+f.m===500?500:100;
- o[n]={p:Math.max(0,Math.min(m,Math.floor(+f.p)||0)),m,u:!!f.u,a:Math.max(0,Math.min(2,f.a|0)),r:[svOwn(RMS,rk[0])?rk[0]:null,svOwn(RMS,rk[1])?rk[1]:null],c:[NAMES.includes(ck[0])?ck[0]:null,NAMES.includes(ck[1])?ck[1]:null]}});return o}
+function saveCleanFR(src){const o={};PLAYN.forEach(n=>{const f=svOwn(src,n)&&src[n];if(!f||typeof f!=="object")return;const rk=Array.isArray(f.r)?f.r:[],ck=Array.isArray(f.c)?f.c:[],m=+f.m===500?500:100;
+ o[n]={p:Math.max(0,Math.min(m,Math.floor(+f.p)||0)),m,u:!!f.u,a:Math.max(0,Math.min(2,f.a|0)),r:[svOwn(RMS,rk[0])?rk[0]:null,svOwn(RMS,rk[1])?rk[1]:null],c:[PLAYN.includes(ck[0])?ck[0]:null,PLAYN.includes(ck[1])?ck[1]:null]}});return o}
 /* ===== sealed saves: scrambled + signed, so edited or hand-written files are rejected ===== */
 const SV_KEY=new TextEncoder().encode("AoA\u00b7Ascension\u00b7seal\u00b7\u2694\u00b7q7Zk-91xWm3"),SV_HEAD="-----ARENA OF ASCENSION SAVE-----",SV_FOOT="-----END SAVE-----";
 function svMix(parts,seed){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(const p of parts)for(let i=0;i<p.length;i++){const c=p[i];h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);h1^=h2>>>15;h2^=h1>>>13}
