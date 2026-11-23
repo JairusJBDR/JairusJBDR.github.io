@@ -1,12 +1,10 @@
-// Orbiting dot: x = centerX + radius*cos(angle), y = centerY + radius*sin(angle)
-
-let centerX;           // x of orbit center
-let centerY;           // y of orbit center
-let orbitRadius = 120; // distance from center to dot (pixels)
-let angle = 0;         // current angle (degrees)
-let angleSpeed = 1;    // degrees added per frame
-let isPaused = false;  // pause state
-let lastKeyShown = "none"; // last key the sketch received (for testing)
+let centerX;         
+let centerY;           
+let orbitRadius = 120; 
+let angle = 0;       
+let angleSpeed = 1;  
+let isPaused = false; 
+let lastKeyShown = "none";
 
 function setup() {
   createCanvas(500, 500);
@@ -28,24 +26,29 @@ function draw() {
     }
   }
 
-  // cos gives horizontal part, sin gives vertical part, radius scales, center shifts
+  //position
   let dotX = centerX + orbitRadius * cos(angle);
   let dotY = centerY + orbitRadius * sin(angle);
 
+  //orbit
   noFill();
   stroke(80);
   circle(centerX, centerY, orbitRadius * 2);
 
+  //line
   stroke(150);
   line(centerX, centerY, dotX, dotY);
 
+  //center point
   noStroke();
   fill(255, 200, 0);
   circle(centerX, centerY, 10);
 
+  //orbiting dot
   fill(0, 200, 255);
   circle(dotX, dotY, 24);
 
+  //values
   fill(255);
   textSize(14);
   textAlign(LEFT);
@@ -54,13 +57,15 @@ function draw() {
   text("sin(angle) = " + nf(sin(angle), 1, 3), 10, 65);
   text("dot x = " + nf(dotX, 1, 1) + "   dot y = " + nf(dotY, 1, 1), 10, 85);
 
+  // Control instructions
   textAlign(CENTER);
   text("SPACE = pause  UP/W DOWN/S = speed  LEFT/A RIGHT/D = radius", width / 2, height - 30);
   text("speed = " + angleSpeed + " deg/frame   radius = " + orbitRadius + " px   last key: " + lastKeyShown, width / 2, height - 12);
 }
 
+// Keyboard controls
 function keyPressed() {
-  lastKeyShown = key; // shows on canvas so you can tell if keys are received
+  lastKeyShown = key;
 
   if (key === ' ') {
     isPaused = !isPaused;
@@ -77,5 +82,5 @@ function keyPressed() {
   if (keyCode === LEFT_ARROW || key === 'a' || key === 'A') {
     orbitRadius = max(orbitRadius - 10, 20);
   }
-  return false; // stop page scrolling
+  return false;
 }
