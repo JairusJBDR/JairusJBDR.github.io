@@ -167,6 +167,75 @@ body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),r
 .fxl .lz0{width:5px;background:var(--c);box-shadow:0 0 10px var(--c);animation:lz0 .4s forwards}@keyframes lz0{from{opacity:.2}50%{opacity:1}to{opacity:.4}}
 .ch.bz .art{scale:1;transform-origin:50% 100%}.flame{transform-origin:60px 134px;animation:flk .45s infinite alternate}@keyframes flk{to{transform:scale(1.07,.93)}}
 @media(prefers-reduced-motion:reduce){*:not(.ch):not(.ch *):not(.lineup *){animation-duration:.01s!important;animation-iteration-count:1!important}}
+.rush #ua .stage,.rush #ub .stage{transform:scale(.62);margin:-26px auto -44px}.rush .br{grid-template-columns:30px 1fr 40px;font-size:10px}.rush .nm b{font-size:11px}.rush .tg em{font-size:9px}.btn.k-support{outline:2px solid var(--ac)}.rush #ub .art{transform:none}.rush #uc .art{transf1fr}.vs{display:none}.stage{transform:scale(.8);margin:-12px auto -18px}.br{grid-template-columns:46px 1fr 50px}}
+@keyframes bob{50%{transform:translateY(-5px)}}@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes lungeA{40%{transform:translateX(70px)}}@keyframes lungeB{40%{transform:translateX(-70px)}}
+@keyframes hit{0%{filter:brightness(3) saturate(0)}20%{transform:translateX(-12px)}40%{transform:translateX(12px)}60%{transform:translateX(-8px)}}
+@keyframes heal{0%,100%{filter:none}40%{filter:drop-shadow(0 0 14px #66e08a) brightness(1.3)}}
+@keyframes parry{0%{filter:brightness(2.4) drop-shadow(0 0 18px #ffb347);transform:translateY(-4px)}30%{transform:none}60%{filter:brightness(1.2) drop-shadow(0 0 10px #ffb347)}to{filter:none;transform:none}}
+.pry{position:absolute;left:50%;top:48%;width:0;height:0;pointer-events:none;z-index:6}
+.pry .rg{position:absolute;left:-18px;top:-18px;width:36px;height:36px;border:4px solid #ffd36b;border-radius:50%;box-shadow:0 0 14px #ff9a3d,inset 0 0 10px #ffb347;animation:pryr .5s ease-out forwards}
+.pry .sl{position:absolute;left:-46px;top:-2px;width:92px;height:4px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);transform:rotate(-35deg);animation:pryl .35s ease-out forwards}
+.pry .sp{position:absolute;left:-3px;top:-6px;width:6px;height:12px;border-radius:3px;background:#ffe9a8;box-shadow:0 0 6px #ffb347;animation:prys .5s ease-out forwards}
+@keyframes pryr{from{transform:scale(.3);opacity:1}to{transform:scale(2.3);opacity:0}}
+@keyframes pryl{0%{scale:.2 1;opacity:1}40%{scale:1 1;opacity:1}to{scale:1.1 .3;opacity:0}}
+@keyframes prys{from{transform:rotate(var(--a)) translateY(-12px);opacity:1}to{transform:rotate(var(--a)) translateY(-58px) scaleY(.3);opacity:0}}
+@keyframes dodge{40%{transform:translateX(26px) skewX(-12deg);opacity:.5}}
+@keyframes rise{to{transform:translateY(-70px);opacity:0}}@keyframes pop{from{transform:scale(.8);opacity:0}}
+#app{padding-top:54px}
+body{background:radial-gradient(900px 500px at 12% -10%,#4a2f7a55,transparent),radial-gradient(900px 500px at 92% 0,#c4700d33,transparent),var(--bg)}
+.hero h1{background:linear-gradient(180deg,#ffe9a8,var(--ac) 60%,#c4700d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 0 #0006)}
+.panel{background:color-mix(in srgb,var(--pn) 90%,transparent);backdrop-filter:blur(6px);box-shadow:0 8px 24px #0003}
+.sec{font:400 12px "Alfa Slab One",serif;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin:0 0 8px}
+.hud{background:var(--pn);border:2px solid var(--ln);border-radius:14px;padding:8px 12px}.hud h3{font-size:18px}
+.arena{position:relative;overflow:hidden;min-height:350px;padding:46px 12px 14px;border:3px solid var(--ln);box-shadow:0 12px 34px #0006;background:none}
+.scene{position:absolute;inset:0;z-index:0}.scene svg{position:absolute;left:0;bottom:0;width:100%;height:58%}
+.scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26%;background:linear-gradient(transparent,#0008)}
+.u{z-index:1}.vs{z-index:1;color:#fff;text-shadow:0 3px 0 #000a}
+.nm{display:block;width:fit-content;max-width:100%;margin:0 auto;background:#000a;color:#fff;border-radius:12px;padding:2px 12px}.nm small{color:#cfc8ea}
+.bars{background:#000b;padding:7px 9px;border-radius:12px;backdrop-filter:blur(3px)}.br{color:#d6d1ea}.br span:last-child{color:#fff}
+.turn{position:absolute;top:10px;left:50%;translate:-50% 0;z-index:2;background:var(--ac);color:#1a1424;border-radius:999px;padding:3px 16px;font-weight:800;font-size:13px;white-space:nowrap;box-shadow:0 3px 10px #0006}
+.stage.pow{filter:drop-shadow(0 0 18px var(--c))}
+#acts .btn{display:flex;flex-direction:column;gap:2px;padding:10px 12px}#acts .btn span{font-weight:800}
+#acts .btn.k-heal{border-top:4px solid #4fd17a}#acts .btn.k-attack{border-top:4px solid #ff7a6b}
+#acts .btn.k-ultimate,#acts .btn.k-conquer,#acts .btn.k-spend{background:linear-gradient(135deg,var(--pn),#5a4412);border-color:var(--ac);box-shadow:0 0 14px #f4b94255}
+#log{height:200px}
+.fxl{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:hidden}
+.fxl i{position:absolute;translate:-50% -50%;font-style:normal}
+.fxl .p{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);font-size:16px;line-height:1;animation:pf .7s ease-out forwards}
+@keyframes pf{from{transform:translate(0,0) scale(1.3)}to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.fxl .rg{width:var(--s);height:calc(var(--s)*.45);border:4px solid var(--c);border-radius:50%;box-shadow:0 0 18px var(--c);animation:rgf .7s ease-out forwards}
+@keyframes rgf{from{transform:scale(.1);opacity:1}to{transform:scale(1.4);opacity:0}}
+.fxl .rn{font-size:26px;animation:rnf var(--d) ease-in forwards}@keyframes rnf{to{transform:translateY(190px);opacity:.1}}
+.fxl .bm{translate:0 -50%;transform-origin:0 50%;background:linear-gradient(90deg,transparent,var(--c),#fff,var(--c));border-radius:6px;box-shadow:0 0 18px var(--c);animation:bmf .55s forwards}
+@keyframes bmf{0%{opacity:0;scale:1 .2}30%{opacity:1;scale:1 1}to{opacity:0;scale:1 .1}}
+.fxl .pj{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#fff,var(--c) 60%,transparent 72%);box-shadow:0 0 16px var(--c)}
+.fxl .pj.slash{width:78px;height:10px;border-radius:6px;background:linear-gradient(90deg,transparent,var(--c),#fff)}
+.fxl .pj.arrow{width:50px;height:5px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--c),#fff)}
+.fxl .pj.coin{width:auto;height:auto;background:none;box-shadow:none;font-size:28px}.fxl .pj.cala{width:160px;height:9px;border-radius:2px 6px 6px 2px;background:linear-gradient(90deg,transparent,#0b1030 35%,#05081c);box-shadow:0 0 12px 4px #2f8cff,0 0 28px 8px #2f8cff66}.fxl .pj.cala::after{content:"";position:absolute;right:-14px;top:-6px;border-left:18px solid #05081c;border-top:10px solid transparent;border-bottom:10px solid transparent;filter:drop-shadow(0 0 6px #2f8cff)}
+.fxl .sw{width:62px;height:8px;border-radius:0 8px 8px 0;background:linear-gradient(90deg,#6b4a2b 0 14%,#c8a24a 14% 20%,#dfe9f7 20%,#fff);box-shadow:0 0 12px var(--c)}
+.fxl .sl{width:var(--s);height:var(--s);border-radius:50%;border-top:calc(var(--s)*.07) solid var(--k);transform:rotate(var(--a));filter:drop-shadow(0 0 10px var(--c)) drop-shadow(0 0 22px var(--c));animation:slf .42s ease-out forwards}
+@keyframes slf{0%{clip-path:inset(-40% 100% -40% -40%);opacity:1}55%{clip-path:inset(-40%);opacity:1}to{clip-path:inset(-40%);opacity:0;scale:1.12}}
+.fxl .ban{font:400 clamp(24px,6vw,46px) "Alfa Slab One",Georgia,serif;color:#fff;white-space:nowrap;text-shadow:0 0 18px var(--c),0 4px 0 #000a;-webkit-text-stroke:2px var(--c);paint-order:stroke fill;animation:banf 1.15s forwards}
+@keyframes banf{0%{transform:scale(2.4);opacity:0}18%{transform:scale(1);opacity:1}75%{opacity:1}to{transform:scale(.95) translateY(-14px);opacity:0}}
+.fxl .fl2{translate:0 0;width:100%;height:100%;background:radial-gradient(circle at 50% 55%,var(--c),transparent 70%);animation:fl2 .6s forwards}@keyframes fl2{from{opacity:.8}to{opacity:0}}
+.arena.shake{animation:shk .5s}@keyframes shk{20%{transform:translate(-7px,3px)}40%{transform:translate(7px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
+.m2{right:64px}
+.fxl .tt{width:52px;height:26px}.fxl .tt b{position:absolute;width:12px;height:12px;background:var(--c);border:2px solid #fff8;border-radius:2px;box-shadow:0 0 8px var(--c)}
+.fxl .pac{width:66px;height:66px;border-radius:50%;background:#ffe14d;box-shadow:0 0 18px #ffe14d;animation:chomp .16s infinite alternate}
+@keyframes chomp{from{clip-path:polygon(50% 50%,100% 20%,100% 0,0 0,0 100%,100% 100%,100% 80%)}to{clip-path:polygon(50% 50%,100% 48%,100% 0,0 0,0 100%,100% 100%,100% 52%)}}
+.fxl .dot{width:9px;height:9px;border-radius:50%;background:#ffe9a8;animation:dotf .7s forwards}@keyframes dotf{70%{opacity:1}to{opacity:0;scale:.2}}
+.ch.rgb .art{animation:rgbf 1.3s linear infinite}@keyframes rgbf{from{filter:drop-shadow(0 0 12px #f0f) hue-rotate(0deg)}to{filter:drop-shadow(0 0 12px #f0f) hue-rotate(360deg)}}
+#acts .btn.k-enhatk{border-top:4px solid #ffe14d}.m3{right:116px}
+.vol{position:fixed;top:calc(56px + env(safe-area-inset-top,0px));right:12px;z-index:21;background:var(--pn);border:2px solid var(--ln);border-radius:14px;padding:10px 14px;display:grid;gap:8px;box-shadow:0 10px 30px #0008}.vol[hidden]{display:none}.vol label{display:flex;gap:10px;align-items:center;justify-content:space-between}.vol input{width:150px;accent-color:var(--ac)}
+.fxl .fy{font-size:24px}.fxl .tx{font:400 20px "Alfa Slab One",serif;color:var(--c);text-shadow:0 2px 0 #000a;white-space:nowrap;animation:rise 1.1s forwards}
+.fxl .mt{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6a8,#ff9a3d 45%,#c2310f 75%);box-shadow:0 0 26px 10px #ff6a2b,-60px -36px 34px 12px #ff6a2b88}
+.fxl .lz,.fxl .lz0{translate:-50% 0}
+.fxl .lz{width:110px;background:linear-gradient(90deg,transparent,var(--c),#fff 50%,var(--c),transparent);box-shadow:0 0 40px 10px var(--c);animation:lzf .7s forwards}
+@keyframes lzf{0%{scale:.1 1;opacity:1}25%{scale:1 1}to{scale:.4 1;opacity:0}}
+.fxl .lz0{width:5px;background:var(--c);box-shadow:0 0 10px var(--c);animation:lz0 .4s forwards}@keyframes lz0{from{opacity:.2}50%{opacity:1}to{opacity:.4}}
+.ch.bz .art{scale:1;transform-origin:50% 100%}.flame{transform-origin:60px 134px;animation:flk .45s infinite alternate}@keyframes flk{to{transform:scale(1.07,.93)}}
+@media(prefers-reduced-motion:reduce){*:not(.ch):not(.ch *):not(.lineup *){animation-duration:.01s!important;animation-iteration-count:1!important}}
 .rush #ua .stage,.rush #ub .stage{transform:scale(.62);margin:-26px auto -44px}.rush .br{grid-template-columns:30px 1fr 40px;font-size:10px}.rush .nm b{font-size:11px}.rush .tg em{font-size:9px}.btn.k-support{outline:2px solid var(--ac)}.rush #ub .art{transform:none}.rush #uc .art{transform:scaleX(-1)}.rush #uc .stage{transform:scale(1.25);margin:0 auto 12px}.rush #ub.atk{animation:lungeA .5s}.rush #uc.atk{animation:lungeB .5s}
 @media(min-width:760px){
 #app{padding:46px 14px 6px}
